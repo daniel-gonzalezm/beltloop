@@ -6,7 +6,8 @@ from .eigen import (ModalBasis, fixed_free_roots, modal_basis, natural_frequenci
                     natural_frequencies_torque, poles, rayleigh_takeup_bound)
 from .forcing import PEAK_FACTOR, StartProfile
 from .loop import Loop, Segment
-from .response import StartupResponse, integrate_modes, residual_amplitude_sine, startup_response
+from .response import (StartupResponse, integrate_modes, lagged_loads, residual_amplitude_sine,
+                       startup_response)
 from .transfer import AB, J, S, char_fun, char_fun_torque
 
 __version__ = "0.1.0"

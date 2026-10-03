@@ -16,6 +16,7 @@ damping. The derivation is in the "Model" section of the manuscript (`model.tex`
 | `forcing.py` | Start-up profiles (sine, triangular, parabolic) and resistance onset (`velocity`, `step`, `none`) as piecewise exosystems |
 | `response.py` | Exact modal integration (matrix exponential); tension with the mode-acceleration correction; take-up motion |
 | `conveyor.py` | SI layer: take-up reeving, static tension at rest, running tension, start-up in SI units, validity checks |
+| `lumped.py` | Independent lumped-mass model for validation: absolute displacements with the drive moving, gravity and counterweight as loads, static equilibrium by linear solve, Newmark average acceleration |
 
 ## Numerical method (summary)
 
@@ -29,8 +30,19 @@ damping. The derivation is in the "Model" section of the manuscript (`model.tex`
 * **Time integration.** Each modal equation is augmented with the exosystem that generates
   the load on each time interval and integrated with the matrix exponential: exact for any
   damping, overdamped high modes and exact resonance.
-* **Tension.** Mode-acceleration form: exact quasi-static tension plus a fast-converging
-  modal remainder (40 modes reach ~1e-4 relative accuracy where the plain sum gives ~1e-2).
+* **Tension.** Quasi-static split: without inertia a Kelvin-Voigt belt carries exactly the
+  static tension `a Q_mu + phi Q_r` for any damping, while the strain lags through a
+  first-order filter with time constant `2 zeta_hat`, the same for every mode. The modal
+  remainder is taken about that lagged state and converges fast with or without damping
+  (20 modes: ~1e-6 relative in the cases tested).
+
+## Validation
+
+`validation/fig_lumped_validation.py` compares the modal solution with the lumped model
+(`validation/figures/lumped_validation.pdf`): second-order convergence in the number of
+elements, ~1e-6 relative difference in the whole tension field at N = 1000. Beyond that a
+round-off floor of ~1e-6 appears (the lumped model integrates absolute displacements of
+hundreds of metres); it has no practical relevance.
 
 ## Scaling
 
@@ -44,6 +56,7 @@ damping. The derivation is in the "Model" section of the manuscript (`model.tex`
 pip install -e ".[dev,plots]"
 pytest -q                      # ~1.5 min
 python examples/startup_demo.py
+python validation/fig_lumped_validation.py   # ~1 min
 ```
 
 ```python

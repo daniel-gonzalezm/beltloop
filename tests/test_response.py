@@ -162,3 +162,34 @@ def test_step_overshoot_can_exceed_two():
     Ti = startup_response(mb, StartProfile("sine", 5.0, "none"), 0.0, tau).tension([2.0])
     ratio = np.max(np.abs(T - Ti)) / abs(lp.quasi_static("r", [2.0])[0])
     assert ratio == pytest.approx(2.182, abs=0.005)
+
+
+def test_lagged_loads():
+    """2 zeta f' + f = load, f(0) = 0, against an ODE solver; identity for zeta = 0."""
+    from beltloop.response import lagged_loads
+    for kind, onset in (("sine", "velocity"), ("triangular", "step"), ("parabolic", "velocity")):
+        prof = StartProfile(kind, 4.0, onset)
+        tau = np.linspace(0, 10, 201)
+        af, phif = lagged_loads(prof, 0.3, tau)
+        sol = solve_ivp(lambda t, f: [(prof.a(t) - f[0]) / 0.6, (prof.phi(t) - f[1]) / 0.6],
+                        [0, 10], [0, 0], t_eval=tau, rtol=1e-11, atol=1e-13, max_step=0.01)
+        np.testing.assert_allclose(af, sol.y[0], atol=1e-8)
+        np.testing.assert_allclose(phif, sol.y[1], atol=1e-8)
+        a0, p0 = lagged_loads(prof, 0.0, tau)
+        np.testing.assert_allclose(a0, prof.a(tau)); np.testing.assert_allclose(p0, prof.phi(tau))
+
+
+@pytest.mark.parametrize("zh", [0.0, 0.02, 0.1])
+def test_split_convergence_with_damping(zh):
+    """The quasi-static split converges fast for any damping: 20 modes vs 300 modes."""
+    lp = Loop.from_positions(0.0, 0.02, 1.58, r_return=0.3, r_carry=0.9)
+    prof = StartProfile("sine", 30.0, "velocity")
+    tau = np.linspace(0, 80, 801)
+    x = np.array([0.0, 0.5, 1.0, 2.0])
+    ref = startup_response(modal_basis(lp, 0.12, 300), prof, zh, tau)
+    r20 = startup_response(modal_basis(lp, 0.12, 20), prof, zh, tau)
+    scale = np.max(np.abs(ref.tension(x)))
+    assert np.max(np.abs(r20.tension(x) - ref.tension(x))) / scale < 2e-5
+    # with all modes the split reproduces the plain sum: check the plain sum converges to it
+    r300p = ref.tension(x, "plain")
+    assert np.max(np.abs(r300p - ref.tension(x))) / scale < 5e-3

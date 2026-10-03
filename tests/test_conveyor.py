@@ -79,3 +79,12 @@ def test_validity_flags_violation():
                   takeup=GravityTakeUp(300.0), r_r=15.0, r_c=40.0)
     ck = cv.start(5.0, 2.0, "triangular", "step", n_modes=40).checks()
     assert not ck["tension_positive"]
+
+
+def test_takeup_on_tight_side_is_flagged():
+    """Take-up 900 m upstream of an intermediate drive (on its tight side): the take-up anchors
+    the entry tension and the carry-strand resistance is taken from the slack side."""
+    cv = Conveyor(L=3000.0, EA=1.2e8, mu_r=40.0, mu_c=100.0, drive_position=1800.0,
+                  takeup_position=900.0, takeup=GravityTakeUp(2 * 70e3 / G), r_r=15.0, r_c=45.0, t_v=0.3)
+    ck = cv.start(5.0, 60.0, "parabolic", "velocity", n_modes=40).checks()
+    assert not ck["tension_positive"] and ck["min_tension_s_m"] < 1.0      # at the drive exit
