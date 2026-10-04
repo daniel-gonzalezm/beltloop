@@ -65,11 +65,16 @@ class Loop:
     @classmethod
     def from_positions(cls, sigma_d: float, sigma_t: float, gamma: float,
                        r_return: float = 0.0, r_carry: float = 0.0) -> "Loop":
-        """Standard conveyor: drive anywhere at sigma_d in [0, 2), take-up on the return
-        strand at sigma_t in (0, 1), carry/return wave-speed ratio gamma = c_r / c_c."""
+        """Standard conveyor: drive anywhere at sigma_d in [0, 2), take-up anywhere at
+        sigma_t in [0, 2) other than the drive, carry/return wave-speed ratio
+        gamma = c_r / c_c. The take-up normally sits on the return strand (0 < sigma_t < 1);
+        sigma_t = 1 is a take-up at the tail pulley, sigma_t = 0 at the head pulley (with the
+        drive elsewhere) and 1 < sigma_t < 2 a take-up on the carry strand, as after a tail
+        drive (Nordell 1997, ZISCO). The model is the same in all cases: the take-up splits
+        the loop wherever it is."""
         sigma_d = float(sigma_d) % 2.0
-        if not (0.0 < sigma_t < 1.0):
-            raise ValueError("the take-up must lie on the return strand: 0 < sigma_t < 1")
+        if not (0.0 <= sigma_t < 2.0):
+            raise ValueError("the take-up position must satisfy 0 <= sigma_t < 2")
         if abs(sigma_d - sigma_t) < _TOL:
             raise ValueError("drive and take-up cannot coincide")
         to_x = lambda sig: (sig - sigma_d) % 2.0

@@ -90,7 +90,7 @@ class Conveyor:
     mu_r: float
     mu_c: float
     drive_position: float          # sigma_d (m)
-    takeup_position: float         # sigma_t (m), on the return strand
+    takeup_position: float         # sigma_t (m), usually on the return strand
     takeup: GravityTakeUp
     m_r: float | None = None
     m_c: float | None = None
