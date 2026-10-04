@@ -11,7 +11,7 @@ damping. The derivation is in the "Model" section of the manuscript (`model.tex`
 | Module | Content |
 |---|---|
 | `loop.py` | Loop geometry: segment chains upstream/downstream of the take-up; quasi-static fields `Q(x) = int_xi^x q` |
-| `transfer.py` | Transfer matrices `S`, `J`; characteristic functions (prescribed velocity, torque-controlled drive); Pruefer angle |
+| `transfer.py` | Transfer matrices `S`, `J`; characteristic functions (prescribed velocity; drive without speed control, with mass and optional slip dashpot); wave transmission through the take-up; Pruefer angle |
 | `eigen.py` | Natural frequencies by root isolation; mass-normalised modes with exact integrals; participation factors |
 | `forcing.py` | Start-up profiles (sine, triangular, parabolic) and resistance onset (`velocity`, `step`, `none`) as piecewise exosystems |
 | `response.py` | Exact modal integration (matrix exponential); tension with the mode-acceleration correction; take-up motion |
@@ -43,6 +43,11 @@ damping. The derivation is in the "Model" section of the manuscript (`model.tex`
 elements, ~1e-6 relative difference in the whole tension field at N = 1000. Beyond that a
 round-off floor of ~1e-6 appears (the lumped model integrates absolute displacements of
 hundreds of metres); it has no practical relevance.
+
+`validation/harrison_case.py` analyses the Harrison (1983) measurements (phase 3.4):
+sensitivity of the slow take-up period to the take-up position, line density, wave-speed
+ratio and drive model, and the features of the record that the linear model does not
+reproduce (`validation/figures/harrison_case.pdf`).
 
 ## Scaling
 

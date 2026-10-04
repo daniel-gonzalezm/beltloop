@@ -16,7 +16,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
-from scipy.optimize import brentq
+from scipy.optimize import brentq, newton
 
 from .loop import Loop
 from .transfer import AB, char_fun, char_fun_torque, prufer_angle
@@ -95,6 +95,14 @@ def natural_frequencies_torque(loop: Loop, beta: float, md: float, Om_max: float
     v = np.array([f(o) for o in g])
     idx = np.nonzero(v[:-1] * v[1:] < 0)[0]
     return np.array([brentq(f, g[i], g[i + 1], xtol=_XTOL) for i in idx])
+
+
+def damped_drive_root(loop: Loop, beta: float, md: float, cd: float, guess: complex) -> complex:
+    """Complex natural frequency (Om = Re + i Im, Im > 0 for decay) for a drive with mass
+    md and slip dashpot cd (see transfer.char_fun_torque), by Newton from a guess, e.g.
+    the prescribed-velocity root (the limit cd -> infinity). Limit-of-validity tool."""
+    f = lambda o: char_fun_torque(loop, o, beta, md, cd)
+    return complex(newton(f, complex(guess), tol=1e-13, maxiter=200))
 
 
 # ---------------------------------------------------------------------------- modes
