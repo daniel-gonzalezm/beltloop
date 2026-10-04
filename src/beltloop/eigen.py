@@ -16,6 +16,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
+from scipy.linalg import eigh
 from scipy.optimize import brentq, newton
 
 from .loop import Loop
@@ -270,3 +271,78 @@ def takeup_mass_approx(loop: Loop, beta: float, n: int) -> np.ndarray:
         else:
             out[k] = np.sqrt(u[1] if p > q else u[0])
     return out
+
+
+# ------------------------------------------------------------- modal participation
+def strand_participation(segments, n: int) -> tuple[np.ndarray, np.ndarray]:
+    """Fixed-free modes of a chain and their effective masses for the inertial load.
+
+    Returns the first n frequencies Om_j and m_eff_j = (int mu_hat phi_j dx)^2 /
+    int mu_hat phi_j^2 dx. In the limit beta -> 0 the loop modes are the fixed-free modes
+    of the two strands (the take-up is a free end), so these are the loop's effective
+    masses for a unit drive acceleration, strand by strand; over both strands they add up
+    to the belt mass (1 + gamma**2 for the standard loop). A uniform strand of length l
+    and density mu_hat has m_eff_j = 8 mu_hat l / ((2j - 1)^2 pi^2).
+    """
+    Om, mt, G = _strand_end_data(segments, n)
+    return Om, G ** 2 / mt
+
+
+def _strand_end_data(segments, n: int):
+    """Om_j, m_tilde_j and G_j = int mu_hat phi_j dx for modes scaled to phi_j(end) = 1."""
+    segments = tuple(segments)
+    Om = fixed_free_roots(segments, n)
+    mt = np.empty(n); G = np.empty(n)
+    for j, o in enumerate(Om):
+        w, dw, g, m = 0.0, 1.0, 0.0, 0.0
+        for seg in segments:
+            I1, I2, _, w, dw = _segment_integrals(w, dw, seg.length, seg.g * o)
+            g += seg.mu * I1
+            m += seg.mu * I2
+        mt[j] = m / w ** 2
+        G[j] = g / w
+    return Om, mt, G
+
+
+def takeup_mass_modes(loop: Loop, beta: float, n: int) -> tuple[np.ndarray, np.ndarray]:
+    """Small-beta approximation of the first n natural frequencies and effective masses.
+
+    Two-pole reduced model (same pairing as :func:`takeup_mass_approx`, which gives the same
+    frequencies): the root near pole Om_p of one strand is described by that fixed-free mode
+    and the nearest fixed-free mode of the other strand, each scaled to unit amplitude at the
+    take-up (coordinates q_up, q_down, modal masses m_tilde, inertial loads G = int mu_hat phi).
+    The take-up moves y = (q_up - q_down)/2 and adds a kinetic energy beta y'^2 / 2, so
+        M = diag(m_tilde) + (beta/4) [[1, -1], [-1, 1]],   K = diag(m_tilde Om_p^2),
+    and the effective mass of the mode v (v^T M v = 1) is (v . G)^2. For an isolated pole,
+    Om^2 and m_eff both scale by 1/(1 + beta/(4 m_tilde)) (exact to first order for Om^2; for
+    m_eff the coupling with other modes of the same strand adds about a tenth of the change). Near coincident poles the take-up
+    exchanges participation between the pair (their sum is conserved); at an exact
+    coincidence one mode keeps the take-up still and the other is shifted (uniform loop with
+    the take-up at the tail: Li and Pang's root, Om tan Om = 2/beta, has zero participation).
+    Mode 1: within 3.5e-3 of the belt mass for beta <= 0.1. Higher modes miss the coupling
+    between modes of the same strand (errors up to ~0.05 of the belt mass at beta = 0.1 near
+    gamma = 1).
+    """
+    if beta < 0:
+        raise ValueError("beta must be non-negative")
+    pa, ma, ga = _strand_end_data(loop.upstream, n)
+    pb, mb, gb = _strand_end_data(loop.downstream[::-1], n)
+    P = np.concatenate((pa, pb)); Mt = np.concatenate((ma, mb)); G = np.concatenate((ga, gb))
+    side = np.r_[np.zeros(n), np.ones(n)]
+    order = np.argsort(P, kind="stable")[:n]
+    Om = np.empty(n); me = np.empty(n)
+    for k, i in enumerate(order):
+        other = np.flatnonzero(side != side[i])
+        j = other[np.argmin(np.abs(P[other] - P[i]))]
+        iu, idn = (i, j) if side[i] == 0 else (j, i)
+        mass = np.diag([Mt[iu], Mt[idn]]) + 0.25 * beta * np.array([[1.0, -1.0], [-1.0, 1.0]])
+        stiff = np.diag([Mt[iu] * P[iu] ** 2, Mt[idn] * P[idn] ** 2])
+        u, V = eigh(stiff, mass)
+        if np.isclose(P[i], P[j], rtol=1e-12, atol=0.0):
+            first = k == 0 or not np.isclose(P[order[k - 1]], P[i], rtol=1e-12, atol=0.0)
+            s = 0 if first else 1
+        else:
+            s = 1 if P[i] > P[j] else 0
+        Om[k] = np.sqrt(u[s])
+        me[k] = float(V[:, s] @ np.array([G[iu], G[idn]])) ** 2
+    return Om, me
