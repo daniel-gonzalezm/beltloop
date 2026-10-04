@@ -13,7 +13,7 @@ damping. The derivation is in the "Model" section of the manuscript (`model.tex`
 | `loop.py` | Loop geometry: segment chains upstream/downstream of the take-up; quasi-static fields `Q(x) = int_xi^x q` |
 | `transfer.py` | Transfer matrices `S`, `J`; characteristic functions (prescribed velocity; drive without speed control, with mass and optional slip dashpot); wave transmission through the take-up; Pruefer angle |
 | `eigen.py` | Natural frequencies by root isolation; mass-normalised modes with exact integrals; participation factors |
-| `forcing.py` | Start-up profiles (sine, triangular, parabolic) and resistance onset (`velocity`, `step`, `none`) as piecewise exosystems |
+| `forcing.py` | Start-up profiles (sine, triangular, parabolic; `PiecewiseProfile` for piecewise-polynomial accelerations: linear with speed offset, linear with rest period) and resistance onset (`velocity`, `step`, `none`) as piecewise exosystems |
 | `response.py` | Exact modal integration (matrix exponential); tension with the mode-acceleration correction; take-up motion |
 | `conveyor.py` | SI layer: take-up reeving, static tension at rest, running tension, start-up in SI units, validity checks |
 | `lumped.py` | Independent lumped-mass model for validation: absolute displacements with the drive moving, gravity and counterweight as loads, static equilibrium by linear solve, Newmark average acceleration |
@@ -49,6 +49,11 @@ sensitivity of the slow take-up period to the take-up position, line density, wa
 ratio and drive model, and the features of the record that the linear model does not
 reproduce (`validation/figures/harrison_case.pdf`).
 
+`validation/lodewijks_case.py` compares with the velocity-controlled starts of Lodewijks
+(1996, Ch. 8; phase 3.5): Table 8.7, Figs. 8.41-8.42 (digitised, `validation/data/`) and the
+start-up time sweep of Figs. 8.44-8.47 (`validation/figures/lodewijks_case.pdf`). It also
+contains, as a diagnostic, the sliding-drive variant (drive pulley on the take-up carriage).
+
 ## Scaling
 
 `x = s/L`, `tau = c_r t/L`, `Om = omega L/c_r`, `gamma = c_r/c_c`, `beta = M/(mu_r L)`,
@@ -59,7 +64,7 @@ reproduce (`validation/figures/harrison_case.pdf`).
 
 ```bash
 pip install -e ".[dev,plots]"
-pytest -q                      # ~1.5 min
+pytest -q                      # ~1.5 min (121 tests)
 python examples/startup_demo.py
 python validation/fig_lumped_validation.py   # ~1 min
 ```

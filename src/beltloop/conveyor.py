@@ -167,6 +167,25 @@ class Conveyor:
         resp = startup_response(basis, StartProfile(kind, tau_a, onset), self.zeta_hat, tau)
         return DimensionalStartup(self, resp, a_m)
 
+    def start_profile(self, profile, a_m: float, t_end: float, n_modes: int = 60,
+                      n_t: int = 2001) -> "DimensionalStartup":
+        """Start-up with any dimensionless profile (e.g. PiecewiseProfile) whose
+        accelerations are scaled by a_m (m/s^2); t_end in s."""
+        basis = modal_basis(self.loop(a_m), self.beta, n_modes)
+        tau = np.linspace(0.0, self.c_r * t_end / self.L, n_t)
+        resp = startup_response(basis, profile, self.zeta_hat, tau)
+        return DimensionalStartup(self, resp, a_m)
+
+    def profile_kinematics(self, profile, a_m: float):
+        """SI drive kinematics t -> (a, v, d) of a dimensionless profile (for the lumped model)."""
+        tsc, vsc, dsc = self.L / self.c_r, a_m * self.L / self.c_r, a_m * self.L ** 2 / self.c_r ** 2
+
+        def kin(t):
+            tau = np.asarray(t, dtype=float) / tsc
+            v = profile.velocity(tau) * profile.a_integral
+            return (float(a_m * profile.a(tau)), float(vsc * v), float(dsc * profile.displacement(tau)))
+        return kin
+
 
 @dataclass
 class DimensionalStartup:

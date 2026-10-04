@@ -163,7 +163,11 @@ class LumpedModel:
         return np.sqrt(np.sort(w2))
 
     def start(self, V: float, t_a: float, kind: str = "sine", onset: str = "velocity",
-              dt: float = 0.01, t_end: float = 100.0, store_every: int = 10) -> LumpedResult:
+              dt: float = 0.01, t_end: float = 100.0, store_every: int = 10,
+              kinematics=None) -> LumpedResult:
+        """Start-up from the static state. kinematics(t) -> (a, v, d) in SI overrides the
+        profile given by kind and t_a (V is then the final speed, used for phi = v/V)."""
+        kin = kinematics if kinematics is not None else (lambda t: drive_kinematics(kind, V, t_a, t))
         f, p = self.free, self.pres
         K, C, M = self.K, self.C, self.M
         Kff, Cff, Mff = K[f][:, f], C[f][:, f], M[f][:, f]
@@ -174,14 +178,14 @@ class LumpedModel:
 
         def phi(t):
             if onset == "velocity":
-                return drive_kinematics(kind, V, t_a, t)[1] / V
+                return kin(t)[1] / V
             if onset == "step":
                 return 1.0
             return 0.0
 
         u = self.static_state(); v = np.zeros_like(u); acc = np.zeros_like(u)
         u0 = u.copy()
-        a0, v0, d0 = drive_kinematics(kind, V, t_a, 0.0)
+        a0, v0, d0 = kin(0.0)
         u[p] = d0; v[p] = v0; acc[p] = a0
         rhs0 = self.fg + self.fr * phi(0.0) - K @ u - C @ v - M[:, p] @ acc[p]
         acc[f] = splu(Mff.tocsc()).solve(rhs0[f])
@@ -192,7 +196,7 @@ class LumpedModel:
             t = n * dt
             ut = u + dt * v + dt ** 2 * (0.5 - bN) * acc
             vt = v + dt * (1 - gN) * acc
-            ap, vp, up = drive_kinematics(kind, V, t_a, t)
+            ap, vp, up = kin(t)
             F = self.fg + self.fr * phi(t)
             rhs = (F[f] - Kfp @ [up, up] - Cfp @ [vp, vp] - Mfp @ [ap, ap]
                    + Mff @ ut[f] / (bN * dt ** 2) + Cff @ (gN / (bN * dt) * ut[f] - vt[f]))

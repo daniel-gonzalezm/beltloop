@@ -4,7 +4,7 @@ start-up response)."""
 from .conveyor import Conveyor, DimensionalStartup, GravityTakeUp
 from .eigen import (ModalBasis, fixed_free_roots, modal_basis, natural_frequencies,
                     natural_frequencies_torque, poles, damped_drive_root, rayleigh_takeup_bound)
-from .forcing import PEAK_FACTOR, StartProfile
+from .forcing import PEAK_FACTOR, PiecewiseProfile, StartProfile
 from .loop import Loop, Segment
 from .response import (StartupResponse, integrate_modes, lagged_loads, residual_amplitude_sine,
                        startup_response)
