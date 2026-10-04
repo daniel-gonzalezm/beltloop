@@ -208,3 +208,65 @@ def rayleigh_takeup_bound(loop: Loop, beta: float) -> float:
         shift = 0.0 if b <= loop.xi + 1e-13 else loop.length
         bb += seg.mu * ((b - shift) ** 3 - (a - shift) ** 3) / 3.0
     return float(np.sqrt(2.0 / (beta + bb)))
+
+
+# ------------------------------------------------------------- take-up mass regime
+def strand_modes(segments, n: int) -> tuple[np.ndarray, np.ndarray]:
+    """Fixed-free modes of a chain fixed at its start and free at its end.
+
+    Returns the first n frequencies Om_j and the effective modal masses at the free end,
+    m_tilde_j = int mu_hat phi_j^2 dx / phi_j(end)^2 (the modal mass of a mode scaled to
+    unit amplitude at the free end). A uniform strand of length l and density mu_hat has
+    m_tilde = mu_hat l / 2 for every mode. The end receptance of the chain is
+        W(end)/W'(end) = sum_j 1 / (m_tilde_j (Om_j^2 - Om^2)).
+    """
+    segments = tuple(segments)
+    Om = fixed_free_roots(segments, n)
+    mt = np.empty(n)
+    for j, o in enumerate(Om):
+        w, dw, m = 0.0, 1.0, 0.0
+        for seg in segments:
+            _, I2, _, w, dw = _segment_integrals(w, dw, seg.length, seg.g * o)
+            m += seg.mu * I2
+        mt[j] = m / w ** 2
+    return Om, mt
+
+
+def takeup_mass_approx(loop: Loop, beta: float, n: int) -> np.ndarray:
+    """Small-beta approximation of the first n natural frequencies (prescribed drive).
+
+    The characteristic equation is H_A + H_B = 4/(beta Om^2), with H_A, H_B the end
+    receptances of the two strands (fixed at the drive, free at the take-up). As beta -> 0
+    each root tends to a fixed-free pole Om_p from below. Keeping the pole of the root and
+    the nearest pole of the other strand (u = Om^2, a = 1/m_tilde):
+        a/(P_a - u) + b/(P_b - u) = 4/(beta u),
+    a quadratic in u. With one pole only this is Rayleigh's quotient with the frozen
+    fixed-free shape and a mass beta/4 at the free end: Om = Om_p / sqrt(1 + beta/(4 m_tilde)).
+    The two-pole form also covers coincident poles (one root stays at Om_p, the other
+    shifts by both strands). Accurate to a few 1e-3 for beta <= 0.1 (modes 1-3, 1 <= gamma
+    <= 3); for beta ~ 1 the fundamental stays within ~3 % but higher modes do not, because
+    the take-up's own mode, Om ~ sqrt(2/beta), enters the belt spectrum.
+    """
+    if beta < 0:
+        raise ValueError("beta must be non-negative")
+    pa, ma = strand_modes(loop.upstream, n)
+    pb, mb = strand_modes(loop.downstream[::-1], n)
+    P = np.concatenate((pa, pb))
+    a_all = 1.0 / np.concatenate((ma, mb))
+    side = np.r_[np.zeros(n), np.ones(n)]
+    order = np.argsort(P, kind="stable")[:n]
+    out = np.empty(n)
+    for k, i in enumerate(order):
+        p, a = P[i] ** 2, a_all[i]
+        other = np.flatnonzero(side != side[i])
+        j = other[np.argmin(np.abs(P[other] - P[i]))]
+        q, b = P[j] ** 2, a_all[j]
+        u = np.sort(np.roots([4.0 + beta * (a + b),
+                              -(4.0 * (p + q) + beta * (a * q + b * p)),
+                              4.0 * p * q]).real)
+        if np.isclose(p, q, rtol=1e-12, atol=0.0):
+            first = k == 0 or not np.isclose(P[order[k - 1]], P[i], rtol=1e-12, atol=0.0)
+            out[k] = np.sqrt(u[0] if first else u[1])
+        else:
+            out[k] = np.sqrt(u[1] if p > q else u[0])
+    return out
