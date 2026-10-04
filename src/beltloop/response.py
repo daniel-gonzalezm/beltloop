@@ -173,6 +173,19 @@ class StartupResponse:
         static = 0.5 * (af * lp.quasi_static_integral("mu") + phif * lp.quasi_static_integral("r"))
         return static + b.Y @ q
 
+    def takeup_velocity(self) -> np.ndarray:
+        """y_hat'(tau) (units of a_m L / c_r), exact derivative of takeup_displacement."""
+        lp, b = self.basis.loop, self.basis
+        _, dq = self._residual()
+        af, phif = self._lagged()
+        if self.zeta_hat == 0:
+            daf, dphif = self.profile.da(self.tau), self.profile.dphi(self.tau)
+        else:
+            c = 1.0 / (2.0 * self.zeta_hat)
+            daf, dphif = c * (self.a - af), c * (self.phi - phif)
+        static = 0.5 * (daf * lp.quasi_static_integral("mu") + dphif * lp.quasi_static_integral("r"))
+        return static + b.Y @ dq
+
     def takeup_acceleration(self) -> np.ndarray:
         """y_hat''(tau) from the take-up equation beta y'' = -2 T(xi)."""
         T_xi = self.tension([self.basis.loop.xi])[0]

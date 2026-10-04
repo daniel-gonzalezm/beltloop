@@ -256,9 +256,14 @@ class DimensionalStartup:
         """Belt length taken into the take-up loop since rest, m (= n * carriage travel)."""
         return self.conveyor.takeup.strands * self.takeup_displacement()
 
-    def checks(self, n_s: int = 801) -> dict:
-        """Validity of the linear model: positive total tension along the loop (including
-        both faces of the drive) and carriage acceleration below n T_t / M."""
+    def checks(self, n_s: int = 801, T_floor: float = 0.0, euler: float | None = None) -> dict:
+        """Validity of the linear model: total tension along the loop (including both faces of
+        the drive) above T_floor (0 by default; a sag threshold m' g l / (8 K_s) for a
+        practical criterion), carriage acceleration below n T_t / M (belt taut at the
+        take-up) and, if the drive is reeved with i > 1, counterweight acceleration below g
+        (rope taut). With euler = exp(mu theta), also the grip of the drive: the largest
+        ratio T(entry) / T(exit) during the run must not exceed euler (prescribed velocity
+        presumes no slip)."""
         cv = self.conveyor
         s = np.unique(np.r_[np.linspace(0, 2 * cv.L, n_s), cv.xi * cv.L])
         T = self.total_tension(s)
@@ -266,7 +271,7 @@ class DimensionalStartup:
         ydd = self.takeup_acceleration()
         k = int(np.argmax(ydd))
         lim = cv.takeup.max_acceleration
-        return {
+        out = {
             "min_total_tension_N": float(T[i, j]),
             "min_tension_s_m": float(s[i]),
             "min_tension_t_s": float(self.t[j]),
@@ -277,4 +282,13 @@ class DimensionalStartup:
             "takeup_follows": bool(ydd[k] < lim),
             "takeup_travel_m": (float(self.takeup_displacement().min()),
                                 float(self.takeup_displacement().max())),
+            "tension_above_floor": bool(T[i, j] > T_floor),
+            "rope_taut": bool(cv.takeup.i * ydd[k] < cv.takeup.g),
         }
+        if euler is not None:
+            T_in, T_out = T[-1], T[0]                  # s = 2L (entry), s = 0 (exit)
+            ratio = np.where(T_out > 0, T_in / np.where(T_out > 0, T_out, 1.0), np.inf)
+            k2 = int(np.argmax(ratio))
+            out.update({"max_grip_ratio": float(ratio[k2]), "max_grip_ratio_t_s": float(self.t[k2]),
+                        "grip": bool(ratio[k2] <= euler)})
+        return out
