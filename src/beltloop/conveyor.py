@@ -22,32 +22,56 @@ from .response import StartupResponse, startup_response
 class GravityTakeUp:
     """Counterweight M_w, pulley + carriage M_c, reeving ratio i (counterweight travel per
     unit carriage travel; i = 1 for a directly hung counterweight), kappa = sine of the
-    carriage inclination (1 vertical, 0 horizontal)."""
+    carriage inclination (1 vertical, 0 horizontal), and n = strands: number of belt
+    strands that carry the carriage (2 for a single loop around one take-up pulley, 4 for
+    a double loop as in Harrison (1985), Fig. 2a).
+
+    With n strands the belt kinematics is n:1: a carriage travel y changes the belt length
+    stored in the loop by n y, and the carriage equation is M y'' = force - n T. The
+    dimensionless model is written for n = 2; any n maps onto it exactly with the
+    belt-side mass M_belt = 4 M / n**2 and the belt-side travel (n/2) y (the kinetic
+    energy M y'^2 / 2 is preserved)."""
 
     M_w: float
     M_c: float = 0.0
     i: float = 1.0
     kappa: float = 1.0
     g: float = G_STD
+    strands: int = 2
+
+    def __post_init__(self):
+        if int(self.strands) != self.strands or self.strands < 2 or self.strands % 2:
+            raise ValueError("strands must be an even integer >= 2")
 
     @property
     def force(self) -> float:
-        """Static force on the take-up pulley, 2 T_t = g (i M_w + kappa M_c)."""
+        """Static force on the carriage, n T_t = g (i M_w + kappa M_c)."""
         return self.g * (self.i * self.M_w + self.kappa * self.M_c)
 
     @property
     def T_t(self) -> float:
-        return 0.5 * self.force
+        """Static belt tension at the take-up, force / n."""
+        return self.force / self.strands
 
     @property
     def M(self) -> float:
-        """Effective mass referred to the pulley displacement, M = M_c + i^2 M_w."""
+        """Effective mass referred to the carriage displacement, M = M_c + i^2 M_w."""
         return self.M_c + self.i ** 2 * self.M_w
 
     @property
+    def M_belt(self) -> float:
+        """Mass seen by the belt in the 2:1 formulation, 4 M / n^2 (= M for n = 2)."""
+        return 4.0 * self.M / self.strands ** 2
+
+    @property
+    def travel_factor(self) -> float:
+        """Carriage travel per unit belt-side travel of the 2:1 formulation, 2 / n."""
+        return 2.0 / self.strands
+
+    @property
     def max_acceleration(self) -> float:
-        """Largest pulley acceleration (lengthening the loop) with positive belt tension at
-        the take-up: 2 T_t / M (= g for a directly hung vertical counterweight)."""
+        """Largest carriage acceleration (lengthening the loop) with positive belt tension
+        at the take-up: n T_t / M (= g for a directly hung vertical counterweight)."""
         return self.force / self.M
 
 
@@ -104,7 +128,8 @@ class Conveyor:
 
     @property
     def beta(self) -> float:
-        return self.takeup.M / (self.mu_r * self.L)
+        """Belt-side take-up mass ratio, 4 M / (n^2 mu_r L) for n strands."""
+        return self.takeup.M_belt / (self.mu_r * self.L)
 
     @property
     def zeta_hat(self) -> float:
@@ -219,14 +244,21 @@ class DimensionalStartup:
         return self.conveyor.static_tension(s)[:, None] + self.dynamic_tension(s)
 
     def takeup_displacement(self) -> np.ndarray:
-        return self.y_scale * self.response.takeup_displacement()
+        """Carriage travel from rest, m, positive when the loop lengthens."""
+        f = self.conveyor.takeup.travel_factor
+        return f * self.y_scale * self.response.takeup_displacement()
 
     def takeup_acceleration(self) -> np.ndarray:
-        return self.a_m * self.response.takeup_acceleration()
+        """Carriage acceleration, m/s^2."""
+        return self.conveyor.takeup.travel_factor * self.a_m * self.response.takeup_acceleration()
+
+    def loop_storage(self) -> np.ndarray:
+        """Belt length taken into the take-up loop since rest, m (= n * carriage travel)."""
+        return self.conveyor.takeup.strands * self.takeup_displacement()
 
     def checks(self, n_s: int = 801) -> dict:
         """Validity of the linear model: positive total tension along the loop (including
-        both faces of the drive) and take-up acceleration below 2 T_t / M."""
+        both faces of the drive) and carriage acceleration below n T_t / M."""
         cv = self.conveyor
         s = np.unique(np.r_[np.linspace(0, 2 * cv.L, n_s), cv.xi * cv.L])
         T = self.total_tension(s)

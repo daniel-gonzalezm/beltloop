@@ -3,7 +3,8 @@
 Longitudinal dynamics of a belt-conveyor loop with a gravity take-up at an arbitrary
 position on the return strand and the drive anywhere on the loop. Continuous 1-D model
 with two wave speeds (return and carry strands), take-up modelled as a moving pulley with
-mass (2:1 kinematics), prescribed drive velocity and stiffness-proportional Kelvin-Voigt
+mass (2:1 kinematics for a single loop; a carriage carried by n belt strands maps onto it
+exactly with the belt-side mass 4M/n^2), prescribed drive velocity and stiffness-proportional Kelvin-Voigt
 damping. The derivation is in the "Model" section of the manuscript (`model.tex`).
 
 ## Layout
@@ -15,7 +16,7 @@ damping. The derivation is in the "Model" section of the manuscript (`model.tex`
 | `eigen.py` | Natural frequencies by root isolation; mass-normalised modes with exact integrals; participation factors |
 | `forcing.py` | Start-up profiles (sine, triangular, parabolic; `PiecewiseProfile` for piecewise-polynomial accelerations: linear with speed offset, linear with rest period) and resistance onset (`velocity`, `step`, `none`) as piecewise exosystems |
 | `response.py` | Exact modal integration (matrix exponential); tension with the mode-acceleration correction; take-up motion |
-| `conveyor.py` | SI layer: take-up reeving, static tension at rest, running tension, start-up in SI units, validity checks |
+| `conveyor.py` | SI layer: take-up reeving and number of belt strands, static tension at rest, running tension, start-up in SI units, validity checks |
 | `lumped.py` | Independent lumped-mass model for validation: absolute displacements with the drive moving, gravity and counterweight as loads, static equilibrium by linear solve, Newmark average acceleration |
 
 ## Numerical method (summary)
@@ -64,7 +65,7 @@ contains, as a diagnostic, the sliding-drive variant (drive pulley on the take-u
 
 ```bash
 pip install -e ".[dev,plots]"
-pytest -q                      # ~1.5 min (121 tests)
+pytest -q                      # ~1.5 min (143 tests)
 python examples/startup_demo.py
 python validation/fig_lumped_validation.py   # ~1 min
 ```

@@ -3,6 +3,10 @@
 State vector z = (W, W'), where W' is the dimensionless dynamic tension of a mode.
 A homogeneous segment of length l and wavenumber kappa maps z by S(l, kappa); the
 take-up pulley maps it by J (tension continuous, displacement jump -4 W'/(beta Om^2)).
+
+The dimensionless model is written for a single loop (2:1 kinematics). A take-up whose
+carriage is carried by n belt strands maps onto it exactly with the belt-side mass ratio
+beta = 4 M / (n^2 mu_r L) and the belt-side travel (n/2) y (see conveyor.GravityTakeUp).
 """
 from __future__ import annotations
 
@@ -80,5 +84,6 @@ def takeup_transmission(beta: float, Om) -> complex:
     an unbounded uniform belt (return-strand wavenumber Om), from the matrix J:
         t = 1 / (1 - 2i/(beta Om)),   |t|^2 + |1 - t|^2 = 1.
     |t| -> 0 for beta Om -> 0 (free end: the take-up reflects), |t| -> 1 for
-    beta Om -> infinity (transparent pulley). In SI, beta Om = M omega/(mu_r c_r) = M omega/Z."""
+    beta Om -> infinity (transparent pulley). In SI, beta Om = M omega/(mu_r c_r) = M omega/Z
+    for a single loop, 4 M omega/(n^2 Z) with n strands."""
     return 1.0 / (1.0 - 2j / (beta * Om))

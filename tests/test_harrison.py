@@ -69,3 +69,18 @@ def test_harrison_phase34_regression():
         cr = L * (1 + g) / ttr
         Om = natural_frequencies(Loop.from_positions(0.0, 0.005, g), M / (mur * L), 1)[0]
         assert 2 * np.pi * L / (cr * Om) == pytest.approx(T, abs=0.01)
+
+
+def test_harrison_phase37_double_loop_regression():
+    """Phase 3.7: double-loop take-up (n = 4, Harrison 1985 Fig. 2a) and the measured
+    gamma = 0.97 (Fig. 4a). Belt-side beta = 4M/(n^2 mu_r L) = beta/4; the slow period
+    hardly changes (it is the quarter-wave mode of the long part, nearly free at the
+    take-up)."""
+    L, M, rho, n = 5100.0, 20000.0, 79.0, 4
+    ttr = 2 * L / 1450.0
+    ref = {1.0: 28.11, 0.97: 28.38}
+    for g, T in ref.items():
+        mur = 2 * rho / (1 + g * g)
+        cr = L * (1 + g) / ttr
+        Om = natural_frequencies(Loop.from_positions(0.0, 0.005, g), 4 * M / (n ** 2 * mur * L), 1)[0]
+        assert 2 * np.pi * L / (cr * Om) == pytest.approx(T, abs=0.01)

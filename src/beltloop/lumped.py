@@ -9,10 +9,12 @@ parameters and the elevation profile); every modelling step is redone differentl
 * gravity (belt and material weight, counterweight) is applied as a constant load and the
   run starts from the static equilibrium computed by a linear solve; nothing assumes that
   gravity cancels;
-* the take-up is an extra degree of freedom y with mass M, loaded by the counterweight
-  force 2 T_t; the belt element that wraps the pulley has elongation u_R - u_L + 2 y
-  (the 2:1 kinematics), so the rigid motion U does not move the take-up only if the
-  formulation is right;
+* the take-up is an extra degree of freedom y (carriage travel) with mass M, loaded by
+  the counterweight force n T_t; the belt element that wraps the take-up has elongation
+  u_R - u_L + n y (n:1 kinematics, n = number of strands carrying the carriage, 2 for a
+  single loop), so the rigid motion U does not move the take-up only if the formulation is
+  right. The strand count is built in here directly, not through the belt-side mass
+  4 M / n^2 used by the modal solution;
 * lumped masses, linear springs, Kelvin-Voigt dashpots (C = t_v K) and the Newmark
   average-acceleration integrator (implicit, second order, no numerical damping);
 * the start-up kinematics U, V, a are re-implemented here from the thesis formulas.
@@ -61,7 +63,7 @@ class LumpedResult:
     x_mid: np.ndarray          # element midpoints, m, loop coordinate
     T_total: np.ndarray        # element tension (elastic + viscous), N, (n_elem, n_t)
     T_static: np.ndarray       # static element tension at rest, N, (n_elem,)
-    y: np.ndarray              # take-up displacement from rest, m, (n_t,)
+    y: np.ndarray              # carriage travel from rest, m, (n_t,)
 
     @property
     def T_dynamic(self) -> np.ndarray:
@@ -74,6 +76,7 @@ class LumpedModel:
 
     def __init__(self, conveyor: Conveyor, n_elements: int = 1000):
         cv = self.cv = conveyor
+        self.n = int(cv.takeup.strands)
         L2 = 2 * cv.L
         to_s = lambda sig: (sig - cv.drive_position) % L2
         s_t = to_s(cv.takeup_position)
@@ -103,7 +106,7 @@ class LumpedModel:
         take-up jump on the element that starts at the take-up node."""
         T = [(e, 1.0)], [(e + 1, 1.0)]
         if e == self.i_tu:
-            T = [(e, 1.0), (self.N + 1, -2.0)], [(e + 1, 1.0)]
+            T = [(e, 1.0), (self.N + 1, -float(self.n))], [(e + 1, 1.0)]
         return T
 
     def _assemble(self):
@@ -132,7 +135,7 @@ class LumpedModel:
                     fg[di] += -0.5 * self.m[e] * cv.g * self.dh[e] * ci
                     fr[di] += -0.5 * self.r[e] * self.h[e] * ci
         M[N + 1, N + 1] += cv.takeup.M
-        fg[N + 1] += cv.takeup.force                     # counterweight: 2 T_t on the pulley
+        fg[N + 1] += cv.takeup.force                     # counterweight: n T_t on the carriage
         self.K, self.M = K.tocsr(), M.tocsr()
         self.C = cv.t_v * self.K
         self.fg, self.fr = fg, fr
@@ -144,8 +147,8 @@ class LumpedModel:
         N = self.N
         du = u[1:N + 1] - u[0:N]
         dv = v[1:N + 1] - v[0:N]
-        du[self.i_tu] += 2 * u[N + 1]
-        dv[self.i_tu] += 2 * v[N + 1]
+        du[self.i_tu] += self.n * u[N + 1]
+        dv[self.i_tu] += self.n * v[N + 1]
         return self.cv.EA * (du + self.cv.t_v * dv) / self.h[:, None]
 
     def static_state(self) -> np.ndarray:
