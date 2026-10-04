@@ -29,12 +29,22 @@ TOL = 0.05
 # kg/m, so mu_r = 66.9 kg/m. n = 2 is supported by their Fig. 4 (about 200 kN on the slack side
 # versus 42.8 t * g / 2 = 210 kN; the "20 kN" of their text is read as a typo). Varying the idler
 # estimate by +-50 % moves gamma within 1.94-2.01 and beta within 0.077-0.093.
+#
+# KGHM variant 1 (Suchorab-Matuszewska, Kawalec and Krol 2025, supplementary QNK-TT report
+# "variant1.pdf"): 3000 m, single head drive 4 x 500 kW, GTP-St-4000 belt of 54 kg/m2 x 1.2 m
+# = 64.8 kg/m, 2000 t/h at 3 m/s (185.2 kg/m), carrying idlers 3 x 9.10 kg every 0.83 m
+# (32.9 kg/m), V return idlers 2 x 12.30 kg every 2.5 m (9.8 kg/m; two rolls per set assumed).
+# Gravity take-up at node 3 with belt tension S(3) = 140 kN; node 3 is at the foot of the 300 m,
+# 7 deg return section, i.e. 300 m from the head (xi = 0.1 in their model). Direct counterweight
+# with n = 2 assumed (not stated): M = 2 T_t / g = 28.6 t. One return roll per set instead of two
+# gives gamma = 2.01 and beta = 0.137.
 CASES = [
     ("Harrison 1983/85 (79 kg/m)", 5100, 79.0, 79.0 * 0.97 ** 2, 20e3, 4, [0.005], "gamma = 0.97 measured"),
     ("Harrison 1983/85 (39 kg/m)", 5100, 39.0, 39.0 * 0.97 ** 2, 20e3, 4, [0.005], "density of the text"),
     ("Song et al. 2012", 7117, 37.8, 104.9, 4500, 2, [0.001, 0.999], "head (Fig. 1) / tail (model)"),
     ("Gao et al. 2026", 4500, 40.1, 194.3, 1000, 2, [0.001], "no idler mass given"),
     ("Li and Li 2009 (AMESim)", 7600, 66.9, 259.8, 42800, 2, [0.005], "idlers from their c = 837 m/s"),
+    ("KGHM variant 1 (Suchorab-M. 2025)", 3000, 74.6, 282.9, 2 * 140e3 / G_STD, 2, [0.1], "QNK-TT report; n assumed"),
     ("Lodewijks 1996, ch. 8", 1000, 21.23, 161.2, 42.66e3 / G_STD, 2, [0.001], "M from the take-up force"),
     ("Belt A (Pascual et al. 2005)", 2561, 138.0, 472.0, 45.5e3, 2, [0.999], "n not stated"),
     ("Belt C (Wheatley and Rubel 2021)", 274.6, 31.09, 266.2, 7550, 2, [0.05, 0.5, 0.999], "take-up position unknown"),
