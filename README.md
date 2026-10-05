@@ -1,29 +1,56 @@
 # beltloop
 
 Longitudinal dynamics of a belt-conveyor loop with a gravity take-up at an arbitrary
-position on the return strand and the drive anywhere on the loop. Continuous 1-D model
-with two wave speeds (return and carry strands), take-up modelled as a moving pulley with
-mass (2:1 kinematics for a single loop; a carriage carried by n belt strands maps onto it
-exactly with the belt-side mass 4M/n^2), prescribed drive velocity and stiffness-proportional Kelvin-Voigt
+position and the drive anywhere on the loop. Continuous 1-D model with two wave speeds
+(return and carry strands), take-up modelled as a moving pulley with mass (2:1 kinematics
+for a single loop; a carriage carried by n belt strands maps onto it exactly with the
+belt-side mass 4M/n^2), prescribed drive velocity and stiffness-proportional Kelvin-Voigt
 damping. The derivation is in the "Model" section of the manuscript (`model.tex`).
+
+Code for the paper *Longitudinal modal analysis of long belt conveyors with a gravity take-up
+at an arbitrary position* (in preparation; title provisional).
+
+## Main results reproduced here
+
+* **Closed-form characteristic equation** `beta Om^2 (BA)_12 - 4 A_22 B_11 = 0` for the whole
+  loop, with transfer matrices `A` (drive exit to take-up) and `B` (take-up to drive entry).
+* **The take-up as a free end.** As `beta -> 0` the loop splits into two strands, fixed at the
+  drive and free at the take-up; every loop mode lies between consecutive modes of the two
+  strands. The take-up mass enters as a tip-mass correction given in closed form
+  (`takeup_mass_approx`, exact threshold `takeup_mass_threshold`).
+* **Fundamental mode** belongs to the strand that contains the carry strand (for `gamma >= 1`),
+  with closed-form bounds on its period and participation (`strand_participation`).
+* **Start-up metrics** follow a universal curve of the fixed-free strand: peak tension at the
+  drive entry, minimum at the drive exit and take-up travel (`metrics.py`).
+* **Validity checks** with closed-form estimates: belt slack (drive exit during the start and
+  post-start rebound), take-up following the belt, and no slip on the drive pulley.
 
 ## Layout
 
 | Module | Content |
 |---|---|
-| `loop.py` | Loop geometry: segment chains upstream/downstream of the take-up; quasi-static fields `Q(x) = int_xi^x q` |
+| `loop.py` | Loop geometry from drive and take-up positions (take-up anywhere on the loop, including head and tail pulleys); segment chains upstream/downstream of the take-up; quasi-static fields `Q(x) = int_xi^x q` |
 | `transfer.py` | Transfer matrices `S`, `J`; characteristic functions (prescribed velocity; drive without speed control, with mass and optional slip dashpot); wave transmission through the take-up; Pruefer angle |
-| `eigen.py` | Natural frequencies by root isolation; mass-normalised modes with exact integrals; participation factors |
-| `forcing.py` | Start-up profiles (sine, triangular, parabolic; `PiecewiseProfile` for piecewise-polynomial accelerations: linear with speed offset, linear with rest period) and resistance onset (`velocity`, `step`, `none`) as piecewise exosystems |
-| `response.py` | Exact modal integration (matrix exponential); tension with the mode-acceleration correction; take-up motion |
-| `conveyor.py` | SI layer: take-up reeving and number of belt strands, static tension at rest, running tension, start-up in SI units, validity checks |
-| `lumped.py` | Independent lumped-mass model for validation: absolute displacements with the drive moving, gravity and counterweight as loads, static equilibrium by linear solve, Newmark average acceleration |
+| `eigen.py` | Natural frequencies by root interlacing; mass-normalised modes with exact integrals; participation factors; fixed-free strand modes; take-up mass correction (one- and two-pole) and exact `beta` threshold per strand |
+| `forcing.py` | Start-up profiles (sine, triangular, parabolic; `PiecewiseProfile` for piecewise-polynomial accelerations) and resistance onset (`velocity`, `step`, `none`) as piecewise exosystems |
+| `response.py` | Exact modal integration (matrix exponential); tension with the lagged quasi-static split; take-up motion and velocity |
+| `metrics.py` | Universal fixed-free strand curves, start-up metrics, start with an initial crawl plateau, take-up kinematics, tension requirements (slack, rebound, drive grip) |
+| `conveyor.py` | SI layer: gravity take-up with reeving and n belt strands, static tension with an elevation profile, running tension, start-up in SI units, validity checks |
+| `lumped.py` | Independent lumped-mass model for validation: absolute displacements with the drive moving, gravity and counterweight as loads, Newmark average acceleration |
+
+Outside the package:
+
+| Folder | Content |
+|---|---|
+| `validation/` | Lumped-mass validation figure; Harrison (1983, 1985) and Lodewijks (1996, ch. 8) case studies, with digitised data in `validation/data/` |
+| `maps/` | Parametric study. `cases.py` holds the conveyors from the literature (single source, with the provenance of every input and the conventions used to derive the line densities and the take-up mass ratio). `paper_figures.py` regenerates the figures of the paper from stored data in `maps/data/` (`--recompute` to recalculate, ~5 min); the other scripts are the working figures of each step |
+| `examples/` | Minimal start-up example |
 
 ## Numerical method (summary)
 
 * **Roots.** The characteristic equation is equivalent to `A12/A22 + B12/B11 = 4/(beta Om^2)`.
   Both receptances increase with `Om` between poles, so the natural frequencies strictly
-  interlace with the merged fixed-free frequencies of the two parts (zeros of `A22` and
+  interlace with the merged fixed-free frequencies of the two strands (zeros of `A22` and
   `B11`), which are bracketed exactly with the Pruefer angle. Every root is found, including
   pairs closer than any scanning grid (small `beta`, coincident fixed-free modes).
 * **Modes.** Propagated analytically segment by segment; modal mass, participation factors
@@ -41,23 +68,17 @@ damping. The derivation is in the "Model" section of the manuscript (`model.tex`
 
 `validation/fig_lumped_validation.py` compares the modal solution with the lumped model
 (`validation/figures/lumped_validation.pdf`): second-order convergence in the number of
-elements, ~1e-6 relative difference in the whole tension field at N = 1000. Beyond that a
-round-off floor of ~1e-6 appears (the lumped model integrates absolute displacements of
-hundreds of metres); it has no practical relevance.
+elements, ~1e-6 relative difference in the whole tension field at N = 1000.
 
-`validation/harrison_case.py` analyses the Harrison (1983) measurements (phase 3.4):
-sensitivity of the slow take-up period to the take-up position, line density, wave-speed
-ratio and drive model, and the features of the record that the linear model does not
-reproduce (`validation/figures/harrison_case.pdf`).
-
-`validation/lodewijks_case.py` compares with the velocity-controlled starts of Lodewijks
-(1996, Ch. 8; phase 3.5): Table 8.7, Figs. 8.41-8.42 (digitised, `validation/data/`) and the
-start-up time sweep of Figs. 8.44-8.47 (`validation/figures/lodewijks_case.pdf`). It also
-contains, as a diagnostic, the sliding-drive variant (drive pulley on the take-up carriage).
+`validation/harrison_case.py` and `validation/lodewijks_case.py` compare with the
+measurements of Harrison (1983, 1985) and with the speed-controlled starts of Lodewijks
+(1996, ch. 8). Both are consistency checks and cross-checks, not full validations; what the
+model does and does not reproduce is printed by the scripts.
 
 ## Scaling
 
-`x = s/L`, `tau = c_r t/L`, `Om = omega L/c_r`, `gamma = c_r/c_c`, `beta = M/(mu_r L)`,
+`x = s/L` (loop coordinate from the drive exit), `tau = c_r t/L`, `Om = omega L/c_r`,
+`gamma = c_r/c_c`, `beta = M_belt/(mu_r L)` with `M_belt = 4M/n^2`, `xi = s_t/L`,
 `zeta_hat = c_r t_v/(2L)`; tensions in units of `mu_r L a_m`, displacements in
 `a_m L^2/c_r^2`, resistances in `mu_r a_m`.
 
@@ -65,13 +86,16 @@ contains, as a diagnostic, the sliding-drive variant (drive pulley on the take-u
 
 ```bash
 pip install -e ".[dev,plots]"
-pytest -q                      # ~1.5 min (143 tests)
+pytest -q                          # ~2 min (303 tests)
 python examples/startup_demo.py
-python validation/fig_lumped_validation.py   # ~1 min
+python maps/paper_figures.py       # figures of the paper from stored data
+python maps/cases.py               # table of the literature cases
 ```
 
 ```python
+import numpy as np
 from beltloop import Loop, modal_basis, StartProfile, startup_response
+
 loop = Loop.from_positions(sigma_d=0.0, sigma_t=0.05, gamma=1.6, r_return=0.3, r_carry=0.9)
 basis = modal_basis(loop, beta=0.12, n=60)
 resp = startup_response(basis, StartProfile("sine", tau_a=30.0, onset="velocity"),
@@ -83,5 +107,9 @@ T = resp.tension([0.0, 2.0])           # drive exit and entry
 
 Out of scope by design: take-up pulley inertia and friction, retarders and capstans,
 drive slip, non-homogeneous strands, sag nonlinearity at low tension. The validity checks
-(positive total tension, take-up acceleration below `2 T_t / M`) flag when the linear
-model stops applying.
+(positive total tension, take-up acceleration below `n T_t / M`, no slip on the drive pulley)
+flag when the linear model stops applying.
+
+## License
+
+Not yet licensed; a licence and an archived version with a DOI will be added on publication.
