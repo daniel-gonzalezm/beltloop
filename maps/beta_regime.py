@@ -5,6 +5,11 @@
     head drive, exact roots. (2) Table of beta and of the period shifts for the conveyors
     in the literature, exact and with the two-pole approximation.
 
+Phase 4.8: the paper figure follows each mode by its strand (B1, B2, A1) with the exact
+closed-form threshold eigen.takeup_mass_threshold (maps/paper_figures.py, figure "beta"); this
+working figure keeps the loop ordering of phase 4.2, whose mode-3 panel jumps where modes change
+strand. The case data now live in maps/cases.py.
+
 Run:  python maps/beta_regime.py   (prints the table, writes maps/figures/beta_regime.pdf)
 """
 from pathlib import Path
@@ -38,17 +43,13 @@ TOL = 0.05
 # 7 deg return section, i.e. 300 m from the head (xi = 0.1 in their model). Direct counterweight
 # with n = 2 assumed (not stated): M = 2 T_t / g = 28.6 t. One return roll per set instead of two
 # gives gamma = 2.01 and beta = 0.137.
-CASES = [
-    ("Harrison 1983/85 (79 kg/m)", 5100, 79.0, 79.0 * 0.97 ** 2, 20e3, 4, [0.005], "gamma = 0.97 measured"),
-    ("Harrison 1983/85 (39 kg/m)", 5100, 39.0, 39.0 * 0.97 ** 2, 20e3, 4, [0.005], "density of the text"),
-    ("Song et al. 2012", 7117, 37.8, 104.9, 4500, 2, [0.001, 0.999], "head (Fig. 1) / tail (model)"),
-    ("Gao et al. 2026", 4500, 40.1, 194.3, 1000, 2, [0.001], "no idler mass given"),
-    ("Li and Li 2009 (AMESim)", 7600, 66.9, 259.8, 42800, 2, [0.005], "idlers from their c = 837 m/s"),
-    ("KGHM variant 1 (Suchorab-M. 2025)", 3000, 74.6, 282.9, 2 * 140e3 / G_STD, 2, [0.1], "QNK-TT report; n assumed"),
-    ("Lodewijks 1996, ch. 8", 1000, 21.23, 161.2, 42.66e3 / G_STD, 2, [0.001], "M from the take-up force"),
-    ("Belt A (Pascual et al. 2005)", 2561, 138.0, 472.0, 45.5e3, 2, [0.999], "n not stated"),
-    ("Belt C (Wheatley and Rubel 2021)", 274.6, 31.09, 266.2, 7550, 2, [0.05, 0.5, 0.999], "take-up position unknown"),
-]
+import sys
+sys.path.insert(0, str(HERE))
+from cases import CASES as _CASES  # noqa: E402  (single source of the case data, phase 4.8)
+
+CASES = [c[1:] for c in _CASES]
+CASES.insert(1, ("Harrison 1983/85 (39 kg/m)", 5100, 39.0, 39.0 * 0.97 ** 2, 20e3, 4, [0.005],
+                 "density of the text"))
 
 
 def period_shift(loop, beta, k):

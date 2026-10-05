@@ -140,34 +140,34 @@ def main():
     fig, ax = plt.subplots(2, 3, figsize=(15, 8.5))
     ax = ax.ravel()
     for rho in RHOS:
-        l, = ax[0].semilogx(R, ext[rho][0] - rho, label=f"rho = {rho:g}")
+        l, = ax[0].semilogx(R, ext[rho][0] - rho, label=rf"$\rho$ = {rho:g}")
         ax[0].axhline(np.sqrt(1 + rho ** 2 / 4) - rho / 2, color=l.get_color(), ls=":", lw=0.8)
-        ax[1].semilogx(R, -ext[rho][1], color=l.get_color(), label=f"rho = {rho:g}")
-    ax[1].semilogx(R, Dm1, "k--", lw=0.8, label="rho = 0, zeta1 = 0.01")
-    ax[1].semilogx(R, 0.8 / R, "k:", lw=0.8, label="0.8 / r")
-    ax[0].set(xlabel="tau_a / T_A1", ylabel="(T_2 required) / (m_A a_m)",
-              title="(a) Exit slack, strand A (dotted: slow-start limit)")
-    ax[1].set(xlabel="tau_a / T_1", ylabel="(rebound below running) / (m_B a_m)",
-              title="(b) Rebound in strand B after the start", ylim=(0, 1.6))
-    ax[2].semilogx(rs, ev, "o-", label="|y'| / V_inf")
-    ax[2].semilogx(rs, ea, "s-", label="|y''| / a_m")
+        ax[1].semilogx(R, -ext[rho][1], color=l.get_color(), label=rf"$\rho$ = {rho:g}")
+    ax[1].semilogx(R, Dm1, "k--", lw=0.8, label=r"$\rho$ = 0, $\zeta_1$ = 0.01")
+    ax[1].semilogx(R, 0.8 / R, "k:", lw=0.8, label=r"$0.8\,T_1/\tau_a$")
+    ax[0].set(xlabel=r"$\tau_a / T_{A1}$", ylabel=r"required $T_2 / (m_A a_m)$",
+              title="(a) slack at the drive exit, strand A (dotted: slow start)")
+    ax[1].set(xlabel=r"$\tau_a / T_1$", ylabel=r"rebound below running / $(m_B a_m)$",
+              title="(b) rebound in strand B after the start", ylim=(0, 1.6))
+    ax[2].semilogx(rs, ev, "o-", label=r"$|\dot y| / V_\infty$")
+    ax[2].semilogx(rs, ea, "s-", label=r"$|\ddot y| / a_m$")
     ax[2].axhline(1, color="C0", ls=":")
     ax[2].axhline(2, color="C1", ls=":")
-    ax[2].set(xlabel="tau_a / T_1", title="(c) Take-up kinematics, envelope (belt side)")
+    ax[2].set(xlabel=r"$\tau_a / T_1$", title="(c) take-up kinematics, envelope (belt side)")
     for r, ls in zip(panel_d, ("-", "--")):
         rows = panel_d[r]
-        for k, (lab, c) in enumerate(zip(("exit", "rebound", "grip E=3", "grip E=16"), ("C0", "C1", "C2", "C3"))):
-            ax[3].plot(xis, rows[:, k], color=c, ls=ls, label=f"{lab}, tau_a/T1={r:g}")
+        for k, (lab, c) in enumerate(zip(("exit", "rebound", "grip $E$ = 3", "grip $E$ = 16"), ("C0", "C1", "C2", "C3"))):
+            ax[3].plot(xis, rows[:, k], color=c, ls=ls, label=rf"{lab}, $\tau_a = {r:g}\,T_1$")
     ax[3].axhline(0, color="k", lw=0.5)
-    ax[3].set(xlabel="xi (take-up position, drive at head)", ylabel="T_2 min / (m_belt a_m)",
-              title="(d) Min. T_2, drive at head, gamma = 2, rho = 1")
+    ax[3].set(xlabel=r"take-up position $\xi$ (head drive)", ylabel=r"minimum $T_2 / (m_{belt} a_m)$",
+              title=r"(d) minimum $T_2$, head drive, $\gamma$ = 2, $\rho$ = 1")
     ax[4].plot(sts[sts < sig_d], rows_e[sts < sig_d, 0], "C3")
     ax[4].plot(sts[sts > sig_d], rows_e[sts > sig_d, 0], "C0")
     ax[4].plot(sts, rows_e[:, 1], "k:", label="resistance between drive exit and take-up")
     ax[4].axvspan(0, sig_d, color="C3", alpha=0.08, label="take-up on the tight side")
     ax[4].axvline(sig_d, color="k", lw=0.8)
-    ax[4].set(xlabel="sigma_t (take-up position from the head)", ylabel="T_t required / (m_belt a_m)",
-              title="(e) Drive at sigma = 0.5 (full loop, E = 16)")
+    ax[4].set(xlabel=r"take-up position from the head $\sigma_t$", ylabel=r"required $T_t / (m_{belt} a_m)$",
+              title=r"(e) drive at $\sigma_d$ = 0.5 (full loop, $E$ = 16)")
     for a in ax[:5]:
         a.legend(fontsize=7)
         a.grid(alpha=0.3, which="both")
@@ -183,11 +183,11 @@ def main():
             T1 = 2 * np.pi / natural_frequencies(lp, 1e-3, 1)[0]
             bm.append(tension_requirement(lp, 3 * T1, rho_f, euler=E).beta_min(a_g))
         run = 2 * f_res * ((1 + gam ** 2) / (E - 1) + xis_f)
-        ax[5].plot(xis_f, bm, color=c, label=f"E = {E:g} (start, tau_a = 3 T_1)")
-        ax[5].plot(xis_f, run, color=c, ls=":", label=f"E = {E:g}, running grip only")
+        ax[5].plot(xis_f, bm, color=c, label=rf"$E$ = {E:g} (start, $\tau_a = 3\,T_1$)")
+        ax[5].plot(xis_f, run, color=c, ls=":", label=rf"$E$ = {E:g}, running grip only")
         print(f"  E = {E:g}: " + " ".join(f"{x:.2f}:{v:.3f}" for x, v in list(zip(xis_f, bm))[::4]))
-    ax[5].set(xlabel="xi (take-up position, drive at head)", ylabel="beta_min",
-              title="(f) beta_min, direct counterweight, gamma = 2", ylim=(0, None))
+    ax[5].set(xlabel=r"take-up position $\xi$ (head drive)", ylabel=r"$\beta_{\min}$",
+              title=r"(f) $\beta_{\min}$, direct counterweight, $\gamma$ = 2", ylim=(0, None))
     ax[5].legend(fontsize=7)
     ax[5].grid(alpha=0.3)
     fig.tight_layout()

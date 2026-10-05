@@ -273,6 +273,55 @@ def takeup_mass_approx(loop: Loop, beta: float, n: int) -> np.ndarray:
     return out
 
 
+def takeup_mass_threshold(loop: Loop, strand: str, j: int = 1, tol: float = 0.05) -> float:
+    """Take-up mass ratio beta at which the j-th fixed-free mode of a strand has its period
+    lengthened by a fraction tol with respect to beta -> 0 (exact, no root search).
+
+    strand is 'A' (drive exit -> take-up) or 'B' (take-up -> drive entry). The mode is followed
+    by its strand, not by its rank in the loop (phase 4.4). Since the characteristic equation
+    is F(Om) = A12/A22 + B12/B11 = 4/(beta Om^2), the beta that puts a root at a target
+    frequency Om_t is explicit: beta = 4/(Om_t^2 F(Om_t)). With Om_t = Om_p/(1 + tol) and
+    Om_p the strand pole, the root at Om_t is the one born at Om_p (interlacing: as beta grows
+    each root moves down from its pole without crossing the next pole below) provided no other
+    pole lies in [Om_t, Om_p).
+
+    Returns
+      * the threshold beta (> 0);
+      * nan if another pole lies within the band [Om_t, Om_p): the two strands' modes veer and
+        the shift is not a property of one strand (the root born at Om_p cannot drop below
+        the neighbouring pole);
+      * inf if F(Om_t) <= 0: the shift tol is never reached, even for beta -> infinity.
+
+    Single-pole limit (isolated pole, frozen fixed-free shape with a mass beta/4 at the free
+    end): beta = 4 m_tilde ((1 + tol)^2 - 1) = 0.41 m_tilde for tol = 0.05, with m_tilde from
+    :func:`strand_modes`.
+    """
+    if strand not in ("A", "B"):
+        raise ValueError("strand must be 'A' or 'B'")
+    if j < 1 or tol <= 0:
+        raise ValueError("j >= 1 and tol > 0 required")
+    own, other = ((loop.upstream, loop.downstream[::-1]) if strand == "A"
+                  else (loop.downstream[::-1], loop.upstream))
+    p_own = fixed_free_roots(own, j)
+    Om_p = p_own[-1]
+    Om_t = Om_p / (1.0 + tol)
+    t_other = sum(s.g * s.length for s in other)
+    m = sum(1 for a, b in zip(other[:-1], other[1:]) if a.g != b.g)
+    n_other = int(np.ceil(Om_p * t_other / np.pi + 0.5 + 0.5 * m)) + 1
+    p_other = fixed_free_roots(other, n_other)
+    while p_other[-1] < Om_p:                      # guard; the count above already suffices
+        n_other *= 2
+        p_other = fixed_free_roots(other, n_other)
+    near = np.concatenate((p_other, p_own[:-1]))
+    if np.any((near >= Om_t) & (near <= Om_p)):
+        return float("nan")
+    A, B = AB(loop, Om_t)
+    F = A[0, 1] / A[1, 1] + B[0, 1] / B[0, 0]
+    if F <= 0:
+        return float("inf")
+    return float(4.0 / (Om_t ** 2 * F))
+
+
 # ------------------------------------------------------------- modal participation
 def strand_participation(segments, n: int) -> tuple[np.ndarray, np.ndarray]:
     """Fixed-free modes of a chain and their effective masses for the inertial load.

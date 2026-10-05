@@ -109,9 +109,9 @@ def main():
 
     def mark_cases(ax):
         for name, beta, gam, xi in rows:
-            if 0.95 <= gam <= 3.05 and "Belt C" not in name:
+            if 0.95 <= gam <= 3.05 and "Wheatley" not in name:
                 ax.plot(xi, min(max(gam, 1.0), 3.0), "o", ms=4, mfc="w", mec="k", zorder=5)
-        ax.plot([0.05, 0.999], [2.93, 2.93], "k:", lw=1)            # belt C, position unknown
+        ax.plot([0.05, 0.999], [2.93, 2.93], "k:", lw=1)            # Wheatley and Rubel, position unknown
 
     def xs_line(ax):
         ok = [(x, g) for x, g in zip(xs, gl) if x is not None]

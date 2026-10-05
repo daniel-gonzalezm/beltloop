@@ -4,7 +4,8 @@ start-up response)."""
 from .conveyor import Conveyor, DimensionalStartup, GravityTakeUp
 from .eigen import (ModalBasis, fixed_free_roots, modal_basis, natural_frequencies,
                     natural_frequencies_torque, poles, damped_drive_root, rayleigh_takeup_bound,
-                    strand_modes, strand_participation, takeup_mass_approx, takeup_mass_modes)
+                    strand_modes, strand_participation, takeup_mass_approx, takeup_mass_modes,
+                    takeup_mass_threshold)
 from .forcing import PEAK_FACTOR, PiecewiseProfile, StartProfile
 from .loop import Loop, Segment
 from .metrics import (StartupMetrics, TakeupKinematics, TensionRequirement, takeup_kinematics, strand_extremes, strand_rebound, tension_requirement, crawl_onset, crawl_start, fast_start_limit, startup_metrics,
