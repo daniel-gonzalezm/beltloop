@@ -74,7 +74,7 @@ def data_modal():
     T1, ratio, F1, dF1 = modal_maps.fields(xis, gams)
     ratio_l1, _ = idr.offset_curves()
     nc = idr.nordell_ciozda()
-    # Surtees (SASOL): drive 152 m from the head, take-up assumed right after the drives
+    # Surtees (SASOL): drives ~158 m from the head, take-up right after them (Fig. 10)
     lp = Loop.from_positions(SASOL["sigma_d"], SASOL["sigma_t"], SASOL["gamma"])
     B = lp.downstream[::-1]
     Om, _ = strand_participation(B, 1)

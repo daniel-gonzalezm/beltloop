@@ -15,8 +15,11 @@ Inertial line densities
     mu_r = belt + reduced mass of the return idlers;
     mu_c = belt + reduced mass of the carry idlers + coupled bulk material.
     Reduced idler mass = sum of I / r^2 of the rolls per metre (4 I / d^2). When a source gives
-    only the roll mass, that mass is used and flagged: it is an upper bound of the reduced
-    mass, since I <= m r^2 for any roll (thin-shell limit).
+    only the roll mass m, the reduced mass is KAPPA_IDLER * m (phase 5.3): CEMA (2007) tables
+    5.41-5.44 give, for steel rolls of classes B4-E7 and belt widths 18-48 in, a ratio
+    WK^2 / (W (d/2)^2) of 0.72-0.92 (0.67-0.95 if the table pairing is read the other way),
+    median about 0.8. Range 0.6-0.92: the lower end covers a source mass that includes the
+    shaft. m itself is the upper bound (I <= m r^2 for any roll).
 
 Material coupling (Lodewijks 2002, eqs. 3-5)
     Eq. 4 (full coupling, all material mass in the carry strand) is his lower limit of the
@@ -56,6 +59,9 @@ import numpy as np
 G_STD = 9.80665
 KINDS = ("published", "measured", "derived", "catalogue", "assumed")
 
+# Reduced mass of an idler roll per unit roll mass, I / (m r^2): CEMA tables 5.41-5.44.
+KAPPA_IDLER, KAPPA_LO, KAPPA_HI = 0.80, 0.60, 0.92
+
 
 @dataclass(frozen=True)
 class Datum:
@@ -83,6 +89,23 @@ def Ms(v, note="", lo=None, hi=None): return Datum(v, "measured", note, lo, hi)
 def D(v, note="", lo=None, hi=None): return Datum(v, "derived", note, lo, hi)
 def C(v, note="", lo=None, hi=None): return Datum(v, "catalogue", note, lo, hi)
 def A(v, note="", lo=None, hi=None): return Datum(v, "assumed", note, lo, hi)
+
+
+LBIN2 = 0.45359237 * 0.0254 ** 2    # lbm in^2 -> kg m^2
+
+
+def cema_reduced(wk2_lb_in2, d_in, spacing):
+    """Reduced idler density, kg/m, from a CEMA WK^2 (lb in^2) per idler set of roll
+    diameter d_in (in) at the given spacing (m): 4 I / d^2 / spacing."""
+    return 4.0 * wk2_lb_in2 * LBIN2 / (d_in * 0.0254) ** 2 / spacing
+
+
+def reduced_idlers(mass_per_metre, note):
+    """Reduced idler density from a published roll (or set) mass per metre, with the CEMA
+    ratio and its range (phase 5.3)."""
+    m = mass_per_metre
+    return D(KAPPA_IDLER * m, f"{note}; x {KAPPA_IDLER} (CEMA I/(m r^2))",
+             KAPPA_LO * m, KAPPA_HI * m)
 
 
 def coupled_carry_density(m_unloaded: float, m_loaded: float, alpha: float) -> float:
@@ -128,6 +151,7 @@ class Case:
     profile: str | None = None         # start profile kind
     E: Datum | None = None             # Euler-Eytelwein factor e^(mu theta) of the drive
     F_U: Datum | None = None           # running peripheral force, N
+    f: Datum | None = None             # DIN 22101 fictitious friction coefficient
     carry_profile: Datum | None = None  # ((distance from tail, elevation), ...), m
     notes: str = ""
 
@@ -262,15 +286,27 @@ CASES_FULL = [
          V=P(4.0),
          notes="175 m descent: static state only; motors in steps every 4 s (no speed control)"),
     Case("SM", "Suchorab-Matuszewska et al. 2025 (KGHM, variant 1)", "suchorab2025",
-         L=P(3000.0), sigma_t=[0.1], m_b=D(64.8, "54 kg/m2 x 1.2 m"),
-         m_ic=P(3 * 9.10 / 0.83, "roll masses (upper bound of reduced mass): 3 x 9.10 kg / 0.83 m"),
-         m_ir=P(2 * 12.30 / 2.5, "roll mass 12.30 kg / 2.5 m, two rolls per set assumed",
-                12.30 / 2.5, 2 * 12.30 / 2.5),
-         m_l=D(2000 / 3.6 / 3.0, "2000 t/h at 3 m/s"),
-         alpha=A(1.0, "run-of-mine copper ore", 0.3, 1.0),
+         L=P(3000.0, "QNK-TT route: 300 + 6 x 400 + 300 m"),
+         sigma_t=[0.1],   # take-up at QNK node 3, end of the 300 m section after the head
+         m_b=P(64.8, "GTP-St-4000-X-(14+10), 54.00 kg/m2 x 1.2 m; matches the QNK belt "
+                     "gravity forces"),
+         m_ic=reduced_idlers(3 * 9.10 / 0.83, "3 rolls of 9.10 kg (465 mm, 159 mm) every 0.83 m"),
+         m_ir=reduced_idlers(2 * 12.30 / 2.5, "V return, 2 rolls of 12.30 kg (670 mm) every "
+                                              "2.5 m (QNK side rolls only; V-type in the paper)"),
+         m_l=D(2000 / 3.6 / 3.0, "2000 t/h at 3 m/s; matches the QNK material gravity forces"),
+         alpha=A(1.0, "run-of-mine copper ore (underground, lumps)", 0.3, 1.0),
+         EA=C(72 * 4000e3 * 1.2, "St 4000 x 1.2 m, modulus 72 x class (Continental, Fenner)"),
          T_t=P(140e3, "S(3), QNK-TT report"), V=P(3.0),
          E=D(float(np.exp(0.35 * np.radians(458.0))), "mu = 0.35, 458 deg wrap (QNK-TT report)"),
-         notes="EA missing (St 4000, catalogue in 5.3); take-up at node 3, 300 m from the head"),
+         F_U=P(514554.0, "QNK peripheral force, section 2-3"),
+         f=P(0.0241, "QNK equivalent, C = 1.03"),
+         carry_profile=P(((0.0, 0.0), (300.0, 10.47), (700.0, 24.43), (1100.0, 38.39),
+                          (1500.0, 52.35), (1900.0, 66.31), (2300.0, 80.27), (2700.0, 94.23),
+                          (3000.0, 130.79)), "QNK route table, sections 1-8 from the tail"),
+         notes="head drive (paper); take-up at QNK node 3, 300 m down the return. Node 3 is "
+               "the first node after the 300 m section that holds the drive, so the take-up may "
+               "sit anywhere from the drive to 300 m (xi 0-0.1). No start time: QNK's 2.7 s is "
+               "a rigid-body estimate; KGHM drives have VFDs"),
     Case("Lo", "Lodewijks 1996, ch. 8", "lodewijks1996", L=P(1000.0), sigma_t=[0.001],
          m_b=P(14.28), m_ic=P(13.38), m_ir=P(6.95), m_l=P(133.5),
          alpha=A(1.0, "coal", 0.8, 1.0), EA=D(4.214e6, "E = 340.9 MPa times the belt section"),
@@ -283,28 +319,64 @@ CASES_FULL = [
          M_w=P(45.5e3), V=P(4.75),
          notes="take-up at the tail; n not stated; start time of the thesis not usable"),
     Case("Si", "Sinaga 2008 (KPC)", "sinaga2008", L=P(13100.0), sigma_t=[0.001],
-         m_b=P(29.7), m_ic=C(9.5, "provisional catalogue estimate", 8.0, 11.0),
-         m_ir=C(4.0, "provisional catalogue estimate", 3.0, 5.0),
+         m_b=P(29.7, "ST2100, 1100 mm, 5 + 5 mm covers"),
+         m_ic=C(round(cema_reduced(880.0, 7, 3.0), 2),
+                "178 mm rolls, 3-roll 35 deg every 3 m; CEMA E7 WK2 interpolated to 43 in", 
+                round(0.85 * cema_reduced(880.0, 7, 3.0), 2),
+                round(1.15 * cema_reduced(880.0, 7, 3.0), 2)),
+         m_ir=C(round(cema_reduced(907.0, 7, 6.0), 2),
+                "2-roll 10 deg V return every 6 m; CEMA E7 single return roll, 43 in",
+                round(0.85 * cema_reduced(907.0, 7, 6.0), 2),
+                round(1.15 * cema_reduced(907.0, 7, 6.0), 2)),
          m_l=D(4200 / 3.6 / 8.5, "4200 t/h at 8.5 m/s (design 4500 t/h)"),
-         alpha=A(1.0, "coal", 0.8, 1.0), M_w=P(46.9e3), T_t=P(115e3), V=P(8.5), t_a=P(780.0),
-         notes="EA missing (ST2100, catalogue in 5.3)"),
+         alpha=A(1.0, "coal", 0.8, 1.0),
+         EA=C(72 * 2100e3 * 1.1, "ST2100 x 1.1 m, modulus 72 x class"),
+         M_w=P(46.9e3), T_t=P(115e3), V=P(8.5),
+         t_a=P(780.0, "after commissioning; design 560 s, 720 s at dry commissioning", 560.0, 780.0),
+         profile="S-curve (PLC on scoop-controlled fluid couplings)",
+         f=P(0.013, "DIN fictive friction from operating power data"),
+         carry_profile=A(((0.0, 0.0), (13100.0, 9.0)),
+                         "net lift 9 m only; hilly, 11 downhills (Fig. 11), not digitized"),
+         notes="take-up tower at the head end, by the drives; four drives on two head pulleys "
+               "(wrap not given); flywheels"),
     Case("WR", "Wheatley and Rubel 2021", "wheatley2021",
          L=D(274.6, "from 274 m and 18 m lift"), sigma_t=[0.05, 0.5, 0.999],
-         m_b=C(25.83, "PN1250/4 with 10 + 4 mm covers, Fenner Dunlop 2009"),
-         m_ic=C(13.10, "CEMA C6, 4 I / d^2 at 1.2 m"), m_ir=C(5.26, "CEMA C6 at 3 m"),
+         m_b=C(25.83, "PN1250/4 (polyester-nylon, = EP) 10 + 4 mm: Fenner Dunlop 9.1 kg/m2 "
+                      "carcass + 1.4 kg/m2/mm; Continental EP1250/4 gives 21.9",
+               (8.0 + 14 * 1.17) * 0.9, 25.83),
+         m_ic=C(round(cema_reduced(312.0, 6, 1.2), 2), "CEMA C6, 36 in, every 1.2 m (WK2 312)"),
+         m_ir=C(round(cema_reduced(313.0, 6, 3.0), 2), "CEMA C6 flat return every 3 m (WK2 313)"),
          m_l=D(1800 / 3.6 / 2.2, "1800 t/h at 2.2 m/s"), alpha=A(1.0, "iron ore fines", 0.8, 1.0),
-         EA=C(12000e3 * 0.9, "12000 N/mm x 0.9 m; Zarzycki 2023: 13-30 % lower at low load",
-              0.70 * 12000e3 * 0.9, 12000e3 * 0.9),
+         EA=C(13750e3 * 0.9, "EP1250/4: 13 750 N/mm (Continental) x 0.9 m; Zarzycki 2023: "
+                             "13-30 % lower at low load; thesis 12 000 N/mm (Fenner 7-1, not seen)",
+              0.70 * 13750e3 * 0.9, 13750e3 * 0.9),
          M_w=P(7550.0), V=P(2.2),
-         notes="take-up position unknown (dotted line on the maps); thesis start time not usable"),
+         F_U=D(164e3 / 2.2, "164 kW calculated demand / 2.2 m/s (motor side: upper bound)"),
+         f=P(0.0233, "DIN, Belt Analyst"),
+         carry_profile=A(((0.0, 0.0), (274.6, 18.0)), "straight incline; profile not published"),
+         notes="take-up position and rigging unknown (dotted line on the maps); no start time; "
+               "drive 150 kW nameplate, below the 164 kW demand"),
     Case("Su", "Surtees 1995 (SASOL)", "surtees1995", L=P(805.0),
-         sigma_d=P(152.0 / 805.0, "drives 152 m from the head"),
-         sigma_t=[152.0 / 805.0 + 0.01],
-         m_b=P(35.6), m_ic=P(12.0, "18 kg per 1.5 m"), m_ir=P(5.33, "16 kg per 3 m"),
-         m_l=D(3500 / 3.6 / 4.4, "3500 t/h at 4.4 m/s"), alpha=A(1.0, "coal", 0.8, 1.0),
-         M_w=P(4795.0, "design 1; design 2 (steel cord ST1250): 20 387 kg", 4795.0, 20387.0),
-         n=P(2, "vertical direct, M = 2 T_2 / g"), i=A(1.0), V=P(4.4),
-         notes="design data; take-up assumed right after the drives; intermediate-drive panel only"),
+         sigma_d=D(float(np.hypot(152.0, 45.0)) / 805.0,
+                   "drives 152 m (horizontal) from the head and 45 m below it", 152.0 / 805.0,
+                   float(np.hypot(152.0, 45.0)) / 805.0),
+         sigma_t=[float(np.hypot(152.0, 45.0)) / 805.0 + 0.01],
+         m_b=P(35.6, "both design sheets"),
+         m_ic=reduced_idlers(12.0, "18 kg per set every 1.5 m"),
+         m_ir=reduced_idlers(16.0 / 3.0, "16 kg every 3 m"),
+         m_l=D(3500 / 3.6 / 4.4, "3500 t/h at 4.4 m/s"), alpha=A(1.0, "coal (Secunda)", 0.8, 1.0),
+         EA=C(72 * 1250e3 * 1.5, "ST1250 x 1.5 m, modulus 72 x class (design 2)"),
+         M_w=P(20387.0, "design 2 (ST1250, T2 = 100 kN), the belt of Fig. 10; design 1: "
+                        "4795 kg (T2 = 23.6 kN)", 4795.0, 20387.0),
+         n=P(2, "vertical gravity type, M = 2 T2 / g"), i=A(1.0), V=P(4.4),
+         t_a=P(25.0, "start-up time required; 25.1 s estimated from breakaway"),
+         profile="Voith TSS fluid couplings, 130 % start factor",
+         E=D(float(np.exp(0.35 * np.radians(400.0))), "mu = 0.35, 2 x 200 deg wrap"),
+         F_U=P(153065.0, "effective tension Te"), f=P(0.020, "C = 1.41"),
+         carry_profile=D(((0.0, 0.0), (613.0, 0.0), (805.0, 45.0)),
+                         "613 m flat before the rise (horizontal, taken along the belt), 45 m lift"),
+         notes="design data; take-up right after the secondary drive pulley (Fig. 10, schematic); "
+               "intermediate-drive panel only"),
     Case("NC", "Nordell and Ciozda 1984, case 1", "nordell1984", L=P(8150 * FT),
          sigma_d=P(5150 / 8150, "primary and secondary drives together"), sigma_t=[5450 / 8150],
          c_r_given=P(1450.0, "BELTFLEX"), gamma_given=D(1450.0 / 590.0, "1450 / 590 m/s"),
@@ -336,7 +408,7 @@ _nc, _su = BY_TAG["NC"], BY_TAG["Su"]
 NORDELL_CIOZDA = dict(tag="NC", L=_nc.L.value, c_r=_nc.c_r, gamma=_nc.gamma(),
                       sigma_d=_nc.sigma_d.value, sigma_t=_nc.sigma_t[0])
 SASOL = dict(tag="Su", L=_su.L.value, gamma=_su.gamma(), sigma_d=_su.sigma_d.value,
-             sigma_t=_su.sigma_t[0], note="design data; take-up position assumed next to the drives")
+             sigma_t=_su.sigma_t[0], note="design data; take-up after the drives (Fig. 10)")
 
 
 def points():
