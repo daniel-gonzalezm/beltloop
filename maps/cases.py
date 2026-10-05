@@ -41,12 +41,17 @@ Belt stiffness EA
 
 Take-up (beta)
     The belt sees the 2:1-equivalent mass M_belt = 4 M / n^2 with M = M_c + i^2 M_w
-    (`GravityTakeUp`). Rules, in order:
+    (`GravityTakeUp`). The take-up tension takes precedence over a published mass (phase
+    5.3(c)): published masses proved unreliable (Pascual: tail pulley; Song: 4500 kg against
+    173 kN), while the tension is checked by the static balance. Rules, in order:
+      0. T_t and n known: direct counterweight on the n strands, M_w = n T_t / g (also when
+         a mass is published; the source note keeps it as the alternative);
       1. rigging known (n, i, M_w): exact mapping;
       2. T_t and M_w known: for ideal rigging and negligible carriage mass,
          beta = 4 T_t^2 / (M_w g^2 mu_r L), whatever n and i (n T_t = i M_w g);
       3. only M_w known: direct counterweight on n = 2 strands assumed;
-      4. only T_t known: direct counterweight on n = 2 strands assumed (M_w = 2 T_t / g).
+      4. only T_t known: direct counterweight on n strands assumed (M_w = n T_t / g), with
+         n = 2 unless the source shows the reeving (phase 5.3(b): Pascual's Fig. 5).
     Rules 3 and 4 give the largest beta among direct counterweights with n >= 2 (and among
     roped rigs with i <= 1), i.e. an upper bound for the take-up mass effect.
 """
@@ -186,6 +191,8 @@ class Case:
     def takeup_rule(self):
         """(rule, M_w, i, n) with the rigging used to compute beta (see the module notes)."""
         Mw, Tt, n, i = _v(self.M_w), _v(self.T_t), _v(self.n), _v(self.i)
+        if Tt is not None and n is not None:
+            return "T_t and n, direct counterweight assumed", int(n) * Tt / G_STD, 1.0, int(n)
         if Mw is not None and n is not None:
             return "rigging", Mw, (1.0 if i is None else i), int(n)
         if Mw is not None and Tt is not None:
@@ -229,8 +236,11 @@ class Case:
         """Names of the inputs that are assumptions (for the provenance column)."""
         out = [k for k, v in self.__dict__.items() if isinstance(v, Datum) and v.kind == "assumed"
                and not (k == "alpha" and self.gamma_given is not None)]
-        if self.takeup_rule()[0].endswith("assumed") and "n" not in out:
+        rule = self.takeup_rule()[0]
+        if "n = 2 assumed" in rule and "n" not in out:
             out.append("n")
+        if "direct counterweight assumed" in rule and "i" not in out:
+            out.append("i")
         return out
 
     # ------------------------------------------------------------ model
@@ -262,29 +272,51 @@ CASES_FULL = [
          mu_r_given=D(79.0, "consistent with Harrison's eq. 2; 39 kg/m from the text", 39.0, 79.0),
          gamma_given=Ms(0.97, "S1->S3->S2 times, Harrison 1985b Fig. 4a", 0.90, 1.06),
          c_r_given=Ms(1450.0, "7 s wave period on 5.1 km"),
-         M_w=P(20e3), n=P(4, "Harrison 1985b Fig. 2a"), i=A(1.0, "direct"), V=P(3.7),
+         M_w=P(20e3, "1983 text and 1985b"), n=P(4, "Harrison 1985b Fig. 2a"),
+         i=A(1.0, "direct"), V=Ms(3.7, "final speed read from Fig. 5a (1983), two-step start"),
+         profile="two torque steps (wound-rotor motors, 1985b): not speed-controlled",
          notes="consistency case; plotted at gamma = 1 on the maps; xi read from the inset "
-               "of Fig. 5a (0.002-0.02)"),
+               "of Fig. 5a (0.002-0.02). Belt SR2250 in 1983, SR2400 in 1985b. Running power "
+               "900 kW (1985b). Not a start-up case: stepped-torque drive. EA not set (c_r is "
+               "measured): his eq. 2 implies 4.34 km/s squared x 9 kg/m of cord = 170 MN"),
     Case("S", "Song et al. 2012", "song2012", L=P(7117.0), sigma_t=[0.001, 0.999],
          m_b=P(27.0), m_ic=P(11.25), m_ir=P(10.8), m_l=D(66.7, "600 t/h at 2.5 m/s"),
          alpha=A(1.0, "coal", 0.8, 1.0), EA=P(104e6, "1 m width"),
-         M_w=P(4500.0), n=P(2, "2:1 in their eqs. 5-6"), i=A(1.0),
-         V=P(2.5), t_a=P(300.0), profile="sine",
+         M_w=P(4500.0, "their tensioning weight, neglected in their solution; on 2 strands it "
+                       "holds only 22 kN. Alternative: beta = 0.017, fundamental +0.14 %"),
+         T_t=P(173e3, "tension at the tail take-up, both of their methods (section 3.3); "
+                      "basis of beta (rule 0): 35.3 t on 2 strands, beta = 0.131"),
+         n=P(2, "2:1 in their eqs. 5-6"), i=A(1.0),
+         V=P(2.5), t_a=P(300.0), profile="sine (Harrison cycloid)",
+         F_U=P(225e3, "steady drive force (2.268e5 N from the resistances)"),
+         f=P(0.016, "speed-independent resistance coefficient, both strands (plus 0.0026 "
+                    "speed-dependent); drive friction 0.3, wrap not given"),
          notes="head (their Fig. 1) / tail (their model); inconsistent running tensions: "
-               "structure only"),
+               "structure only. ST1600, 1 m, 14.8 mm; relaxation coefficient 0.14"),
     Case("G", "Gao et al. 2026", "gao2026", L=P(4500.0), sigma_t=[0.001],
          m_b=P(40.1), m_ir=P(0.0, "no idler masses given"), m_l=P(154.2),
-         alpha=A(1.0, "material not specified", 0.3, 1.0),
-         EA=P(1.56e8, "1.3e8 N/m per width x 1.2 m"), M_w=P(1000.0),
-         notes="no idler masses given"),
+         alpha=A(1.0, "coal-mine project, material not named: fine/wet class (the 0.3 class "
+                      "needs coarse dry rock in the source)", 0.8, 1.0),
+         EA=P(1.56e8, "1.3e8 N/m per width x 1.2 m"),
+         M_w=P(1000.0, "head take-up; their z (number of counterweights) not given"),
+         V=P(4.0), t_a=P(60.0, "base case; 60-120 s in their sweep"), profile="sine (Harrison)",
+         notes="idler spacings 1.5 / 3 m but no idler masses; drums 600 kg (bend) and 500 kg "
+               "(drive), rotational; horizontal"),
     Case("LL", "Li and Li 2009", "li2009", L=P(7600.0), sigma_t=[0.005],
          m_b=P(54.0), m_ic=D(32.2, "from their c = 837 m/s with full coupling"),
          m_ir=D(12.9, "carry idlers scaled by the 3 m / 1.2 m spacing", 6.45, 19.35),
          m_l=D(173.6, "2500 t/h at 4 m/s"), alpha=A(1.0, "material not specified", 0.8, 1.0),
-         EA=P(182e6, "1300 kN/cm x 140 cm"), M_w=P(42800.0),
+         EA=P(182e6, "1300 kN/cm x 140 cm (catalogue ST2000 x 1.4 m: 202 MN)"),
+         M_w=P(42800.0),
          n=A(2, "their Fig. 4: ~200 kN on the slack side vs 210 kN = M g / 2"), i=A(1.0),
-         V=P(4.0),
-         notes="175 m descent: static state only; motors in steps every 4 s (no speed control)"),
+         V=P(4.0), t_a=P(70.0, "4.05 m/s at ~70 s; motors on in 4 s steps over the first 10 s",
+                         60.0, 70.0),
+         profile="motor steps, no speed control",
+         E=P(4.81, "drive factor e^(mu alpha); tension ratio <= 4.25 in the start"),
+         carry_profile=A(((0.0, 0.0), (7600.0, -175.0)), "straight decline, -1.3 deg mean"),
+         notes="175 m descent: static state only; motors in steps every 4 s (no speed control); "
+               "two head drive pulleys (2 + 1 motors of 800 kW), take-up by the second; "
+               "take-up settles ~12 m down"),
     Case("SM", "Suchorab-Matuszewska et al. 2025 (KGHM, variant 1)", "suchorab2025",
          L=P(3000.0, "QNK-TT route: 300 + 6 x 400 + 300 m"),
          sigma_t=[0.1],   # take-up at QNK node 3, end of the 300 m section after the head
@@ -310,14 +342,54 @@ CASES_FULL = [
     Case("Lo", "Lodewijks 1996, ch. 8", "lodewijks1996", L=P(1000.0), sigma_t=[0.001],
          m_b=P(14.28), m_ic=P(13.38), m_ir=P(6.95), m_l=P(133.5),
          alpha=A(1.0, "coal", 0.8, 1.0), EA=D(4.214e6, "E = 340.9 MPa times the belt section"),
-         T_t=P(42.66e3 / 2, "take-up force 42.66 kN = 2 T_t"), V=P(5.0), t_a=P(30.0),
-         notes="tensioning pulley 1606 kg (reduced) not included (M_c candidate, 5.3)"),
-    Case("Pa", "Pascual et al. 2005", "pascual2005", L=P(2561.0), sigma_t=[0.999],
-         m_b=P(118.0), m_ic=P(67.0), m_ir=P(20.0), m_l=P(287.0),
-         alpha=A(1.0, "large rocks: Lodewijks' lowest field value applies", 0.3, 1.0),
-         EA=P(1.74e9, "k = mu_ef v0^2, their eq. 32 (to verify: c_r ~ 3550 m/s)"),
-         M_w=P(45.5e3), V=P(4.75),
-         notes="take-up at the tail; n not stated; start time of the thesis not usable"),
+         T_t=P(42.66e3 / 2, "take-up force 42.66 kN = 2 T_t"),
+         n=P(2, "tensioning weight hung on the take-up pulley loop (Fig. 8.1; force = 2 T_t)"),
+         V=P(5.2, "694.44 kg/s / 133.54 kg/m (5.11 m/s effective in Table 8.7: motor slip)"),
+         t_a=P(30.0, "Table 8.7"), profile="five 30 s profiles (Table 8.7)",
+         E=D(float(np.exp(0.35 * np.pi)), "wrap pi, mu 0.35 (DIN 22101), eq. 8.8"),
+         F_U=P(35.55e3, "DIN, loaded, C = 1.09"), f=P(0.018, "from his rolling-resistance model"),
+         carry_profile=P(((0.0, 0.0), (1000.0, 0.0)), "horizontal (Fig. 8.1)"),
+         notes="vertical tensioning weight (Fig. 8.1): the take-up pulley (1606 kg reduced, "
+               "~1.7 t shell; eq. 8.16) is part of the 42.66 kN weight, so M = 2 T_t / g "
+               "already holds it. Idlers: 90 % of the roll mass (Simonsen 1987)"),
+    Case("Pa", "Pascual et al. 2005", "pascual2005",
+         L=P(2561.0, "belt half length l / 2, Table 1 (Fig. 5: 1800 + 770 = 2570 m)"),
+         # Phase 5.3(b): take-up in the belt loop just after the head drive (Fig. 5, "tensor
+         # pulley", drawn in two positions), not at the tail as the thesis read it.
+         sigma_t=[0.02],
+         m_b=P(118.0), m_ic=P(67.0, "\"equivalent rollers' mass\" (eq. 2): taken as reduced"),
+         m_ir=P(20.0, "\"equivalent rollers' mass\" (eq. 2): taken as reduced"),
+         m_l=P(287.0, "4920 t/h at 4.75 m/s gives 287.7 kg/m"),
+         alpha=A(1.0, "large-diameter rocks: Lodewijks' lowest field value applies", 0.3, 1.0),
+         EA=D(0.98e9, "their v0 = 2355 m/s is the mean of the return and carry speeds (eq. 8); "
+                      "with their own alpha = 0.3 for rocks (eq. 7) it gives EA = 0.98 GN "
+                      "(1.29 GN with alpha = 1). Their k = mu_ef v0^2 = 1.74 GN (eq. 32) is not "
+                      "EA: loop-average mass, tail pulley included, times the mean speed "
+                      "squared. Lower end: catalogue, 118 kg/m is ST5000-ST6300 at 1.9-2.3 m, "
+                      "72 x class x width = 0.79-0.88 GN (Fenner AS1333 masses)",
+              0.79e9, 1.29e9),
+         T_t=D(292e3, "f2 = 300 kN at the drive exit (Table 1) less the 51 m of return down to "
+                      "the take-up (xi = 0.02, f = 0.019); 300 kN with the take-up at the drive",
+               280e3, 300e3),
+         n=P(2, "Fig. 5: one belt loop around the take-up pulley; type (gravity or winch) not "
+                "stated, gravity assumed"),
+         V=P(4.75),
+         F_U=P(1.117e6, "f_ef = f1 - f2 (Table 1: 1.417 and 0.300 MN)"),
+         f=D(0.019, "fitted to f1 - f2 with the Fig. 5 profile and the published masses "
+                    "(belt weight cancels)"),
+         carry_profile=D(((0.0, 0.0), (770.0, 770.0 * float(np.sin(np.radians(1.0)))),
+                          (2561.0, 770.0 * float(np.sin(np.radians(1.0)))
+                           + 1791.0 * float(np.sin(np.radians(9.0))))),
+                         "Fig. 5: 770 m at 1 deg from the tail, then 9 deg to the head (1800 m "
+                         "drawn; 1791 m closes L). The thesis swapped the two slopes"),
+         notes="copper mine, northern Chile (data from a 1988 Harrison report). The 45.5 t of "
+               "Table 1 (\"other masses\") is the driven (tail) pulley m3 = 45.0 t of Table 2, "
+               "not a counterweight: at the tail it would put ~500 kN on the slack side "
+               "against the published 300 kN. Take-up mass not published (rule 4 with n = 2 "
+               "from Fig. 5: 59.6 t). xi from 0.005 to 0.05 (loop not to scale; T_1 changes "
+               "1 %). No usable start time: their eq. 30 adds arctangents of accelerations "
+               "(unit-dependent). Running T1 / T2 = 4.72 needs e^(mu theta) >= 4.72 (drive "
+               "pulleys not described)"),
     Case("Si", "Sinaga 2008 (KPC)", "sinaga2008", L=P(13100.0), sigma_t=[0.001],
          m_b=P(29.7, "ST2100, 1100 mm, 5 + 5 mm covers"),
          m_ic=C(round(cema_reduced(880.0, 7, 3.0), 2),
@@ -379,9 +451,12 @@ CASES_FULL = [
                "intermediate-drive panel only"),
     Case("NC", "Nordell and Ciozda 1984, case 1", "nordell1984", L=P(8150 * FT),
          sigma_d=P(5150 / 8150, "primary and secondary drives together"), sigma_t=[5450 / 8150],
-         c_r_given=P(1450.0, "BELTFLEX"), gamma_given=D(1450.0 / 590.0, "1450 / 590 m/s"),
+         c_r_given=P(1450.0, "4760 ft/s, empty return (Harrison's formula; BELTFLEX agrees)"),
+         gamma_given=D(1450.0 / 590.0, "1450 / 590 m/s (590: fully loaded carry)"),
+         V=P(930 * FT / 60, "930 ft/min (the copy's '41 m/s' is a transcription error)"),
          mu_r_given=A(1.0, "placeholder: not given (only frequencies are used)"),
-         notes="no take-up mass nor EA: frequencies in the limit beta -> 0 only; retarder"),
+         notes="no take-up mass nor EA: frequencies in the limit beta -> 0 only; retarder "
+               "(2720 kgf). Drive and take-up positions read from Fig. 8; event is a stop"),
 ]
 
 BY_TAG = {c.tag: c for c in CASES_FULL}

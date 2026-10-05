@@ -34,8 +34,10 @@ a property of one strand); light grey, the 5 % shift is not reached even for bet
 dashed, xi_s where A1 overtakes B2. Region edges computed exactly (Om_B2/Om_A1 = 1 and 1.05;
 F(Om_t) = 0). (c) A1 for gamma = 2: the single-pole estimate beta_5 = 0.41 m_tilde =
 0.205 xi (uniform strand) is the backbone; gaps and spikes mark veering with modes of strand B.
-Circles: beta of the cases with the take-up at the tail, where A1 is the second mode; the tick
-marks their own threshold and the label the exact lengthening of A1 (Pa +3.2 %, St +0.4 %).
+Circle: beta of the only case with the take-up at the tail (St, Song et al. as modelled),
+where A1 is the second mode; the tick marks its own threshold and the label the exact
+lengthening of A1 (+3.2 %, with beta from the published take-up tension). (Pa moved to the
+head loop in phase 5.3(b); S takes beta from the tension since 5.3(c).)
 
 ## fig_startup
 
