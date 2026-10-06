@@ -15,6 +15,8 @@ Figures (numbering of the manuscript decided in phase 6):
   startup   universal start-up curve of the fixed-free strand and the loop collapse
   crawl     initial crawl: duration of the ramp versus duration of the hold
   validity  validity conditions: slack at the exit, rebound, minimum T_2, tight side
+  applications  start-ups of Lo, SM and Su in physical units against the take-up position
+                (phase 5.5; also writes table_applications.txt, about 30 s)
 """
 import sys
 from pathlib import Path
@@ -768,8 +770,21 @@ def fig_validity(d):
           f"{T[~left, 0].min():.2f}-{T[~left, 0].max():.2f} (m_belt a_m)")
 
 
+def data_applications():
+    import applications as ap
+    return ap.compute()
+
+
+def fig_applications(d):
+    import applications as ap
+    ap.figure(d, style.OUT / "fig_applications.pdf")
+    print("figure:", style.OUT / "fig_applications.pdf")
+    print(ap.write_table(ap.real_alt_rows(), style.OUT / "table_applications.txt"))
+
+
 FIGS = dict(modal=(data_modal, fig_modal), beta=(data_beta, fig_beta), startup=(data_startup, fig_startup),
-            crawl=(data_crawl, fig_crawl), validity=(data_validity, fig_validity))
+            crawl=(data_crawl, fig_crawl), validity=(data_validity, fig_validity),
+            applications=(data_applications, fig_applications))
 
 
 def main(argv):

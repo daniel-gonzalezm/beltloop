@@ -1,0 +1,12 @@
+Application start-ups (phase 5.5): sine profile, zeta_hat = 0.01, DIN resistances with onset phi = V/V_inf, case's counterweight. Tensions in kN.
+case take-up                 sig_t     xi   T1 s  t_a s t_a/T1 entry kN  /run exit min travel m  Tt req  governs  T2 req     Tt t_a,min s
+Lo   real                    0.001  0.001  28.45   30.0   1.05      125  2.21     20.8     8.43    51.5     grip    51.5   21.3       101
+Lo   real, shortest start    0.001  0.001  28.45  101.3   3.56       64  1.13     21.3     3.20    21.3     grip    21.3   21.3       101
+Lo   tail                    0.995  0.995  24.92   30.0   1.20      108  2.06     12.5     5.15    56.1     grip    51.8   21.3         -
+SM   real                    0.100  0.100  13.61   40.8   3.00      720  1.07    156.4     0.96    60.0    slack    77.4  140.0        13
+SM   tail                    0.995  0.995  10.84   40.8   3.77      726  1.07    155.0     0.44    21.7     grip    46.9  140.0        10
+Su   real                    0.207  0.010   6.08   25.0   4.11      307  1.21    100.1     0.25    19.8      sag    20.4  100.0         7
+Su   tight side              0.098  1.902   7.90   25.0   3.16       95  1.01   -114.2     0.00   234.0     grip    75.2  100.0         -
+
+t_a,min: shortest sine start that the case's T_t admits (slack, grip, sag 2 %); '-': none (the running state fails).
+SM reference start: 3 T_1 at the real position (assumed; no published start).

@@ -1,4 +1,4 @@
-# Draft captions of the paper figures (phase 4.8, revised in phase 5.3(d); numbering fixed in phase 6)
+# Draft captions of the paper figures (phase 4.8, revised in phase 5.3(d), fig_applications added in phase 5.5; numbering fixed in phase 6)
 
 Figures are produced by `python maps/paper_figures.py`; the numbers below are the ones it prints
 and are pinned by `tests/test_figures.py` (and the phase 4-5 tests) where marked †.
@@ -100,6 +100,30 @@ tandem drive (E = 16) slack, rebound and grip are comparable. (d) Required take-
 drive at mid-length of the return strand (full loop, E = 16, tau_a = 20 L/c_r): 1.8-2.1 m_belt a_m
 on the tight side against 0.14-0.27 on the slack side, an impractical but valid region.
 
+## fig_applications
+
+**Start-ups of three conveyors from the literature in physical units, against the take-up
+position (phase 5.5).** Sine speed profile, base damping zeta_hat = 0.01, DIN 22101 strand
+resistances fitted to each F_U with onset phi = V/V_inf, gravity from each carry profile; the
+take-up is moved along the return strand with the case's counterweight. sigma_t: take-up position
+from the head pulley along the return (sigma_t = xi with a head drive; xi = sigma_t - sigma_d with
+the intermediate drive of Su). Filled triangle: real position; open triangle: alternative of the
+last row. Columns: Lo, Lodewijks (1996), 1 km, one drive pulley (E = 3.0), published 30 s start;
+SM, Suchorab-Matuszewska et al. (2025), 3 km incline, tandem drive (E = 16.4), reference start
+3 T_1 = 40.8 s (assumed); Su, Surtees (1995), 805 m, intermediate drive at sigma_d = 0.197
+(E = 11.5), published 25 s start. (a-c) Take-up tension required by each criterion (positive
+tension everywhere, during and after the start; grip T_entry <= E T_exit; running sag below 2 %),
+with the case's T_t. Lo needs 51.5 kN for its 30 s start against 21.3 kN (grip) †; SM, with the
+take-up near the high end, needs 60 kN just to hold the return strand on the slope at rest, 22 kN
+with the take-up at the tail; Su needs 234 kN on the tight side against 20 kN after the drive †.
+(d-f) Shortest start that the case's T_t admits, against 3 T_1 and the reference start; grey: no
+start is admissible (the running state already fails). Lo: 101 s at the real position (3.6 T_1) †,
+none beyond xi = 0.82 †; SM: 13 s; Su: 7.4 s. (g) Lo at its real position: the 30 s start
+(solid) and the 101 s start (dashed); grip is lost where entry / E (thin) exceeds the exit
+tension. (h) SM, real position (solid) and tail (dashed). (i) Su, real position (solid) and tight
+side (dashed), where the exit tension goes negative. Values for the real and alternative
+configurations in `table_applications.txt`.
+
 ## Notes for phase 6 (not part of the captions)
 
 - Phase 5.3(d) changes: coupling bars on all map panels and on Su in fig_modal (d); clustered
@@ -137,3 +161,8 @@ on the tight side against 0.14-0.27 on the slack side, an impractical but valid 
 - Practice lines mix drive types (speed control, fluid couplings, stepped motors): they show
   where real start times sit relative to T_1, not that those drives follow the sine profile.
 - Accessibility (colour-only distinctions) still to be discussed before phase 6.
+- fig_applications (phase 5.5): accessibility not yet reviewed (in row 3 entry and exit differ
+  by colour, though the entry is always above the exit). Candidate to trim: panel (h), whose two
+  histories barely differ. Sweep with the same counterweight; with the counterweight resized to
+  keep the running T_2, required T_t and T_1 change < 0.3 % and Lo's shortest start becomes ~101 s
+  at every position (sentence for the text).

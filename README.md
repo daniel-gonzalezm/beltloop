@@ -96,6 +96,7 @@ python examples/startup_demo.py
 python maps/paper_figures.py       # figures of the paper from stored data
 python maps/cases.py               # table of the literature cases
 python maps/beta_min.py            # take-up tension against its DIN requirements
+python maps/applications.py        # application start-ups (Lo, SM, Su) against the take-up position
 ```
 
 ```python
