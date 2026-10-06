@@ -86,7 +86,7 @@ model does and does not reproduce is printed by the scripts.
 
 ```bash
 pip install -e ".[dev,plots]"
-pytest -q                          # ~2 min (303 tests)
+pytest -q                          # ~2.5 min (334 tests)
 python examples/startup_demo.py
 python maps/paper_figures.py       # figures of the paper from stored data
 python maps/cases.py               # table of the literature cases

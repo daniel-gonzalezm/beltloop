@@ -25,7 +25,7 @@ HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE))
 
 import style  # noqa: E402
-from cases import NORDELL_CIOZDA, SASOL, UNKNOWN_POSITION, points  # noqa: E402
+from cases import NORDELL_CIOZDA, SASOL, points  # noqa: E402
 
 DATA = HERE / "data"
 TOL5 = 0.05
@@ -44,24 +44,101 @@ def cached(name, compute, recompute):
     return d
 
 
-def mark_cases(ax, labels=True, gmin=1.0, gmax=3.0, fs=6, color="k"):
-    for tag, beta, gam, xi, unknown in points():
-        if unknown:
+# Cases near the drive (xi <= CLUSTER_XI) pile up on the left edge of the maps. They are spread
+# into lanes LANE_DX apart (display only: the caption gives the true xi) so that their coupling
+# bars do not overlap, and the labels of the cases with xi <= LEADER_XI are set in a column at
+# LEADER_X with leader lines; a case at the tail is drawn at EDGE_XI (phase 5.3(d)).
+CLUSTER_XI, LANE_X0, LANE_DX, LANE_PAD = 0.03, 0.004, 0.016, 0.08
+LEADER_XI, LEADER_X, LEADER_GAP = 0.15, 0.16, 0.12
+EDGE_XI = 0.985
+
+
+# A case whose take-up position is unknown (WR) is left off the maps (phase 5.3(d)): its line
+# across xi carried only gamma. It stays in the case table and in the text (case_margins).
+SHOW_UNKNOWN_POSITION = False
+
+
+def case_marks(include_unknown=SHOW_UNKNOWN_POSITION):
+    """Plot positions of the case markers: dicts with tag, beta, gamma (alpha = 1), g_lo
+    (lowest coupling of the material class), true xi, plotted x, unknown-position flag.
+
+    Lanes are assigned greedily, cases sorted by decreasing gamma, each to the first lane where
+    its bar [g_lo, gamma] clears the bars already there by LANE_PAD."""
+    from cases import points_alpha
+    marks = [dict(tag=t, beta=b, gamma=g, g_lo=lo, xi=x, x=x, unknown=u)
+             for t, b, g, lo, hi, x, u in points_alpha() if include_unknown or not u]
+    lanes = []
+    for m in sorted((m for m in marks if m["xi"] <= CLUSTER_XI and not m["unknown"]),
+                    key=lambda m: -m["gamma"]):
+        for k, lane in enumerate(lanes):
+            if all(m["gamma"] + LANE_PAD < o["g_lo"] or m["g_lo"] - LANE_PAD > o["gamma"] for o in lane):
+                lane.append(m)
+                break
+        else:
+            k = len(lanes)
+            lanes.append([m])
+        m["x"] = LANE_X0 + LANE_DX * k
+    for m in marks:                            # at the tail the bar would hide under the spine
+        if m["xi"] > EDGE_XI and not m["unknown"]:
+            m["x"] = EDGE_XI
+    return marks
+
+
+def leader_positions(ys, gap=LEADER_GAP, lo=1.04, hi=2.96):
+    """Label heights: the target heights ys pushed apart by at least gap, within [lo, hi]."""
+    order = np.argsort(ys)
+    y = np.clip(np.asarray(ys, float)[order], lo, hi)
+    for k in range(1, len(y)):
+        y[k] = max(y[k], y[k - 1] + gap)
+    over = y[-1] - hi
+    if over > 0:                               # shift down from the top if the column overflows
+        y[-1] = hi
+        for k in range(len(y) - 2, -1, -1):
+            y[k] = min(y[k], y[k + 1] - gap)
+    out = np.empty_like(y)
+    out[order] = y
+    return out
+
+
+def mark_cases(ax, labels=True, gmin=1.0, gmax=3.0, fs=6, color="k", bars=True):
+    """Case markers at gamma(alpha = 1), with the coupling bar down to gamma(alpha_lo)."""
+    marks = case_marks()
+    clip = lambda g: min(max(g, gmin), gmax)
+    for m in marks:
+        if m["unknown"]:
             continue
-        g = min(max(gam, gmin), gmax)
-        ax.plot(xi, g, "o", ms=3.2, mfc="w", mec=color, mew=0.7, zorder=6, clip_on=False)
-        if labels:
-            dx = -3 if xi > 0.9 else 3
-            ax.annotate(tag, (xi, g), xytext=(dx, 2), textcoords="offset points", fontsize=fs,
-                        ha="right" if xi > 0.9 else "left", va="bottom", zorder=7,
-                        bbox=dict(fc="white", ec="none", alpha=0.7, pad=0.2))
-    # take-up position unknown
-    gc = [p[2] for p in points() if p[4]][0]
-    ax.plot([0.05, 0.999], [gc, gc], ":", color=color, lw=0.8, zorder=6)
+        x, g = m["x"], clip(m["gamma"])
+        if bars and m["g_lo"] < m["gamma"]:
+            ax.plot([x, x], [clip(m["g_lo"]), g], "-", color=color, lw=0.6, zorder=5,
+                    clip_on=False, solid_capstyle="butt")
+            ax.plot(x, clip(m["g_lo"]), "_", ms=3.0, mew=0.6, color=color, zorder=5, clip_on=False)
+        ax.plot(x, g, "o", ms=3.2, mfc="w", mec=color, mew=0.7, zorder=6, clip_on=False)
+    box = dict(fc="white", ec="none", alpha=0.75, pad=0.2)
     if labels:
-        ax.annotate(UNKNOWN_POSITION, (0.62, gc), xytext=(0, 2), textcoords="offset points", fontsize=fs,
-                    ha="center", va="bottom", zorder=7,
-                    bbox=dict(fc="white", ec="none", alpha=0.7, pad=0.2))
+        near = [m for m in marks if m["xi"] <= LEADER_XI and not m["unknown"]]
+        ys = leader_positions([clip(m["gamma"]) for m in near])
+        for m, y in zip(near, ys):
+            ax.annotate(m["tag"], (m["x"], clip(m["gamma"])), xytext=(LEADER_X, y),
+                        textcoords="data", fontsize=fs, ha="left", va="center", zorder=7, bbox=box,
+                        arrowprops=dict(arrowstyle="-", lw=0.4, color="0.25", shrinkA=0,
+                                        shrinkB=2.0))
+        for m in marks:
+            if m["xi"] > LEADER_XI and not m["unknown"]:
+                ax.annotate(m["tag"], (m["x"], clip(m["gamma"])), xytext=(-3, 2),
+                            textcoords="offset points", fontsize=fs, ha="right", va="bottom",
+                            zorder=7, bbox=box)
+    # take-up position unknown: dotted line at gamma(alpha = 1), coupling bar at its tail end
+    unk = [m for m in marks if m["unknown"]]
+    if unk:
+        gc, glo = unk[0]["gamma"], unk[0]["g_lo"]
+        x0, x1 = min(m["xi"] for m in unk), max(m["xi"] for m in unk)
+        ax.plot([x0, x1], [gc, gc], ":", color=color, lw=0.8, zorder=6)
+        if bars and glo < gc:
+            ax.plot([EDGE_XI, EDGE_XI], [glo, gc], "-", color=color, lw=0.6, zorder=5)
+            ax.plot(EDGE_XI, glo, "_", ms=3.0, mew=0.6, color=color, zorder=5)
+        if labels:
+            ax.annotate(unk[0]["tag"], (0.62, gc), xytext=(0, 2), textcoords="offset points",
+                        fontsize=fs, ha="center", va="bottom", zorder=7, bbox=box)
 
 
 # ============================================================================ modal
@@ -75,31 +152,43 @@ def data_modal():
     ratio_l1, _ = idr.offset_curves()
     nc = idr.nordell_ciozda()
     # Surtees (SASOL): drives ~158 m from the head, take-up right after them (Fig. 10)
-    lp = Loop.from_positions(SASOL["sigma_d"], SASOL["sigma_t"], SASOL["gamma"])
-    B = lp.downstream[::-1]
-    Om, _ = strand_participation(B, 1)
-    tB = sum(s.g * s.length for s in B)
-    sasol = np.array([SASOL["sigma_d"], 2 * np.pi / Om[0] / (4 * tB)])
+    # (beta -> 0, as the curves), at full coupling and at the lowest of its class (bar)
+    from cases import BY_TAG
+    su = BY_TAG[SASOL["tag"]]
+
+    def ratio_su(gamma):
+        lp = Loop.from_positions(SASOL["sigma_d"], SASOL["sigma_t"], gamma)
+        B = lp.downstream[::-1]
+        Om, _ = strand_participation(B, 1)
+        return 2 * np.pi / Om[0] / (4 * sum(s.g * s.length for s in B))
+
+    sasol = np.array([SASOL["sigma_d"], ratio_su(SASOL["gamma"]), ratio_su(su.gamma_range()[0])])
     return dict(xis=xis, gams=gams, T1=T1, ratio=ratio, F1=F1, dF1=dF1, l1=idr.L1S,
                 g_l1=np.array(idr.GAMMAS), ratio_l1=np.array([ratio_l1[g] for g in idr.GAMMAS]),
                 nc=np.array([NORDELL_CIOZDA["sigma_d"], nc[0][3], nc[0][1], nc[1][1]]), sasol=sasol)
+
+
+# Colour maps of fig_modal: (name, lo, hi), dark end cut off (phase 5.3(d)).
+CMAPS = dict(a=("viridis", 0.30, 1.0), b=("magma", 0.50, 1.0), c=("cividis", 0.40, 1.0))
 
 
 def fig_modal(d):
     import matplotlib.pyplot as plt
     xis, gams = d["xis"], d["gams"]
     fig, axs = plt.subplots(2, 2, figsize=(style.DOUBLE, 128 * style.MM), constrained_layout=True)
-    specs = [(axs[0, 0], d["T1"], np.arange(4, 14.01, 1.0), "viridis", "%.0f",
+    specs = [(axs[0, 0], d["T1"], np.arange(4, 14.01, 1.0), CMAPS["a"], "%.0f",
               r"$T_1 c_r / L$", "(a)"),
-             (axs[0, 1], d["ratio"], np.arange(0.83, 1.0001, 0.01), "magma", "%.2f",
+             (axs[0, 1], d["ratio"], np.arange(0.83, 1.0001, 0.01), CMAPS["b"], "%.2f",
               r"$T_1 / (4 t_B)$", "(b)"),
-             (axs[1, 0], d["F1"], np.arange(0.40, 0.8201, 0.02), "cividis", "%.1f",
+             (axs[1, 0], d["F1"], np.arange(0.40, 0.8201, 0.02), CMAPS["c"], "%.1f",
               r"$\Gamma_1^2 m_1 / (1+\gamma^2)$", "(c)")]
     for ax, Z, lev, cmap, fmt, clab, lab in specs:
+        cmap = style.light_cmap(*cmap)
         cs = ax.contourf(xis, gams, Z, levels=lev, cmap=cmap, extend="both")
         step = 2 if lab != "(c)" else 5
         lv = lev[::step]
-        dark = lv < 0.915 if lab == "(b)" else np.zeros(len(lv), bool)   # dark end of magma
+        # contour lines and labels in white only where the fill is dark
+        dark = np.array([style.text_colour(cs.cmap(cs.norm(v))) == "w" for v in lv])
         for sel, col in ((dark, "w"), (~dark, "k")):
             if sel.any():
                 cl = ax.contour(xis, gams, Z, levels=lv[sel], colors=col, linewidths=0.4)
@@ -120,8 +209,12 @@ def fig_modal(d):
     ax.axhline(1.0, color="0.5", lw=0.6, ls=":")
     ax.plot(*d["nc"][:2], "k*", ms=7, zorder=6)
     ax.annotate(NORDELL_CIOZDA["tag"], d["nc"][:2], xytext=(-4, 3), textcoords="offset points", fontsize=6, ha="right")
-    ax.plot(*d["sasol"], "kD", ms=3.5, mfc="w", zorder=6)
-    ax.annotate(SASOL["tag"], d["sasol"], xytext=(4, -6), textcoords="offset points", fontsize=6)
+    xs, ys = d["sasol"][:2]
+    if len(d["sasol"]) > 2:                    # coupling bar (phase 5.3(d))
+        ax.plot([xs, xs], [d["sasol"][2], ys], "k-", lw=0.6, zorder=5)
+        ax.plot(xs, d["sasol"][2], "k_", ms=3.0, mew=0.6, zorder=5)
+    ax.plot(xs, ys, "kD", ms=3.5, mfc="w", zorder=6)
+    ax.annotate(SASOL["tag"], (xs, ys), xytext=(4, -6), textcoords="offset points", fontsize=6)
     ax.set(xlim=(0, 1), xlabel=r"drive offset from the head $\ell_1 = \sigma_d$",
            ylabel=r"$T_1 / (4 t_B)$")
     ax.legend(loc="upper left", bbox_to_anchor=(0.06, 1.0), ncol=1, fontsize=6.5)
@@ -137,7 +230,7 @@ def fig_modal(d):
     print(f"  Nordell & Ciozda: l1 = {d['nc'][0]:.2f}, T1/(4 t_B) = {d['nc'][1]:.3f}, "
           f"T1 = {d['nc'][2]:.1f} s (head drive, same xi: {d['nc'][3]:.1f} s, "
           f"+{d['nc'][2] / d['nc'][3] - 1:.0%}); SASOL: l1 = {d['sasol'][0]:.2f}, "
-          f"T1/(4 t_B) = {d['sasol'][1]:.3f}")
+          f"T1/(4 t_B) = {d['sasol'][1]:.3f} ({d['sasol'][2]:.3f} at the lowest coupling)")
 
 
 # ============================================================================ beta
@@ -247,10 +340,8 @@ def fig_beta(d):
     cb.set_label(r"$\beta_5$ (5 % longer period)")
     cb.ax.tick_params(labelsize=6)
     ax = axs[2]
-    k2 = int(np.argmin(abs(d["g_line"] - 2.0)))
-    y = d["A1"][k2]
-    ax.plot(d["xl"], np.where(np.isfinite(y), y, np.nan), color=style.OKABE_ITO[0], lw=0.9,
-            label=r"exact, $\gamma = 2$")
+    a1 = cached("beta_a1", data_a1, "--recompute" in sys.argv)
+    extra = draw_a1(ax, a1, A1_MODE)
     ax.plot(d["xl"], 4 * d["xl"] / 2 * (1.05 ** 2 - 1), "k:", lw=0.9,
             label=r"single pole, $0.41\,\tilde m = 0.205\,\xi$")
     from beltloop import Loop, natural_frequencies, poles, takeup_mass_threshold
@@ -269,7 +360,8 @@ def fig_beta(d):
                         textcoords="offset points", fontsize=6, ha="right", va="top")
     ax.set(yscale="log", xlim=(0, 1), ylim=(1e-3, 1.0), xlabel=r"take-up position $\xi$",
            ylabel=r"$\beta_5$ of A1;  $\beta$ of the cases")
-    ax.legend(loc="lower right", fontsize=6)
+    h, _ = ax.get_legend_handles_labels()
+    ax.legend(handles=h + extra, loc="lower right", fontsize=6)
     ax.grid(alpha=0.25, lw=0.4, which="both")
     style.panel_label(ax, "(c) A1")
     style.save(fig, "fig_beta")
@@ -277,11 +369,133 @@ def fig_beta(d):
         Z = d[key]; f = Z[np.isfinite(Z)]
         print(f"  {key}: beta_5 {f.min():.3f}-{f.max():.2f}, median {np.median(f):.2f}; veering "
               f"{np.isnan(Z).mean():.1%}, not reached {np.isinf(Z).mean():.1%} of the plane")
+    for row in case_margins():
+        print("  {:3s} L = {:5.0f} m, beta = {:.3f}: beta/beta_5(B1) {:.2f} ({:.2f} at the lowest "
+              "coupling); fundamental +{:.2f} % (+{:.2f} %)".format(*row))
     for g, y in zip(d["g_line"], d["A1"]):
         ok = np.isfinite(y)
         dev = y[ok] / (0.205 * d["xl"][ok]) - 1
         print(f"  A1, gamma {g:g}: exact / (0.205 xi) - 1 from {dev.min():+.1%} to {dev.max():+.1%}; "
               f"defined at {ok.mean():.0%} of xi")
+
+
+def case_margins():
+    """Per head-drive case and take-up position: (tag, L, beta, beta / beta_5 of B1 and exact
+    lengthening of the fundamental in %, at full coupling and at the lowest of the class)."""
+    from cases import BY_TAG
+    from beltloop import Loop, natural_frequencies, takeup_mass_threshold
+    rows = []
+    for m in case_marks(include_unknown=True):
+        c = BY_TAG["S" if m["tag"] == "St" else m["tag"]]
+        out = []
+        for g in (m["gamma"], m["g_lo"]):
+            lp = Loop.from_positions(0.0, m["xi"], g)
+            shift = natural_frequencies(lp, 0.0, 1)[0] / natural_frequencies(lp, m["beta"], 1)[0] - 1
+            out.append((m["beta"] / takeup_mass_threshold(lp, "B", 1), 100 * shift))
+        rows.append((m["tag"], c.L.value, m["beta"], out[0][0], out[1][0], out[0][1], out[1][1]))
+    return rows
+
+
+# How fig_beta (c) shows where the threshold of A1 is not defined (phase 5.3(d)):
+#   "shade"      grey bands as in (b): veering, not reached;
+#   "asymptotes" thin vertical lines at the asymptotes, gaps left blank;
+#   "strip"      asymptotes, plus the veering intervals as a strip along the xi axis;
+#   "merged"     asymptotes, plus one strip wherever beta_5 of A1 is undefined (not reached
+#                or veering: contiguous, the first is too narrow to show on its own);
+#   "band"       the merged intervals as light grey bands over the full height; each band
+#                starts at an asymptote, so no asymptote lines are drawn.
+A1_MODE = "band"
+
+
+def undefined_intervals(iv):
+    """Contiguous intervals where beta_5 of A1 is not finite (classes 'i' and 'n' merged)."""
+    out = []
+    for c, x0, x1 in iv:
+        if c == 0:
+            continue
+        if out and x0 - out[-1][1] < 1e-8:
+            out[-1][1] = x1
+        else:
+            out.append([x0, x1])
+    return [(a, b - a) for a, b in out]
+
+
+def draw_a1(ax, a1, mode=A1_MODE):
+    """Branches of beta_5 of A1 and the marks of the gaps; returns extra legend handles."""
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
+    iv = a1["iv"]
+    asym = [iv[k, 2] for k in range(len(iv) - 1) if iv[k, 0] == 0 and iv[k + 1, 0] == 1]
+    veer = [(x0, x1 - x0) for c, x0, x1 in iv if c == 2]
+    extra = []
+    if mode == "band":
+        for a, w in undefined_intervals(iv):
+            ax.axvspan(a, a + w, fc="0.88", ec="none", lw=0, zorder=0)
+        extra = [Patch(fc="0.88", ec="none", label="undefined for A1 alone")]
+    elif mode == "shade":
+        for c, x0, x1 in iv:
+            if c != 0:
+                ax.axvspan(x0, x1, fc="0.45" if c == 2 else "0.85", alpha=0.5 if c == 2 else 1.0,
+                           ec="none", lw=0, zorder=0)
+        extra = [Patch(fc="0.45", alpha=0.5, ec="none", label="A1 and a B mode veer"),
+                 Patch(fc="0.85", ec="none", label="5 % not reached")]
+    else:
+        for x in asym:
+            ax.axvline(x, color="0.55", lw=0.4, ls=(0, (3, 2)), zorder=1)
+        extra = [Line2D([], [], color="0.55", lw=0.4, ls=(0, (3, 2)),
+                        label=r"asymptote, $F(\Omega_t) = 0$")]
+        if mode in ("strip", "merged"):
+            bars = veer if mode == "strip" else undefined_intervals(iv)
+            ax.broken_barh(bars, (0.0, 0.03), transform=ax.get_xaxis_transform(), fc="0.35",
+                           ec="none", zorder=3)
+            extra.append(Patch(fc="0.35", ec="none", label="A1 and a B mode veer"
+                               if mode == "strip" else "undefined for A1 alone"))
+    ax.plot(a1["x"], a1["y"], color=style.OKABE_ITO[0], lw=0.9, zorder=4,
+            label=rf"exact, $\gamma = {float(a1['gamma']):g}$")
+    return extra
+
+
+def a1_class(xi, gamma):
+    """beta_5 of A1 at (xi, gamma) and its class: 'f' finite, 'i' not reached (F(Om_t) <= 0),
+    'n' veering with a mode of strand B."""
+    from beltloop import Loop, takeup_mass_threshold
+    y = takeup_mass_threshold(Loop.from_positions(0.0, xi, gamma), "A", 1)
+    return y, ("n" if np.isnan(y) else "i" if np.isinf(y) else "f")
+
+
+def data_a1(gamma=2.0, n=3000, tol=1e-11):
+    """beta_5 of A1 along xi, branch by branch (phase 5.3(d)). The edges between classes are
+    located by bisection to tol in xi; each finite branch is sampled densely towards its right
+    edge, where it ends either at a veering edge (finite value) or at a zero of F(Om_t), where
+    beta_5 -> infinity. Branches are returned joined by NaN; intervals as (class, x0, x1)."""
+    xg = np.linspace(0.005, 0.995, n)
+    cg = [a1_class(x, gamma)[1] for x in xg]
+    edges = []
+    for k in range(n - 1):
+        if cg[k] != cg[k + 1]:
+            a, b = xg[k], xg[k + 1]
+            while b - a > tol:
+                m = 0.5 * (a + b)
+                if a1_class(m, gamma)[1] == cg[k]:
+                    a = m
+                else:
+                    b = m
+            edges.append((a, b))
+    starts = [xg[0]] + [b for a, b in edges]
+    ends = [a for a, b in edges] + [xg[-1]]
+    classes = [cg[0]] + [cg[k + 1] for k in range(n - 1) if cg[k] != cg[k + 1]]
+    X, Y, iv = [], [], []
+    for c, x0, x1, nxt in zip(classes, starts, ends, classes[1:] + ["end"]):
+        iv.append(("fin".index(c), x0, x1))
+        if c != "f":
+            continue
+        w = x1 - x0
+        xs = x0 + w * np.linspace(0.0, 1.0, max(int(w * 2000), 4))
+        if nxt == "i":                          # asymptote: geometric towards the edge
+            xs = np.union1d(xs, x1 - w * np.geomspace(0.5, 1e-9, 120))
+        X += list(xs) + [np.nan]
+        Y += [a1_class(x, gamma)[0] for x in xs] + [np.nan]
+    return dict(gamma=gamma, x=np.array(X), y=np.array(Y), iv=np.array(iv, float))
 
 
 # ============================================================================ startup
@@ -331,7 +545,23 @@ def collapse_envelope(rc=None):
     return dict(rc=rc, dev_in=dev_in, dev_out=dev_out, g_c=np.array(COLLAPSE_G))
 
 
-PRACTICE = [("Lo", 30.0 / 28.5), ("S", 300.0 / 40.0), ("Si", 780.0 / 70.0)]
+def practice():
+    """(tag, tau_a / T_1) for every case with a published start time: exact T_1 of the loop with
+    the case's beta, gamma (alpha = 1) and the take-up at its first listed position (S: at the
+    head, as in their Fig. 1). Phase 5.3(d): from cases.py instead of hard-coded ratios."""
+    from cases import BY_TAG, CASES_FULL
+    from beltloop import Loop, natural_frequencies
+    out = []
+    for c in CASES_FULL:
+        if c.t_a is None or c.beta is None or c.c_r is None:
+            continue
+        lp = Loop.from_positions(c.sigma_d.value, c.sigma_t[0], c.gamma())
+        T1 = 2 * np.pi / natural_frequencies(lp, c.beta, 1)[0] * c.L.value / c.c_r
+        out.append((c.tag, c.t_a.value / T1))
+    return sorted(out, key=lambda p: p[1])
+
+
+PRACTICE = practice()
 
 
 def fig_startup(d):
@@ -385,6 +615,7 @@ def fig_startup(d):
                       r"$\tau_a / T_s$ ($T_1$ at the entry, $T_{A1}$ at the exit)")
         style.panel_label(ax, lab)
     style.save(fig, "fig_startup")
+    print("  practice, tau_a / T_1: " + ", ".join(f"{t} {r:.2f}" for t, r in PRACTICE))
     D = d["D_sine"]; i = np.argmax(D)
     print(f"  sine: max D = {D[i]:.3f} at tau_a/T = {R[i]:.2f}; D(1) = {np.interp(1, R, D):.3f}, "
           f"D(2) = {np.interp(2, R, D):.3f}, D(5) = {np.interp(5, R, D):.3f}, D(10) = {np.interp(10, R, D):.3f}")
@@ -505,8 +736,9 @@ def fig_validity(d):
     h1 = [Line2D([], [], color=c, label=nm) for nm, c in zip(names, style.OKABE_ITO)]
     h2 = [Line2D([], [], color="k", ls=ls, label=lab) for ls, lab in
           (("-", r"$\tau_a = T_1$"), ("--", r"$\tau_a = 3T_1$"))]
-    ax.legend(handles=h1 + h2, loc="upper left", bbox_to_anchor=(0.02, 0.58), fontsize=6, ncol=2,
-              columnspacing=1.0)
+    blank = [Line2D([], [], ls="none", label=" ")] * (len(h1) - len(h2))
+    ax.legend(handles=h1 + h2 + blank, loc="upper left", bbox_to_anchor=(0.02, 0.62), fontsize=6,
+              ncol=2, columnspacing=1.2)          # column 1: conditions; column 2: start times
     ax.set(xlim=(0, 1), ylim=(0, 1.4), xlabel=r"take-up position $\xi$ (head drive)",
            ylabel=r"minimum $T_2 / (m_{belt} a_m)$")
     ax = axs[1, 1]

@@ -179,6 +179,14 @@ class Case:
             return self.gamma_given.value
         return float(np.sqrt(self.mu_c(alpha) / self.mu_r))
 
+    def gamma_range(self):
+        """(gamma at the lowest, gamma at the highest coupling of the material class), or None
+        when gamma is given directly (measured or published): no coupling bar (phase 5.3(d))."""
+        if self.gamma_given is not None:
+            return None
+        lo, hi = self.alpha.range
+        return self.gamma(lo), self.gamma(hi)
+
     @property
     def c_r(self) -> float | None:
         if self.c_r_given is not None:
@@ -494,6 +502,18 @@ def points():
         for xi in c.xis:
             out.append((t + ("t" if t == "S" and xi > 0.5 else ""), c.beta, c.gamma(), xi,
                         t == UNKNOWN_POSITION))
+    return out
+
+
+def points_alpha():
+    """As `points`, plus the coupling range of gamma: (tag, beta, gamma, gamma_lo, gamma_hi, xi,
+    unknown_position). gamma_lo = gamma_hi = gamma when gamma is given directly (H)."""
+    out = []
+    for tag, beta, gam, xi, unknown in points():
+        c = BY_TAG[tag.rstrip("t") if tag == "St" else tag]
+        rg = c.gamma_range()
+        lo, hi = (gam, gam) if rg is None else rg
+        out.append((tag, beta, gam, lo, hi, xi, unknown))
     return out
 
 

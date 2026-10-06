@@ -48,6 +48,23 @@ RC = {
 OUT = Path(__file__).parent / "figures" / "paper"
 
 
+def light_cmap(name, lo=0.3, hi=1.0, n=256):
+    """A perceptually uniform colour map with its dark end cut off (phase 5.3(d)): the segment
+    [lo, hi] of `name`, resampled. Keeps the map monotonic in lightness and colour-blind safe."""
+    import numpy as np
+    from matplotlib.colors import ListedColormap
+    base = plt.get_cmap(name)
+    return ListedColormap(base(np.linspace(lo, hi, n)), name=f"{name}_{lo:g}_{hi:g}")
+
+
+def text_colour(rgba):
+    """'w' on dark backgrounds, 'k' on light ones (relative luminance, sRGB)."""
+    import numpy as np
+    c = np.asarray(rgba[:3], float)
+    c = np.where(c <= 0.03928, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+    return "w" if 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2] < 0.18 else "k"
+
+
 def apply():
     plt.rcParams.update(RC)
 
