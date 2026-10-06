@@ -1,0 +1,44 @@
+Take-up tension against its requirements (phase 5.4). Tensions in kN.
+case   L km   beta    K  Tt/Wr   psi   tau    T_t     E     p p(t_a)  E_run  E_st  grip_r  grip_s  sag1%  sag2%  sag point
+Lo     1.00  0.205 2.00  0.102 0.171  0.60   21.3  3.00  1.20   2.40   2.67  3.00    17.8    21.3   22.8    9.2  carry at s/L = 1.00
+S      7.12  0.131 2.00  0.066 0.085  0.77  173.0     -  1.05   1.06   3.02  3.17       -       -   71.3   66.4  return at s/L = 0.00
+LL     7.60  0.084 2.00  0.042 0.041  1.02  209.9  4.81  3.16   2.08   1.99  4.12    55.0   172.0   20.8   10.9  return at s/L = 0.00
+WR     0.27  0.884 2.00  0.442 0.890  0.50   37.0     -     -      -   3.01  4.44       -       -   38.1   19.4  carry at s/L = 1.00
+Pa     2.56  0.169 2.00  0.084 0.322  0.26  292.0     -     -      -   4.72  7.41       -       -  325.6  295.8  carry at s/L = 1.00
+Su     0.81  0.635 2.00  0.318 0.486  0.65  100.0 11.51  1.30   1.44   2.52  2.98    14.0    18.4   43.4   19.8  carry at s/L = 0.80
+Su1    0.81  0.149 2.00  0.075 0.486  0.15   23.5 11.51  1.30   1.44   7.35  9.28    14.0    18.4   43.4   19.8  carry at s/L = 0.80
+SM     3.00  0.131 2.00  0.065 0.241  0.27  140.0 16.41     -      -   4.27  6.83    15.9    46.8   33.3   20.5  carry at s/L = 1.00
+Si    13.10  0.025 1.00  0.025 0.083  0.31  115.0     -     -   1.13   4.26  6.55       -       -   21.9   11.0  return at s/L = 0.00
+H      5.10  0.012 1.00  0.012 0.038  0.32   49.0     -     -      -   4.08     -       -       -      -      -  
+
+Basis of T_t as documented by each source:
+  Lo   start grip, sized: take-up force 2 F_a / (e^(mu theta) - 1) with F_a = 1.2 F_U and e^(mu theta) = 3 (eqs. 8.7-8.9); sag below 1.5 % checked
+  S    not stated; their running tensions (337 / 113 kN, text) need e^(mu theta) = 2.98: one pulley with mu = 0.3 and ~210 deg wrap
+  LL   start grip (checked, not stated as the design basis): peak tension ratio 4.25 against e^(mu alpha) = 4.81 with motor steps and no speed control
+  WR   not stated
+  Pa   not stated (1988 Harrison design); T_t matches about 2 % carry sag at the tail, at the foot of the 9 deg incline (phase 5.4)
+  Su   holdback on the head pulley: design 1 (23.6 kN = max of grip from the installed power and 2 % sag at the tail) could transmit 20.1 of the 35.3 kNm runback torque; design 2 raised T2 to 100 kN (83.2 kNm)
+  Su1  holdback on the head pulley: design 1 (23.6 kN = max of grip from the installed power and 2 % sag at the tail) could transmit 20.1 of the 35.3 kNm runback torque; design 2 raised T2 to 100 kN (83.2 kNm)
+  SM   not stated: S(3) = 140 kN is a QNK input; QNK checks slip with a safety factor 1.2. Its start factor (Kr = 1.12, Pr / Pu = 3.3) belongs to a rigid-body direct start, not to the VFD drives
+  Si   low tension in full-load braking: take-up raised from 39.1 t to 46.9 t (115 kN), the tower maximum
+  H    not stated; running T1 / T2 = 200 / 49 kN needs e^(mu theta) >= 4.1
+
+Short belts of the same plant (Wheatley and Rubel 2021, n = 2 assumed):
+  WR    L =   275 m  T_t =  37.0 kN  beta =  0.88  T_t/W_r = 0.44  psi = 0.89  E_run = 3.01  sag 1 % =  38.1 kN
+  WR-B  L =   247 m  T_t =  49.0 kN  beta =  1.30  T_t/W_r = 0.65  psi = 0.65  E_run = 2.00  sag 1 % =  38.1 kN
+  WR-C  L =    91 m  T_t =  29.4 kN  beta =  2.13  T_t/W_r = 1.06  psi = 1.89  E_run = 2.77  sag 1 % =  40.6 kN
+
+Regime (beta / beta_5 of the fundamental):
+  Lo    L =   1000 m  beta = 0.205  beta_5 = 1.347  ratio = 0.152
+  S     L =   7117 m  beta = 0.131  beta_5 = 0.481  ratio = 0.272
+  LL    L =   7600 m  beta = 0.084  beta_5 = 0.762  ratio = 0.111
+  WR    L =    275 m  beta = 0.884  beta_5 = 1.519  ratio = 0.582
+  Pa    L =   2561 m  beta = 0.169  beta_5 = 0.695  ratio = 0.243
+  Su    L =    805 m  beta = 0.635  beta_5 = 1.511  ratio = 0.420
+  Su1   L =    805 m  beta = 0.149  beta_5 = 1.511  ratio = 0.099
+  SM    L =   3000 m  beta = 0.131  beta_5 = 0.749  ratio = 0.175
+  Si    L =  13100 m  beta = 0.025  beta_5 = 0.936  ratio = 0.027
+  H     L =   5100 m  beta = 0.012  beta_5 = 0.394  ratio = 0.032
+  WR-B  L =    247 m  beta = 1.301  beta_5 = 1.542  ratio = 0.844
+  WR-C  L =     91 m  beta = 2.130  beta_5 = 1.542  ratio = 1.381
+/home/claude/beltloop/maps/figures/beta_min.pdf

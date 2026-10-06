@@ -18,6 +18,11 @@ at an arbitrary position* (in preparation; title provisional).
   drive and free at the take-up; every loop mode lies between consecutive modes of the two
   strands. The take-up mass enters as a tip-mass correction given in closed form
   (`takeup_mass_approx`, exact threshold `takeup_mass_threshold`).
+* **The take-up mass follows from the take-up tension.** With a gravity take-up,
+  `beta = (4/n) lam T_t / W_r`, `W_r = g mu_r L` the weight of the return strand (`lam = 1` for a
+  directly hung counterweight). Designs set `T_t` from length-proportional requirements (drive
+  grip, holding the return strand on a slope), so `beta` does not grow with length; in the
+  literature `T_t / W_r` is 0.01-0.10 for conveyors of 1 km or more (`maps/beta_min.py`).
 * **Fundamental mode** belongs to the strand that contains the carry strand (for `gamma >= 1`),
   with closed-form bounds on its period and participation (`strand_participation`).
 * **Start-up metrics** follow a universal curve of the fixed-free strand: peak tension at the
@@ -86,10 +91,11 @@ model does and does not reproduce is printed by the scripts.
 
 ```bash
 pip install -e ".[dev,plots]"
-pytest -q                          # ~2.5 min (334 tests)
+pytest -q                          # ~3.5 min (349 tests)
 python examples/startup_demo.py
 python maps/paper_figures.py       # figures of the paper from stored data
 python maps/cases.py               # table of the literature cases
+python maps/beta_min.py            # take-up tension against its DIN requirements
 ```
 
 ```python
