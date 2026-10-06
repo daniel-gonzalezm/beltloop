@@ -48,7 +48,7 @@ Outside the package:
 | Folder | Content |
 |---|---|
 | `validation/` | Lumped-mass validation figure; Harrison (1983, 1985) and Lodewijks (1996, ch. 8) case studies, with digitised data in `validation/data/` |
-| `maps/` | Parametric study. `cases.py` holds the conveyors from the literature (single source, with the provenance of every input and the conventions used to derive the line densities and the take-up mass ratio). `paper_figures.py` regenerates the figures of the paper from stored data in `maps/data/` (`--recompute` to recalculate, ~5 min); the other scripts are the working figures of each step |
+| `maps/` | Parametric study. `cases.py` holds the conveyors from the literature (single source, with the provenance of every input and the conventions used to derive the line densities and the take-up mass ratio). `paper_figures.py` regenerates the figures of the paper from stored data in `maps/data/` (`--recompute` to recalculate, ~5 min); `paper_tables.py` writes the LaTeX tables of the paper (cases with provenance marks, and the application start-ups); the other scripts are the working figures of each step |
 | `examples/` | Minimal start-up example |
 
 ## Numerical method (summary)
@@ -91,9 +91,10 @@ model does and does not reproduce is printed by the scripts.
 
 ```bash
 pip install -e ".[dev,plots]"
-pytest -q                          # ~3.5 min (349 tests)
+pytest -q                          # ~6 min (373 tests)
 python examples/startup_demo.py
 python maps/paper_figures.py       # figures of the paper from stored data
+python maps/paper_tables.py        # LaTeX tables of the paper (maps/figures/paper/table_*.tex)
 python maps/cases.py               # table of the literature cases
 python maps/beta_min.py            # take-up tension against its DIN requirements
 python maps/applications.py        # application start-ups (Lo, SM, Su) against the take-up position

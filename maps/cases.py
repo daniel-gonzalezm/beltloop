@@ -173,6 +173,7 @@ class Case:
     p_A: Datum | None = None           # start factor: peak peripheral force at start / F_U
     F_A: Datum | None = None           # peak peripheral force at start, N (when published)
     takeup_basis: str = ""             # criterion that set T_t, as documented by the source
+    basis_short: str = ""              # the same, abridged for the case table (phase 5.6)
     notes: str = ""
 
     # ------------------------------------------------------------ densities and speeds
@@ -293,14 +294,23 @@ _SI_IDLERS = (round(cema_reduced(880.0, 7, 3.0), 2), round(cema_reduced(907.0, 7
 
 CASES_FULL = [
     Case("H", "Harrison 1983/85", "harrison1983", L=P(5100.0), sigma_t=[0.005],
-         mu_r_given=D(79.0, "consistent with Harrison's eq. 2; 39 kg/m from the text", 39.0, 79.0),
+         # Phase 5.6: strand values from the loop quantities, as in validation/harrison_case.py
+         # (transit basis), so that the case table gives the T_1 of the validation section
+         # (28.4 s). Before: mu_r = 79 and c_r = 1450 as if gamma = 1 (T_1 = 28.0 s).
+         mu_r_given=D(2 * 79.0 / (1 + 0.97 ** 2),
+                      "mean loop density 79 kg/m (consistent with Harrison's eq. 2; 39 from the "
+                      "text) split so that mu_c / mu_r = gamma^2",
+                      2 * 39.0 / (1 + 0.97 ** 2), 2 * 79.0 / (1 + 0.97 ** 2)),
          gamma_given=Ms(0.97, "S1->S3->S2 times, Harrison 1985b Fig. 4a", 0.90, 1.06),
-         c_r_given=Ms(1450.0, "7 s wave period on 5.1 km"),
+         c_r_given=Ms(5100.0 * (1 + 0.97) / (2 * 5100.0 / 1450.0),
+                      "loop transit 2L / 1450 m/s = 7.03 s (7 s wave period on 5.1 km) split with "
+                      "gamma = 0.97: L / c_r + L / c_c = 7.03 s"),
          M_w=P(20e3, "1983 text and 1985b"), n=P(4, "Harrison 1985b Fig. 2a"),
          i=A(1.0, "direct"), V=Ms(3.7, "final speed read from Fig. 5a (1983), two-step start"),
          profile="two torque steps (wound-rotor motors, 1985b): not speed-controlled",
          F_U=D(151e3, "running T1 = 200 kN (1983, section 6) less T_t = 49 kN (20 t on 4 strands)"),
          takeup_basis="not stated; running T1 / T2 = 200 / 49 kN needs e^(mu theta) >= 4.1",
+         basis_short="not stated (grip at $E \\ge 4.1$)",
          notes="consistency case; plotted at gamma = 1 on the maps; xi read from the inset "
                "of Fig. 5a (0.002-0.02). Belt SR2250 in 1983, SR2400 in 1985b. Running power "
                "900 kW (1985b). Not a start-up case: stepped-torque drive. EA not set (c_r is "
@@ -322,6 +332,7 @@ CASES_FULL = [
          p_A=P(236.0 / 225.0, "peak 2.36e5 N against the steady 2.25e5 N (Fig. 5 text)"),
          takeup_basis="not stated; their running tensions (337 / 113 kN, text) need "
                       "e^(mu theta) = 2.98: one pulley with mu = 0.3 and ~210 deg wrap",
+         basis_short="not stated (grip at $E = 2.98$)",
          notes="head (their Fig. 1) / tail (their model); inconsistent running tensions: "
                "structure only. ST1600, 1 m, 14.8 mm; relaxation coefficient 0.14"),
     Case("G", "Gao et al. 2026", "gao2026", L=P(4500.0), sigma_t=[0.001],
@@ -332,9 +343,10 @@ CASES_FULL = [
          M_w=P(1000.0, "head take-up; their z (number of counterweights) not given"),
          V=P(4.0), t_a=P(60.0, "base case; 60-120 s in their sweep"), profile="sine (Harrison)",
          takeup_basis="unknown: the number of counterweights z is not given, so T_t is unknown",
+         basis_short="unknown",
          notes="idler spacings 1.5 / 3 m but no idler masses; drums 600 kg (bend) and 500 kg "
                "(drive), rotational; horizontal"),
-    Case("LL", "Li and Li 2009", "li2009", L=P(7600.0), sigma_t=[0.005],
+    Case("LL", "Li and Li 2009", "li2009amesim", L=P(7600.0), sigma_t=[0.005],
          m_b=P(54.0), m_ic=D(32.2, "from their c = 837 m/s with full coupling"),
          m_ir=D(12.9, "carry idlers scaled by the 3 m / 1.2 m spacing", 6.45, 19.35),
          m_l=D(173.6, "2500 t/h at 4 m/s"), alpha=A(1.0, "material not specified", 0.8, 1.0),
@@ -355,10 +367,11 @@ CASES_FULL = [
                        "ratio <= 4.25 (text)", 600e3, 700e3),
          takeup_basis="start grip (checked, not stated as the design basis): peak tension ratio "
                       "4.25 against e^(mu alpha) = 4.81 with motor steps and no speed control",
+         basis_short="start grip (checked)",
          notes="175 m descent: static state only; motors in steps every 4 s (no speed control); "
                "two head drive pulleys (2 + 1 motors of 800 kW), take-up by the second; "
                "take-up settles ~12 m down"),
-    Case("SM", "Suchorab-Matuszewska et al. 2025 (KGHM, variant 1)", "suchorab2025",
+    Case("SM", "Suchorab-Matuszewska et al. 2025 (KGHM, variant 1)", "suchorab2025longdistance",
          L=P(3000.0, "QNK-TT route: 300 + 6 x 400 + 300 m"),
          sigma_t=[0.1],   # take-up at QNK node 3, end of the 300 m section after the head
          m_b=P(64.8, "GTP-St-4000-X-(14+10), 54.00 kg/m2 x 1.2 m; matches the QNK belt "
@@ -380,6 +393,7 @@ CASES_FULL = [
          takeup_basis="not stated: S(3) = 140 kN is a QNK input; QNK checks slip with a safety "
                       "factor 1.2. Its start factor (Kr = 1.12, Pr / Pu = 3.3) belongs to a "
                       "rigid-body direct start, not to the VFD drives",
+         basis_short="not stated (model input)",
          notes="head drive (paper); take-up at QNK node 3, 300 m down the return. Node 3 is "
                "the first node after the 300 m section that holds the drive, so the take-up may "
                "sit anywhere from the drive to 300 m (xi 0-0.1). No start time: QNK's 2.7 s is "
@@ -398,6 +412,7 @@ CASES_FULL = [
          p_A=P(1.2, "start-up factor K_s, drain-type fluid coupling (Table 8.2, Simonsen 1987)"),
          takeup_basis="start grip, sized: take-up force 2 F_a / (e^(mu theta) - 1) with F_a = "
                       "1.2 F_U and e^(mu theta) = 3 (eqs. 8.7-8.9); sag below 1.5 % checked",
+         basis_short="start grip (sized)",
          notes="vertical tensioning weight (Fig. 8.1): the take-up pulley (1606 kg reduced, "
                "~1.7 t shell; eq. 8.16) is part of the 42.66 kN weight, so M = 2 T_t / g "
                "already holds it. Idlers: 90 % of the roll mass (Simonsen 1987)"),
@@ -434,6 +449,7 @@ CASES_FULL = [
          l_o=A(1.2, "not published", 1.0, 1.5), l_u=A(3.0, "not published", 2.5, 3.5),
          takeup_basis="not stated (1988 Harrison design); T_t matches about 2 % carry sag at "
                       "the tail, at the foot of the 9 deg incline (phase 5.4)",
+         basis_short="not stated (about 2\\,\\% sag)",
          notes="copper mine, northern Chile (data from a 1988 Harrison report). The 45.5 t of "
                "Table 1 (\"other masses\") is the driven (tail) pulley m3 = 45.0 t of Table 2, "
                "not a counterweight: at the tail it would put ~500 kN on the slack side "
@@ -442,7 +458,7 @@ CASES_FULL = [
                "1 %). No usable start time: their eq. 30 adds arctangents of accelerations "
                "(unit-dependent). Running T1 / T2 = 4.72 needs e^(mu theta) >= 4.72 (drive "
                "pulleys not described)"),
-    Case("Si", "Sinaga 2008 (KPC)", "sinaga2008", L=P(13100.0), sigma_t=[0.001],
+    Case("Si", "Sinaga 2008 (KPC)", "sinaga2008kpc", L=P(13100.0), sigma_t=[0.001],
          m_b=P(29.7, "ST2100, 1100 mm, 5 + 5 mm covers"),
          m_ic=C(round(cema_reduced(880.0, 7, 3.0), 2),
                 "178 mm rolls, 3-roll 35 deg every 3 m; CEMA E7 WK2 interpolated to 43 in", 
@@ -470,6 +486,7 @@ CASES_FULL = [
                                                  4200 / 3.6 / 8.5, 9.0))),
          takeup_basis="low tension in full-load braking: take-up raised from 39.1 t to 46.9 t "
                       "(115 kN), the tower maximum",
+         basis_short="full-load braking",
          notes="take-up tower at the head end, by the drives; four drives on two head pulleys "
                "(wrap not given); flywheels"),
     Case("WR", "Wheatley and Rubel 2021", "wheatley2021",
@@ -488,10 +505,12 @@ CASES_FULL = [
          f=P(0.0233, "DIN, Belt Analyst"),
          carry_profile=A(((0.0, 0.0), (274.6, 18.0)), "straight incline; profile not published"),
          l_o=P(1.2), l_u=P(3.0),
-         takeup_basis="not stated",
+         takeup_basis="not stated; running tensions imply e^(mu theta) = 3.0 and about 1 % sag "
+                      "at the tail (phase 5.4)",
+         basis_short="not stated (grip at $E = 3.0$)",
          notes="take-up position and rigging unknown (dotted line on the maps); no start time; "
                "drive 150 kW nameplate, below the 164 kW demand"),
-    Case("Su", "Surtees 1995 (SASOL)", "surtees1995", L=P(805.0),
+    Case("Su", "Surtees 1995 (SASOL)", "surtees1995runback", L=P(805.0),
          sigma_d=D(float(np.hypot(152.0, 45.0)) / 805.0,
                    "drives 152 m (horizontal) from the head and 45 m below it", 152.0 / 805.0,
                    float(np.hypot(152.0, 45.0)) / 805.0),
@@ -515,6 +534,7 @@ CASES_FULL = [
          takeup_basis="holdback on the head pulley: design 1 (23.6 kN = max of grip from the "
                       "installed power and 2 % sag at the tail) could transmit 20.1 of the "
                       "35.3 kNm runback torque; design 2 raised T2 to 100 kN (83.2 kNm)",
+         basis_short="holdback",
          notes="design data; take-up right after the secondary drive pulley (Fig. 10, schematic); "
                "intermediate-drive panel only"),
     Case("NC", "Nordell and Ciozda 1984, case 1", "nordell1984", L=P(8150 * FT),
@@ -524,6 +544,7 @@ CASES_FULL = [
          V=P(930 * FT / 60, "930 ft/min (the copy's '41 m/s' is a transcription error)"),
          mu_r_given=A(1.0, "placeholder: not given (only frequencies are used)"),
          takeup_basis="unknown: no take-up data",
+         basis_short="unknown",
          notes="no take-up mass nor EA: frequencies in the limit beta -> 0 only; retarder "
                "(2720 kgf). Drive and take-up positions read from Fig. 8; event is a stop"),
 ]

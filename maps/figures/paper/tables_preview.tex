@@ -1,0 +1,13 @@
+% Standalone preview of the generated tables (phase 5.6). Compile with
+%   pdflatex tables_preview && bibtex tables_preview && pdflatex tables_preview (x2)
+% after copying the project .bib files next to it (Referencias.bib and refs_*.bib).
+\documentclass[a4paper,10pt]{article}
+\usepackage[margin=18mm]{geometry}
+\usepackage{amsmath,array,booktabs,threeparttable}
+\usepackage[authoryear,round]{natbib}
+\begin{document}
+\input{table_cases}
+\input{table_applications}
+\bibliographystyle{plainnat}
+\bibliography{Referencias,refs_phase2,refs_phase4,refs_phase45,refs_phase56}
+\end{document}

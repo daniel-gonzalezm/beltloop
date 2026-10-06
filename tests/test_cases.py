@@ -22,7 +22,9 @@ PHASE53A = {"SM": (0.130963, 1.94987), "Si": (0.025363, 2.24438)}
 PHASE53B = {"Pa": (0.168497, 1.84940)}
 # Step 5.3(c): S on the published take-up tension (173 kN) instead of the 4500 kg mass.
 PHASE53C = {"S": (0.131150, 1.66627)}
-REVISED = {**PHASE53A, **PHASE53B, **PHASE53C}
+# Step 5.6: H with strand values from the loop transit (validation/harrison_case.py).
+PHASE56 = {"H": (0.012043, 0.97)}
+REVISED = {**PHASE53A, **PHASE53B, **PHASE53C, **PHASE56}
 
 
 @pytest.mark.parametrize("tag", [t for t in PHASE4 if t not in REVISED])
