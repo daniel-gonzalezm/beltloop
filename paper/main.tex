@@ -1,0 +1,87 @@
+% =====================================================================
+% main.tex -- manuscript (phase 6). Neutral article class; the journal
+% template is applied in phase 7 (order: JSV -> JVET -> Shock and Vibration).
+%
+% Build from this folder (paper/ inside the beltloop repository):
+%   pdflatex main && bibtex main && pdflatex main && pdflatex main
+% Figures and tables are read from the code outputs, so they are never
+% copied by hand:
+%   ../maps/figures/paper/   (paper_figures.py, paper_tables.py)
+%   ../validation/figures/   (fig_lumped_validation.py)
+% Numbers quoted in the text come from paper_numbers.tex, written by the
+% code (one macro per number). Do not type a computed number in the text.
+% =====================================================================
+\documentclass[a4paper,11pt]{article}
+
+% ---- Layout ---------------------------------------------------------
+\usepackage[margin=25mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+% lmodern and microtype together (microtype needs scalable fonts)
+\IfFileExists{lmodern.sty}{\usepackage{lmodern}\usepackage{microtype}}{}
+\usepackage[mathlines]{lineno}   % line numbers for review copies
+\linenumbers
+
+% ---- Mathematics, units, tables, figures ----------------------------
+\usepackage{amsmath,amssymb}
+\usepackage[separate-uncertainty=true,per-mode=symbol]{siunitx}
+\usepackage{array,booktabs,threeparttable}   % needed by the generated tables
+\usepackage{graphicx}
+\graphicspath{{../maps/figures/paper/}{../validation/figures/}{figures/}}
+
+% ---- References -----------------------------------------------------
+% Numbered citations (JSV standard). \citet gives "Harrison [3]".
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage[capitalise,nameinlink]{cleveref}
+
+% ---- Project macros -------------------------------------------------
+\input{macros}
+\InputIfFileExists{paper_numbers}{}{%
+  \PackageWarningNoLine{main}{paper_numbers.tex not found: run maps/paper_numbers.py}}
+
+% ---- Title ----------------------------------------------------------
+\title{The gravity take-up as a free end: closed-form longitudinal modal
+       analysis of belt conveyors with the take-up at an arbitrary position}
+% Working title (phase 6.1); final wording in step 6.8.
+\author{\TODO{Full name}\\[2pt]
+        \small\TODO{Affiliation, postal address}\\
+        \small\TODO{e-mail}\quad ORCID: \TODO{0000-0000-0000-0000}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\TODO{Abstract (step 6.8), at most 250 words: problem; model (two-strand
+continuum, 2:1 take-up at any point of the return strand, drive anywhere,
+Kelvin--Voigt); closed-form characteristic equation and the free-end
+structure (interlacing); closed-form take-up mass correction and the
+dynamic definition of a long conveyor; universal start-up curve of the
+fixed--free strand; validation; application.}
+\end{abstract}
+
+\noindent\textbf{Keywords:} belt conveyor; longitudinal vibration;
+gravity take-up; transfer matrix; modal analysis; start-up
+\TODO{check the keyword limit of the target journal}
+
+\input{sections/01_introduction}
+\input{sections/02_model}
+\input{sections/03_solution}
+\input{sections/04_validation}
+\input{sections/05_results}
+\input{sections/06_application}
+\input{sections/07_discussion}
+\input{sections/08_conclusions}
+\input{sections/declarations}
+
+\bibliographystyle{plainnat}   % elsarticle-num (or the journal style) in phase 7
+\bibliography{references}
+
+\appendix
+\input{sections/appendix_a_transfer}
+\input{sections/appendix_b_numerics}
+\input{sections/appendix_c_cases}
+
+\end{document}

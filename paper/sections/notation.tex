@@ -1,0 +1,84 @@
+% =====================================================================
+% notation.tex -- table of notation (included in Section 2).
+% Draft of step 6.2, from model.tex and the notes (sections 4.1,
+% 4.14-4.26). Complete in 6.3-6.6 as symbols enter the text; prune in 6.8.
+%
+% Decisions of step 6.2 (clashes resolved):
+%   - Periods are t (s) and tau (units of L/c_r), like t_a and tau_a:
+%     t_1, tau_1 for the loop, t_s, tau_s for a fixed-free strand,
+%     t_{B1}, t_{A1} for modes followed by strand. T stays for tensions
+%     (T_0, T_d, T_t, and T_1, T_2 at the drive as in DIN 22101).
+%   - Transit time of strand B: tau_B = 1 - xi + gamma (was t_B).
+%   - Drive factor written e^{mu theta}; E is only Young's modulus.
+%     Wrap angle theta (DIN 22101 uses alpha, taken here by the material
+%     coupling factor); friction coefficient mu without subscript, while
+%     line densities always carry one (mu_r, mu_c).
+%   - Inclination of the belt path delta(s), as in DIN 22101 (model.tex
+%     used theta(s)); carriage inclination delta_c (model.tex used kappa
+%     for its sine, which clashed with the wavenumbers kappa_j).
+%   - Weighing line density m' (DIN 22101); m is kept for masses
+%     (modal mass m_k, strand masses m_A, m_B, drive mass ratio m_d).
+%   - Rigging ratio lambda (model.tex used i, the imaginary unit).
+%   - T_t/F_U gets no symbol (the notes of step 5.4 used tau).
+% =====================================================================
+\begin{table}[t]
+\centering
+\caption{Notation. Dimensionless quantities are scaled with the strand length $L$,
+the return-strand transit time $L/c_r$, the peak drive acceleration $a_m$ and the
+inertial force $\mu_rLa_m$.}
+\label{tab:notation}
+\small
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{0.72\linewidth}@{}}
+\toprule
+Symbol & Meaning\\
+\midrule
+\multicolumn{2}{@{}l}{\emph{Geometry}}\\
+$L$ & path length of each strand (carry and return)\\
+$\sigma$ & geometric coordinate from the head pulley in the direction of travel; return strand $0\le\sigma<L$\\
+$\sigma_d$, $\sigma_t$ & positions of the drive and take-up pulleys\\
+$s$, $x=s/L$ & loop coordinate from the drive exit; $s=0$ and $s=2L$ are the faces of the drive pulley\\
+$s_t$, $\xi=s_t/L$ & take-up position from the drive exit\\
+$\ell_1$, $\ell_2$ & return belt between head and drive, and between take-up and tail (units of $L$)\\
+$\delta$ & local inclination of the belt path ($\delta>0$ uphill)\\
+\midrule
+\multicolumn{2}{@{}l}{\emph{Belt, drive and take-up}}\\
+$EA$ & axial stiffness of the belt ($E$, Young's modulus)\\
+$\mu_r$, $\mu_c$ & inertial line densities (belt, reduced idler mass, coupled material)\\
+$\mw_r$, $\mw_c$ & line densities that contribute to weight (belt and material)\\
+$c_r$, $c_c$ & wave speeds, $c_j=\sqrt{EA/\mu_j}$\\
+$\alpha$ & material coupling factor \citep{lodewijks2002}\\
+$t_v$ & Kelvin--Voigt retardation time\\
+$\Mtu$ & take-up mass referred to its pulley\\
+$\nstr$ & belt strands that carry the take-up pulley\\
+$\lambda$ & rigging ratio (counterweight travel per unit carriage travel; $\lambda=1$ when hung directly)\\
+$\delta_c$ & inclination of the take-up carriage\\
+$\Tt$ & static belt tension at the take-up\\
+$T_1$, $T_2$ & belt tensions at the drive entry and exit (tight and slack side)\\
+$\Wr=g\mu_rL$ & weight of the return strand\\
+$F_U$ & running peripheral force at the drive (DIN 22101)\\
+$\egrip$ & drive factor (friction coefficient $\mu$ between belt and pulley, wrap angle $\theta$)\\
+$m_d$ & reduced drive mass over $\mu_rL$ (torque-controlled drive)\\
+\midrule
+\multicolumn{2}{@{}l}{\emph{Response}}\\
+$w$, $U$ & elastic displacement of the belt; rigid motion imposed by the drive\\
+$y$ & take-up pulley displacement (positive when the loop lengthens)\\
+$T_0$, $T_d$ & static and dynamic belt tension; $\hat T=T_d/(\mu_rLa_m)$\\
+$V$, $a$, $a_m$ & drive velocity, acceleration and peak acceleration\\
+$t_a$, $\tau_a$ & start (acceleration) time; $\tau_a=c_rt_a/L$\\
+$r$, $\varphi$ & motion resistance per unit length; its onset function\\
+\midrule
+\multicolumn{2}{@{}l}{\emph{Dimensionless parameters and modal quantities}}\\
+$\gamma=c_r/c_c$ & wave-speed ratio, $\gamma^2=\mu_c/\mu_r$\\
+$\beta$ & take-up mass ratio, $4\Mtu/(\nstr^2\mu_rL)=(4/\nstr)\lambda\,\Tt/\Wr$\\
+$\hat\zeta$ & damping parameter, $c_rt_v/(2L)$; modal damping $\zeta_k=\hat\zeta\Omega_k$\\
+$\tau$ & dimensionless time, $c_rt/L$\\
+$\Omega=\omega L/c_r$ & dimensionless circular frequency\\
+$\kappa_r$, $\kappa_c$ & dimensionless wavenumbers, $\Omega$ and $\gamma\Omega$\\
+$W_k$, $Y_k$, $m_k$, $\Gamma_k$ & mode shape, take-up amplitude, modal mass and participation factor of mode $k$\\
+$\tper{1}$, $\tauper{1}$ & fundamental period of the loop; $\tauper{1}=c_r\tper{1}/L$\\
+$\tper{s}$, $\tauper{s}$ & fundamental period of a fixed--free strand\\
+$\tauB$ & transit time of the strand downstream of the take-up, $1-\xi+\gamma$\\
+$\betafive$ & take-up mass ratio at which a natural period lengthens by 5\,\%\\
+\bottomrule
+\end{tabular}
+\end{table}

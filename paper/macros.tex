@@ -1,0 +1,38 @@
+% =====================================================================
+% macros.tex -- notation and editing macros of the manuscript.
+% Keep this file small: a macro is worth it only if a symbol appears
+% many times or its typesetting may change in one place.
+% =====================================================================
+
+% ---- Editing aids (remove or empty \TODO before submission) ---------
+\newcommand{\TODO}[1]{\textcolor{red}{[#1]}}
+\newcommand{\NOTE}[1]{\textcolor{blue}{[#1]}}
+
+% ---- Generic operators ----------------------------------------------
+\newcommand{\dd}{\mathrm{d}}                    % differential
+\newcommand{\ee}{\mathrm{e}}                    % Euler's number
+\newcommand{\ii}{\mathrm{i}}                    % imaginary unit
+\newcommand{\jump}[1]{[\![#1]\!]}               % jump across a point
+\newcommand{\T}{\mathsf{T}}                     % transpose
+\newcommand{\mat}[1]{\mathbf{#1}}               % matrices and vectors
+
+% ---- Notation decided in step 6.2 (see sections/notation.tex) -------
+% Periods and transit times are lower-case t (dimensional) and tau
+% (dimensionless, units of L/c_r), like t_a and tau_a; T is kept for
+% tensions (T_0, T_d, T_t and the drive tensions T_1, T_2 of DIN 22101).
+% Changing one of these macros here changes it everywhere.
+\newcommand{\Mtu}{M}                 % take-up mass referred to its pulley
+\newcommand{\nstr}{n}                % belt strands that carry the take-up pulley
+\newcommand{\Tt}{T_t}                % static belt tension at the take-up
+\newcommand{\Wr}{W_r}                % weight of the return strand, g mu_r L
+\newcommand{\mw}{m'}                % line density that contributes to weight (DIN 22101 m')
+\newcommand{\egrip}{\ee^{\mu\theta}}  % drive factor; E is reserved for Young's modulus
+\newcommand{\tper}[1]{t_{#1}}        % natural period of mode #1 (s)
+\newcommand{\tauper}[1]{\tau_{#1}}   % the same period in units of L/c_r
+\newcommand{\tauB}{\tau_B}           % transit time of strand B, 1 - xi + gamma (units of L/c_r)
+\newcommand{\betafive}{\beta_5}      % take-up mass threshold (5 % period change)
+
+% ---- Numbers from the code ------------------------------------------
+% paper_numbers.tex defines one macro per number quoted in the text,
+% named \Num<Topic><Quantity>, e.g. \NumHarrisonPeriod. Units stay in
+% the text: \qty{\NumHarrisonPeriod}{\second}.

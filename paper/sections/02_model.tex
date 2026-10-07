@@ -1,0 +1,49 @@
+% =====================================================================
+% Section 2 -- Model. Written in step 6.3 from model.tex (phase 2) with
+% the corrections of notes 4.9 points 1-4, 6, 9 and 12.
+% =====================================================================
+\section{Model}\label{sec:model}
+
+\input{sections/notation}
+
+\subsection{Assumptions}\label{sec:assumptions}
+% model.tex (A1)-(A8). Add: gravity only in the static state; support
+% from lodewijks2013 Fig. 8 (same dynamic drop of about 17.3 kN for dips
+% of 0-30 m; the 40 m dip loses tension, which is the slack limit of
+% Section 5.4).
+\TODO{Assumptions (A1)--(A8).}
+
+\subsection{Geometry and loop coordinate}\label{sec:geometry}
+\begin{figure}[t]
+  \centering
+  % Figure 1 is drawn in the code chat of step 6.2 (fig_loop.pdf).
+  \IfFileExists{figures/fig_loop.pdf}{%
+    \includegraphics[width=\linewidth]{fig_loop}}{%
+    \fbox{\parbox{0.9\linewidth}{\centering\vspace{3em}Loop schematic: head and
+    tail pulleys, drive at $\sigma_d$, take-up at $\sigma_t$, coordinates $\sigma$
+    and $s$, strands $r$ and $c$, 2:1 take-up with $\nstr$ strands.\vspace{3em}}}}
+  \caption{\TODO{Caption of the loop schematic.}}
+  \label{fig:loop}
+\end{figure}
+\TODO{Geometry and loop coordinate.}
+
+\subsection{Static state and dynamic increment}\label{sec:increment}
+\TODO{Static state, decomposition $u=u_0+U+w$, equation of motion.}
+
+\subsection{Interface and boundary conditions}\label{sec:interfaces}
+% Drive, head and tail, take-up (2:1): continuity of tension, jump 2y,
+% M y'' = -2 T_d. Contrast with the embedded mass and its limits.
+\TODO{Interface conditions.}
+
+\subsection{Take-up hung on \texorpdfstring{$n$}{n} strands}\label{sec:nstrands}
+% Notes 4.13 and 4.19; 4.9 points 9 and 17. Exact map: beta = 4M/(n^2 mu_r L),
+% T_t = force/n, carriage travel 2/n. Cite song2003 (discrete antecedent).
+\TODO{Take-up on $n$ strands.}
+
+\subsection{Take-up mass and static tension}\label{sec:static}
+% Identity beta = (4/n) lambda T_t / W_r (notes 4.26); the take-up mass is
+% not a free parameter. Rule T_t <~ W_r/4 goes to Section 5.2.
+\TODO{Take-up mass and static tension.}
+
+\subsection{Dimensionless formulation}\label{sec:dimensionless}
+\TODO{Scales and parameters $\gamma$, $\beta$, $\xi$, $\hat\zeta$, $\tau_a$.}
