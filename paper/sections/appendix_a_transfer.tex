@@ -1,3 +1,61 @@
-% Appendix A -- transfer matrices and orthogonality (model.tex). Step 6.3.
+% Appendix A -- transfer matrices and orthogonality (model.tex, step 6.3).
 \section{Transfer matrices and orthogonality}\label{app:transfer}
-\TODO{Matrices for each configuration; derivation of the inner product.}
+
+\paragraph{Matrices of the two strands.} With $\mat S_r(\ell)=\mat S(\ell,\Omega)$ and
+$\mat S_c(\ell)=\mat S(\ell,\gamma\Omega)$, and positions in units of $L$, the products
+of~\eqref{eq:chareq} are those of \cref{tab:AB}; the factors are written from right
+to left in the order in which the belt meets the segments. A take-up on the tight side
+of an intermediate drive belongs to the same family as one on the slack side: reversing
+the direction of travel exchanges the two.
+
+\begin{table}[h]
+  \centering
+  \caption{Transfer matrices of strand~A, from the drive exit to the take-up, and of
+  strand~B, from the take-up to the drive entry, with the take-up on the return
+  strand.}
+  \label{tab:AB}
+  \small
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Drive position & $\mat A$ & $\mat B$\\
+    \midrule
+    Head ($\sigma_d=0$) & $\mat S_r(\sigma_t)$ & $\mat S_c(1)\,\mat S_r(1-\sigma_t)$\\
+    Return strand, take-up downstream ($\sigma_d<\sigma_t$) & $\mat S_r(\sigma_t-\sigma_d)$
+      & $\mat S_r(\sigma_d)\,\mat S_c(1)\,\mat S_r(1-\sigma_t)$\\
+    Return strand, take-up upstream ($\sigma_t<\sigma_d$)
+      & $\mat S_r(\sigma_t)\,\mat S_c(1)\,\mat S_r(1-\sigma_d)$ & $\mat S_r(\sigma_d-\sigma_t)$\\
+    Tail ($\sigma_d=1$) & $\mat S_r(\sigma_t)\,\mat S_c(1)$ & $\mat S_r(1-\sigma_t)$\\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{Direction of travel.} Let $\mat Q=\operatorname{diag}(1,-1)$. Each factor
+$\mat E\in\{\mat S,\mat J\}$ satisfies $\mat Q\mat E\mat Q=\mat E^{-1}$, so the product
+$\mat P=\mat E_m\cdots\mat E_1$ of a chain and the product $\mat P^{\mathrm R}=\mat E_1\cdots\mat E_m$
+of the reversed chain are related by $\mat P^{\mathrm R}=\mat Q\mat P^{-1}\mat Q$. Since
+$\det\mat P=1$, $(\mat P^{-1})_{12}=-P_{12}$ and $P^{\mathrm R}_{12}=P_{12}$: the condition
+$P_{12}=0$, and with it the spectrum, does not depend on the direction of travel. The
+same relation gives $\operatorname{tr}\mat P^{\mathrm R}=\operatorname{tr}\mat P$, so the
+torque-controlled equation~\eqref{eq:chareq_torque} is also invariant.
+
+\paragraph{Orthogonality.} For two modes $(W_i,Y_i)$ and $(W_j,Y_j)$, multiplying
+\eqref{eq:eigen} for mode $i$ by $W_j$, integrating over the segments and integrating by
+parts gives
+\begin{equation}\label{eq:orth_derivation}
+  \Omega_i^2\int_0^2\hat\mu\,W_iW_j\,\dd x=\int_0^2W_i'W_j'\,\dd x
+  -W_i'(\xi)\bigl[W_j(\xi^-)-W_j(\xi^+)\bigr],
+\end{equation}
+because $W_j$ vanishes at the drive and $W$ and $W'$ are continuous at the head and
+tail pulleys. At the take-up $W_i'$ is continuous and, by~\eqref{eq:eigen_tu},
+$W_j(\xi^-)-W_j(\xi^+)=2Y_j$ and $W_i'(\xi)=\tfrac12\beta\Omega_i^2Y_i$, so the boundary term is
+$\beta\Omega_i^2Y_iY_j$ and
+\begin{equation}\label{eq:orth}
+  \Omega_i^2\left(\int_0^2\hat\mu\,W_iW_j\,\dd x+\beta\,Y_iY_j\right)=\int_0^2W_i'W_j'\,\dd x .
+\end{equation}
+The right-hand side is symmetric in $i$ and $j$; subtracting the same identity with $i$
+and $j$ exchanged shows that modes with distinct frequencies are orthogonal with
+respect to~\eqref{eq:inner}, and then~\eqref{eq:orth} gives
+$\int_0^2W_i'W_j'\,\dd x=\Omega_i^2m_i\delta_{ij}$. The modal equations~\eqref{eq:modal}
+follow by projecting~\eqref{eq:pde_nd}--\eqref{eq:bc_nd} on $(W_k,Y_k)$ with the same
+inner product: the inertial and resistance loads act on the belt only, which is why
+$\Gamma_k$ and $R_k$ carry no take-up term.

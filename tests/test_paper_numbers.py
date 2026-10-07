@@ -80,6 +80,8 @@ PINNED = {
     "LoXiLimit": "0.82", "LoGripRatioMin": "4.2", "LoGripRatioMax": "6.1", "LoSineTtFactor": "2.4",
     "SMTtReq": "60", "SMTtReqTail": "22", "SuTtReqTight": "234", "SuTightFactor": "12",
     "SMShortest": "13", "SuShortest": "7.4",
+    # closed-form solution, Section 3 (step 6.3; notes 4.14 and 4.9 point 1)
+    "MassCorrErrTenth": "0.4", "MassCorrErrFundOne": "3.1", "StepOvershootEntry": "2.2",
 }
 
 

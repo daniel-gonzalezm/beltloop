@@ -1,49 +1,296 @@
 % =====================================================================
 % Section 2 -- Model. Written in step 6.3 from model.tex (phase 2) with
-% the corrections of notes 4.9 points 1-4, 6, 9 and 12.
+% the corrections of notes 4.9 points 4, 9, 11 (gravity only in the
+% static state), 12 and 19 (notation of step 6.2: delta, m', lambda,
+% delta_c). Points 1-3 and 6 are applied in Section 3.
+% Numbers quoted from the literature (lodewijks2013, Fig. 8) are typed;
+% computed numbers come from paper_numbers.tex.
 % =====================================================================
 \section{Model}\label{sec:model}
 
 \input{sections/notation}
 
 \subsection{Assumptions}\label{sec:assumptions}
-% model.tex (A1)-(A8). Add: gravity only in the static state; support
-% from lodewijks2013 Fig. 8 (same dynamic drop of about 17.3 kN for dips
-% of 0-30 m; the 40 m dip loses tension, which is the slack limit of
-% Section 5.4).
-\TODO{Assumptions (A1)--(A8).}
+
+The conveyor is idealised as a closed loop of belt driven by a single drive pulley
+and tensioned by a single gravity take-up on the return strand. The following
+assumptions are made.
+
+\begin{enumerate}
+  \item[(A1)] \emph{One-dimensional continuum.} The belt, the reduced (rotational)
+  mass of the idlers and the part of the bulk material that moves with the belt are
+  lumped into an equivalent inertial line density. The axial stiffness $EA$ is the
+  same around the loop.
+  \item[(A2)] \emph{Homogeneous strands.} The return and carry strands have constant
+  inertial line densities $\mu_r$ and $\mu_c$ and therefore constant longitudinal
+  wave speeds $c_j=\sqrt{EA/\mu_j}$, $j\in\{r,c\}$; both strands have the same path
+  length $L$. The coupling of the bulk material to the belt is absorbed into
+  $\mu_c$ through the coupling factor $\alpha$ of \citet{lodewijks2002}.
+  \item[(A3)] \emph{Linear Kelvin--Voigt belt.} The dynamic tension is
+  $T_d=EA\,(\varepsilon+t_v\,\dot\varepsilon)$, with retardation time $t_v$. The
+  stiffening associated with belt sag at low tension \citep{ellis1987} and the
+  dependence of the belt modulus on tension and temperature \citep{zarzycki2023}
+  are neglected.
+  \item[(A4)] \emph{Small belt speed.} The belt speed is two to three orders of
+  magnitude below the wave speeds, so material and spatial coordinates coincide and
+  transport terms are neglected.
+  \item[(A5)] \emph{Point pulleys and rigid structure.} The contact between belt and
+  pulley is reduced to a point. The rotational inertia and the bearing friction of
+  the head, tail and bend pulleys are neglected, as are the elasticity and motion of
+  the supporting structure.
+  \item[(A6)] \emph{Drive.} The drive pulley does not slip and imposes a prescribed
+  belt velocity $V(t)$. The no-slip condition is checked a posteriori
+  (Section~\ref{sec:validity}); an imposed torque is treated as a limit of validity
+  in Section~\ref{sec:torque}.
+  \item[(A7)] \emph{Gravity take-up.} The take-up pulley is free to rotate and is
+  carried by a carriage loaded by a counterweight. The translational masses of
+  pulley, carriage and counterweight are condensed into a mass $\Mtu$ referred to
+  the carriage displacement (Section~\ref{sec:static}). The rotational inertia of the
+  take-up pulley, the elasticity of the rope, the inertia and friction of the
+  sheaves, motion retarders and the end stops of the carriage are neglected.
+  \item[(A8)] \emph{Linearity about the static state.} The conveyor starts from rest
+  in static equilibrium, and the dynamic response is a linear increment on that
+  state. The increment is admissible while the total belt tension stays positive
+  (Section~\ref{sec:validity}).
+\end{enumerate}
 
 \subsection{Geometry and loop coordinate}\label{sec:geometry}
+
 \begin{figure}[t]
   \centering
-  % Figure 1 is drawn in the code chat of step 6.2 (fig_loop.pdf).
   \IfFileExists{figures/fig_loop.pdf}{%
     \includegraphics[width=\linewidth]{fig_loop}}{%
-    \fbox{\parbox{0.9\linewidth}{\centering\vspace{3em}Loop schematic: head and
-    tail pulleys, drive at $\sigma_d$, take-up at $\sigma_t$, coordinates $\sigma$
-    and $s$, strands $r$ and $c$, 2:1 take-up with $\nstr$ strands.\vspace{3em}}}}
-  \caption{\TODO{Caption of the loop schematic.}}
+    \fbox{\parbox{0.9\linewidth}{\centering\vspace{3em}Loop schematic (run
+    maps/fig\_loop.py).\vspace{3em}}}}
+  \caption{Conveyor loop with the drive on the return strand. The geometric
+  coordinate $\sigma$ runs from the head pulley along the return strand; the loop
+  coordinate $s$ starts where the belt leaves the drive pulley ($s=0$) and ends where
+  it returns to it ($s=2L$). The take-up at $s=\xi L$ divides the loop into strand~A,
+  from the drive exit to the take-up, and strand~B, from the take-up by the tail, the
+  carry strand and the head to the drive entry. Positions are illustrative.}
   \label{fig:loop}
 \end{figure}
-\TODO{Geometry and loop coordinate.}
+
+A geometric coordinate $\sigma\in[0,2L)$ is measured along the belt path in the
+direction of travel, from the head pulley, so that the return strand occupies
+$0\le\sigma<L$ and the carry strand $L\le\sigma<2L$; the tail pulley is at
+$\sigma=L$ (\cref{fig:loop}). The drive pulley is at $\sigma_d$, anywhere on the
+loop, and the take-up pulley at $\sigma_t\in(0,L)$, on the return strand. A head
+drive corresponds to $\sigma_d=0$, a tail drive to $\sigma_d=L$ and an intermediate
+drive to $0<\sigma_d<L$, with the take-up either downstream ($\sigma_t>\sigma_d$, on
+the slack side) or upstream ($\sigma_t<\sigma_d$, on the tight side) of it.
+
+The analysis uses the loop coordinate
+\begin{equation}\label{eq:loopcoord}
+  s=(\sigma-\sigma_d)\bmod 2L,\qquad s\in[0,2L],
+\end{equation}
+which starts where the belt leaves the drive pulley and ends where it returns to it;
+$s=0$ and $s=2L$ are the two faces of the drive pulley. The take-up is at
+$s_t=(\sigma_t-\sigma_d)\bmod 2L$, and $\xi=s_t/L$. In this coordinate the loop is an
+open chain of homogeneous segments, separated by the head and tail pulleys, where the
+line density changes, and by the take-up pulley. The take-up divides the chain into
+strand~A ($0\le s\le s_t$) and strand~B ($s_t\le s\le 2L$). With a head drive,
+strand~A is a piece of return belt of length $\xi L$, and strand~B holds the rest of
+the return strand followed by the whole carry strand.
 
 \subsection{Static state and dynamic increment}\label{sec:increment}
-\TODO{Static state, decomposition $u=u_0+U+w$, equation of motion.}
+
+Let $\mw(s)$ be the line density that contributes to weight (belt and material,
+without the reduced idler mass, so that $\mw\neq\mu$ in general), $\delta(s)$ the
+local inclination of the belt path, positive uphill in the direction of travel, and
+$\Tt$ the static belt tension at the take-up. At rest the static tension satisfies
+\begin{equation}\label{eq:static}
+  \frac{\dd T_0}{\dd s}=\mw(s)\,g\sin\delta(s),\qquad T_0(s_t)=\Tt,
+\end{equation}
+and the drive pulley, locked at rest, carries the difference $T_0(2L)-T_0(0)$. The
+take-up holds $\Tt$ with the weight of its counterweight (Section~\ref{sec:static}).
+
+During start-up the displacement of a belt particle is decomposed as
+\begin{equation}\label{eq:decomposition}
+  u(s,t)=u_0(s)+U(t)+w(s,t),\qquad U(t)=\int_0^tV(t')\,\dd t',
+\end{equation}
+where $u_0$ is the static displacement, $U$ the rigid-body motion imposed by the
+drive and $w$ the elastic response. The rigid motion $U$ does not move the take-up,
+because a uniform translation of the belt along its path leaves the length of belt
+stored in the take-up unchanged. Balance of momentum of a belt element, after
+subtraction of the static equilibrium~\eqref{eq:static}, gives in every segment
+\begin{equation}\label{eq:pde}
+  \mu(s)\,w_{tt}=\frac{\partial T_d}{\partial s}-\mu(s)\,a(t)-r(s)\,\varphi(t),
+  \qquad T_d=EA\,(w_s+t_v\,w_{st}),
+\end{equation}
+with $a=\dot V$ the drive acceleration. The term $-\mu a$ is the inertial load of the
+prescribed motion. The term $r(s)\varphi(t)$ represents the motion resistances
+(idler rotation, indentation and flexure; force per unit length, opposing travel),
+which are absent at rest and develop as the belt starts to move; $\varphi(t)$
+describes their onset, with $\varphi\to1$ at steady speed. The base case is
+$\varphi=V(t)/V_\infty$, with $V_\infty$ the final speed; a unit step serves as an
+upper bound. A faithful representation would require resistances that depend on the
+local belt speed, which is not attempted here.
+
+Gravity does not appear in~\eqref{eq:pde}: it is balanced by the static state,
+which includes the weight of the counterweight. Applying the weight as a load at
+$t=0$ to a belt initially at rest and unstrained would excite a spurious transient of
+the size of the static deflection. The simulations of \citet[Fig.~8]{lodewijks2013}
+illustrate the superposition: during a drift stop of a \qty{1}{\kilo\metre} conveyor
+whose path dips between head and tail, the dynamic drop of the carry-side tension in
+the dip is the same, about \qty{17.3}{\kilo\newton}, for dips of
+\qtyrange{0}{30}{\metre}, and the depth only shifts the static level. With a
+\qty{40}{\metre} dip the tension drops to zero and the superposition fails, which is the slack limit of Section~\ref{sec:validity}. The
+initial conditions are
+\begin{equation}\label{eq:ic}
+  w(s,0)=w_t(s,0)=0,\qquad y(0)=\dot y(0)=0,
+\end{equation}
+where $y$ is the displacement of the take-up pulley from its static position,
+positive when the loop lengthens.
 
 \subsection{Interface and boundary conditions}\label{sec:interfaces}
-% Drive, head and tail, take-up (2:1): continuity of tension, jump 2y,
-% M y'' = -2 T_d. Contrast with the embedded mass and its limits.
-\TODO{Interface conditions.}
+
+\paragraph{Drive pulley.} Without slip and with prescribed velocity, both faces of
+the drive pulley follow $U(t)$; by~\eqref{eq:decomposition},
+\begin{equation}\label{eq:bc_drive}
+  w(0,t)=w(2L,t)=0.
+\end{equation}
+
+\paragraph{Head and tail pulleys.} By (A5) these pulleys transmit displacement and
+tension unchanged,
+\begin{equation}\label{eq:bc_ht}
+  \jump{w}=0,\qquad \jump{T_d}=0,
+\end{equation}
+where $\jump{f}=f(s^+)-f(s^-)$. The same conditions hold at any other point where the
+line density changes, such as the loading point.
+
+\paragraph{Take-up pulley.} Consider first a pulley hung on the two belt branches
+that wrap it by $180^\circ$ ($\nstr=2$). Because the pulley is free to rotate (A7),
+the tension is the same on both sides,
+\begin{equation}\label{eq:bc_tu_tension}
+  T_d(s_t^-,t)=T_d(s_t^+,t)\equiv T_d(s_t,t).
+\end{equation}
+When the pulley moves by $y$, the belt stored around it grows by $2y$. In the loop
+coordinate the take-up loop is collapsed to the point $s_t$, so the elongation of the
+rest of the loop must grow by the same amount, $\int_0^{2L}w_s\,\dd s=2y$, the
+integral being taken over the continuous parts. With~\eqref{eq:bc_drive},
+\begin{equation}\label{eq:bc_tu_jump}
+  \jump{w}_{s_t}=w(s_t^+,t)-w(s_t^-,t)=-2y(t):
+\end{equation}
+the belt upstream of the pulley is drawn forward into the take-up and the belt
+downstream is drawn back. Finally, the two branches pull the pulley with $2T$; with
+the static part balanced by the counterweight,
+\begin{equation}\label{eq:bc_tu_dyn}
+  \Mtu\,\ddot y=-2\,T_d(s_t,t).
+\end{equation}
+Equations~\eqref{eq:bc_tu_tension}--\eqref{eq:bc_tu_dyn} are the continuum
+counterpart of the 2:1 take-up kinematics in the discrete models of
+\citet[Eq.~7.55]{lodewijks1996} and \citet[Eqs.~4--5]{kulinowski2014}; in a continuum
+model they were written by \citet[Eqs.~5--6]{song2012}, who then neglected the
+take-up inertia. They follow from Hamilton's principle with kinetic energy
+$\tfrac12\int\mu w_t^2\,\dd s+\tfrac12\Mtu\dot y^2$, strain energy
+$\tfrac12\int EA\,w_s^2\,\dd s$ and the constraint~\eqref{eq:bc_tu_jump}: the
+variation with respect to $w(s_t^\pm)$ gives~\eqref{eq:bc_tu_tension} and the
+variation with respect to $y$ gives~\eqref{eq:bc_tu_dyn}. The static terms cancel
+exactly, since the work of the static tension on the jump, $2\Tt y$, equals the work
+of the take-up weight. The energy balance is
+\begin{equation}\label{eq:energy}
+  \frac{\dd}{\dd t}\left[\frac12\int_0^{2L}\!\left(\mu w_t^2+EA\,w_s^2\right)\dd s
+  +\frac12\Mtu\dot y^2\right]
+  =-\int_0^{2L}\!EA\,t_v\,w_{st}^2\,\dd s-\int_0^{2L}\!(\mu a+r\varphi)\,w_t\,\dd s .
+\end{equation}
+
+Eliminating $y$ between~\eqref{eq:bc_tu_jump} and~\eqref{eq:bc_tu_dyn} gives
+$T_d(s_t)=(\Mtu/4)\,\jump{w_{tt}}_{s_t}$: the belt sees the take-up as a mass
+$\Mtu/4$ in series, which resists only the relative acceleration of the two belt
+ends and has no connection to the ground. This differs from a point mass embedded in
+the belt (displacement continuous, tension jump $\jump{T_d}=\Mtu w_{tt}$), the
+equivalent model of \citet[Fig.~2]{harrison1983} and the discrete model of
+\citet{sakharwade2019}. The two models have opposite limits. As $\Mtu\to0$ the
+embedded mass disappears, whereas the pulley enforces $T_d(s_t)=0$, a take-up of
+constant force. As $\Mtu\to\infty$ the embedded mass becomes a fixed node, whereas
+the pulley becomes a fixed pulley around which the belt runs freely and adds one slow
+mode of the counterweight (Section~\ref{sec:properties}).
 
 \subsection{Take-up hung on \texorpdfstring{$n$}{n} strands}\label{sec:nstrands}
-% Notes 4.13 and 4.19; 4.9 points 9 and 17. Exact map: beta = 4M/(n^2 mu_r L),
-% T_t = force/n, carriage travel 2/n. Cite song2003 (discrete antecedent).
-\TODO{Take-up on $n$ strands.}
+
+Long conveyors often store belt in a multiple loop, with the carriage hung on
+$\nstr$ belt strands ($\nstr$ even); $\nstr=4$ in the conveyor measured by
+\citet{harrison1985b} and in the take-up described by \citet{nordell1997zisco}. With
+carriage displacement $y_c$ and the same tension in all strands (free pulleys), the
+conditions become $\jump{w}_{s_t}=-\nstr\,y_c$ and $\Mtu\ddot y_c=-\nstr\,T_d(s_t)$.
+The equivalent displacement $y=(\nstr/2)\,y_c$ and the equivalent mass
+\begin{equation}\label{eq:nmap}
+  \Mtu_{\mathrm{eq}}=\frac{4\Mtu}{\nstr^2}
+\end{equation}
+recover~\eqref{eq:bc_tu_jump}--\eqref{eq:bc_tu_dyn} exactly and conserve the kinetic
+energy, $\tfrac12\Mtu\dot y_c^2=\tfrac12\Mtu_{\mathrm{eq}}\dot y^2$. The static force on
+the carriage is $\nstr\Tt$, the carriage travels $2/\nstr$ times the equivalent
+displacement, and the length of belt stored, $2y$, does not depend on $\nstr$. The
+number of take-up pulleys already enters the kinematics of the discrete model of
+\citet{song2003}; here it only rescales the mass, and the rest of the paper is written
+for the equivalent two-strand take-up. For the same take-up tension a multiple loop
+reduces the equivalent mass by the factor $2/\nstr$ (Section~\ref{sec:static}), which
+moves the take-up further towards the free-end regime of Section~\ref{sec:freeend}.
 
 \subsection{Take-up mass and static tension}\label{sec:static}
-% Identity beta = (4/n) lambda T_t / W_r (notes 4.26); the take-up mass is
-% not a free parameter. Rule T_t <~ W_r/4 goes to Section 5.2.
-\TODO{Take-up mass and static tension.}
+
+The take-up mass is not a free parameter. Let $M_w$ be the counterweight mass, $M_c$
+the mass of the take-up pulley and carriage, $\lambda$ the rigging ratio
+(counterweight travel per unit carriage travel; $\lambda=1$ for a counterweight hung
+directly on the carriage) and $\delta_c$ the inclination of the carriage track
+($\delta_c=90^\circ$ for a vertical take-up). Virtual work and kinetic energy give
+\begin{equation}\label{eq:reeving}
+  \nstr\,\Tt=g\,(\lambda M_w+M_c\sin\delta_c),\qquad
+  \Mtu=M_c+\lambda^2M_w=\frac{\lambda\,\nstr\,\Tt}{g}+(1-\lambda\sin\delta_c)\,M_c .
+\end{equation}
+With the equivalent mass~\eqref{eq:nmap} and the weight of the return strand
+$\Wr=g\mu_rL$, the take-up mass ratio defined in Section~\ref{sec:dimensionless}
+becomes
+\begin{equation}\label{eq:beta_tension}
+  \beta=\frac{4\Mtu}{\nstr^2\mu_rL}
+  =\frac{4}{\nstr}\,\lambda\,\frac{\Tt}{\Wr}+\frac{4(1-\lambda\sin\delta_c)\,M_c}{\nstr^2\mu_rL}.
+\end{equation}
+The second term vanishes for a vertical take-up with a directly hung counterweight
+and is otherwise small, since the carriage weighs much less than the counterweight.
+Equation~\eqref{eq:beta_tension} states that the take-up mass follows from the
+take-up tension: rigging and multiple loops change the mass for a given tension, but
+a gravity take-up cannot combine a large tension with a small mass. The tension $\Tt$
+is fixed by the running-state design: it is the smallest value that satisfies the
+grip condition at the drive and the sag limits on both strands, plus whatever margin
+the designer adds. It therefore depends weakly on the take-up position; for a
+horizontal head-drive conveyor governed by grip, for example,
+$\Tt=T_{2,\min}+r_r\,\xi L$, where $T_{2,\min}$ is the least admissible slack-side
+tension and $r_r$ the running resistance per unit length of the return strand.
+Section~\ref{sec:masscorrection} shows that the mass enters the dynamics only as a
+correction, which is why the results are given in terms of $\xi$ and $\gamma$ with
+$\beta$ as a correction; Section~\ref{sec:betaregime} evaluates $\Tt/\Wr$ for the
+conveyors in the literature.
 
 \subsection{Dimensionless formulation}\label{sec:dimensionless}
-\TODO{Scales and parameters $\gamma$, $\beta$, $\xi$, $\hat\zeta$, $\tau_a$.}
+
+Lengths are scaled by $L$, times by the transit time of the return strand $L/c_r$,
+accelerations by the peak drive acceleration $a_m$, displacements by $a_mL^2/c_r^2$
+and tensions by the inertial force of the return strand $\mu_rLa_m$:
+\begin{equation}\label{eq:scales}
+  x=\frac{s}{L},\quad \tau=\frac{c_rt}{L},\quad
+  \hat w=\frac{c_r^2}{a_mL^2}\,w,\quad \hat y=\frac{c_r^2}{a_mL^2}\,y,\quad
+  \hat T=\frac{T_d}{\mu_rLa_m},\quad \hat a=\frac{a}{a_m},\quad
+  \hat r=\frac{r}{\mu_ra_m}.
+\end{equation}
+The dimensionless parameters are
+\begin{equation}\label{eq:params}
+  \gamma=\frac{c_r}{c_c}=\sqrt{\frac{\mu_c}{\mu_r}},\qquad
+  \beta=\frac{4\Mtu}{\nstr^2\mu_rL},\qquad
+  \xi=\frac{s_t}{L},\qquad
+  \hat\zeta=\frac{c_rt_v}{2L},\qquad
+  \tau_a=\frac{c_rt_a}{L},
+\end{equation}
+together with the drive position $\sigma_d/L$ and the shape of the start-up profile,
+whose acceleration time is $t_a$. For $\nstr=2$, $\beta=\Mtu/(\mu_rL)$. The relative
+line density is $\hat\mu(x)=1$ on the return strand and $\gamma^2$ on the carry
+strand. Since $EA=\mu_rc_r^2$, the problem~\eqref{eq:pde}--\eqref{eq:bc_tu_dyn}
+becomes
+\begin{gather}
+  \hat\mu\,\hat w_{\tau\tau}=\frac{\partial\hat T}{\partial x}-\hat\mu\,\hat a(\tau)
+  -\hat r(x)\,\varphi(\tau),\qquad \hat T=\hat w_x+2\hat\zeta\,\hat w_{x\tau},\label{eq:pde_nd}\\
+  \hat w(0,\tau)=\hat w(2,\tau)=0,\qquad \jump{\hat w}_\xi=-2\hat y,\qquad
+  \jump{\hat T}_\xi=0,\qquad \beta\,\hat y_{\tau\tau}=-2\,\hat T(\xi,\tau),\label{eq:bc_nd}
+\end{gather}
+with $\hat w$ and $\hat T$ continuous at the head and tail pulleys. In the elastic case
+the dimensionless dynamic tension equals the dimensionless strain.

@@ -18,6 +18,8 @@ validation scripts already hold as data, which are marked "measured" in the comm
     and validation/data/lumped_validation.json (written by their scripts);
   * maps/data/paper_numbers_slow.json: the grip ratios of Lodewijks' 30 s starts (about 30 s to
     compute; refreshed with --recompute).
+  * beltloop itself (step 6.3, Section 3): accuracy of the two-pole take-up mass correction and
+    the overshoot of a step onset of the resistances (about 6 s).
 tests/test_paper_numbers.py checks that paper_numbers.tex equals the output of this script and
 pins the key numbers against the values of the state document, so a change in the code that
 moves a number in the text cannot pass unnoticed.
@@ -397,7 +399,39 @@ def validation(N: Numbers):
     N.add("LumpedElements", cases[0]["N"][-1], 0, "elements of the finest lumped model")
 
 
-SECTIONS = (claims, modal, beta_regime, startup, crawl, validity, applications, validation)
+def solution(N: Numbers):
+    """Step 6.3, Section 3 (closed-form solution): accuracy of the take-up mass correction and
+    the overshoot of a step onset of the resistances (about 6 s)."""
+    from beltloop import (Loop, StartProfile, modal_basis, natural_frequencies, startup_response,
+                          takeup_mass_approx)
+    N.section("Closed-form solution (Section 3): two-pole mass correction against exact roots")
+    # head drive, 1 <= gamma <= 3, take-up anywhere on the return strand
+    worst, worst1 = 0.0, 0.0
+    for g in np.linspace(1.0, 3.0, 21):
+        for xi in np.linspace(0.01, 0.99, 99):
+            lp = Loop.from_positions(0.0, xi, g)
+            ex = natural_frequencies(lp, 0.1, 3)
+            worst = max(worst, np.max(np.abs(takeup_mass_approx(lp, 0.1, 3) / ex - 1)))
+            ex1 = natural_frequencies(lp, 1.0, 1)[0]
+            worst1 = max(worst1, abs(takeup_mass_approx(lp, 1.0, 1)[0] / ex1 - 1))
+    N.add("MassCorrErrTenth", 100 * worst, 1,
+          "largest error of the two-pole frequencies, beta = 0.1, modes 1-3 (%)")
+    N.add("MassCorrErrFundOne", 100 * worst1, 1, "the same for the fundamental at beta = 1 (%)")
+
+    N.section("Closed-form solution (Section 3): step onset of the resistances")
+    # tests/test_response.py::test_step_overshoot_can_exceed_two (confirmed with FE in phase 3)
+    lp = Loop.from_positions(0.0, 0.05, 2.0, r_return=1.0, r_carry=1.0)
+    mb = modal_basis(lp, 0.1, 300)
+    tau = np.linspace(0.0, 60.0, 6001)
+    step = startup_response(mb, StartProfile("sine", 5.0, "step"), 0.0, tau).tension([2.0])
+    none = startup_response(mb, StartProfile("sine", 5.0, "none"), 0.0, tau).tension([2.0])
+    N.add("StepOvershootEntry", np.max(np.abs(step - none)) / abs(lp.quasi_static("r", [2.0])[0]), 1,
+          "peak / quasi-static resistance tension at the drive entry, gamma = 2, beta = 0.1, "
+          "xi = 0.05, undamped")
+
+
+SECTIONS = (claims, modal, beta_regime, startup, crawl, validity, applications, validation,
+            solution)
 
 
 def build(recompute=False) -> Numbers:

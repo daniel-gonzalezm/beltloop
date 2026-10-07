@@ -1,6 +1,6 @@
 % =====================================================================
 % notation.tex -- table of notation (included in Section 2).
-% Draft of step 6.2, from model.tex and the notes (sections 4.1,
+% Draft of step 6.2 (completed for Sections 2-3 in step 6.3), from model.tex and the notes (sections 4.1,
 % 4.14-4.26). Complete in 6.3-6.6 as symbols enter the text; prune in 6.8.
 %
 % Decisions of step 6.2 (clashes resolved):
@@ -21,13 +21,13 @@
 %   - Rigging ratio lambda (model.tex used i, the imaginary unit).
 %   - T_t/F_U gets no symbol (the notes of step 5.4 used tau).
 % =====================================================================
-\begin{table}[t]
+\begin{table}[p]
 \centering
 \caption{Notation. Dimensionless quantities are scaled with the strand length $L$,
 the return-strand transit time $L/c_r$, the peak drive acceleration $a_m$ and the
 inertial force $\mu_rLa_m$.}
 \label{tab:notation}
-\small
+\footnotesize
 \begin{tabular}{@{}l>{\raggedright\arraybackslash}p{0.72\linewidth}@{}}
 \toprule
 Symbol & Meaning\\
@@ -45,10 +45,10 @@ $\delta$ & local inclination of the belt path ($\delta>0$ uphill)\\
 $EA$ & axial stiffness of the belt ($E$, Young's modulus)\\
 $\mu_r$, $\mu_c$ & inertial line densities (belt, reduced idler mass, coupled material)\\
 $\mw_r$, $\mw_c$ & line densities that contribute to weight (belt and material)\\
-$c_r$, $c_c$ & wave speeds, $c_j=\sqrt{EA/\mu_j}$\\
+$c_r$, $c_c$ & wave speeds, $c_j=\sqrt{EA/\mu_j}$; $Z_r=\mu_rc_r$, impedance of the return strand\\
 $\alpha$ & material coupling factor \citep{lodewijks2002}\\
 $t_v$ & Kelvin--Voigt retardation time\\
-$\Mtu$ & take-up mass referred to its pulley\\
+$\Mtu$; $M_w$, $M_c$ & take-up mass referred to the carriage; counterweight and carriage masses\\
 $\nstr$ & belt strands that carry the take-up pulley\\
 $\lambda$ & rigging ratio (counterweight travel per unit carriage travel; $\lambda=1$ when hung directly)\\
 $\delta_c$ & inclination of the take-up carriage\\
@@ -57,11 +57,11 @@ $T_1$, $T_2$ & belt tensions at the drive entry and exit (tight and slack side)\
 $\Wr=g\mu_rL$ & weight of the return strand\\
 $F_U$ & running peripheral force at the drive (DIN 22101)\\
 $\egrip$ & drive factor (friction coefficient $\mu$ between belt and pulley, wrap angle $\theta$)\\
-$m_d$ & reduced drive mass over $\mu_rL$ (torque-controlled drive)\\
+$m_d$, $\hat c$ & reduced drive mass over $\mu_rL$ and slip damping over $\mu_rc_r$ (drive without speed control)\\
 \midrule
 \multicolumn{2}{@{}l}{\emph{Response}}\\
 $w$, $U$ & elastic displacement of the belt; rigid motion imposed by the drive\\
-$y$ & take-up pulley displacement (positive when the loop lengthens)\\
+$y$, $y_c$ & take-up displacement (two-strand equivalent, positive when the loop lengthens); carriage displacement\\
 $T_0$, $T_d$ & static and dynamic belt tension; $\hat T=T_d/(\mu_rLa_m)$\\
 $V$, $a$, $a_m$ & drive velocity, acceleration and peak acceleration\\
 $t_a$, $\tau_a$ & start (acceleration) time; $\tau_a=c_rt_a/L$\\
@@ -69,12 +69,13 @@ $r$, $\varphi$ & motion resistance per unit length; its onset function\\
 \midrule
 \multicolumn{2}{@{}l}{\emph{Dimensionless parameters and modal quantities}}\\
 $\gamma=c_r/c_c$ & wave-speed ratio, $\gamma^2=\mu_c/\mu_r$\\
-$\beta$ & take-up mass ratio, $4\Mtu/(\nstr^2\mu_rL)=(4/\nstr)\lambda\,\Tt/\Wr$\\
+$\beta$ & take-up mass ratio, $4\Mtu/(\nstr^2\mu_rL)=(4/\nstr)\lambda\,\Tt/\Wr$ (carriage mass neglected)\\
 $\hat\zeta$ & damping parameter, $c_rt_v/(2L)$; modal damping $\zeta_k=\hat\zeta\Omega_k$\\
 $\tau$ & dimensionless time, $c_rt/L$\\
 $\Omega=\omega L/c_r$ & dimensionless circular frequency\\
 $\kappa_r$, $\kappa_c$ & dimensionless wavenumbers, $\Omega$ and $\gamma\Omega$\\
 $W_k$, $Y_k$, $m_k$, $\Gamma_k$ & mode shape, take-up amplitude, modal mass and participation factor of mode $k$\\
+$H_A$, $H_B$; $\tilde m$ & receptances of strands A and B at the take-up; modal mass of a strand mode seen from its free end\\
 $\tper{1}$, $\tauper{1}$ & fundamental period of the loop; $\tauper{1}=c_r\tper{1}/L$\\
 $\tper{s}$, $\tauper{s}$ & fundamental period of a fixed--free strand\\
 $\tauB$ & transit time of the strand downstream of the take-up, $1-\xi+\gamma$\\

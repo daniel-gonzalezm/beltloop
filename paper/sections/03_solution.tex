@@ -1,31 +1,322 @@
 % =====================================================================
-% Section 3 -- Closed-form solution. Step 6.3, from model.tex with notes
-% 4.3, 4.9 point 11 and 4.14.
+% Section 3 -- Closed-form solution. Written in step 6.3 from model.tex
+% with notes 4.3, 4.4, 4.6, 4.9 points 1-3, 6 and 11, 4.10 and 4.14.
+% Decision of step 6.3: the torque-controlled drive stays here (3.6),
+% because Section 4 uses m_d and the slip dashpot for Harrison's case.
+% Every formula is checked in beltloop/tests (see the comments).
 % =====================================================================
 \section{Closed-form solution}\label{sec:solution}
 
 \subsection{Transfer matrices and characteristic equation}\label{sec:eigen}
-\TODO{Matrices $\mat S$, $\mat J$; equation $D(\Omega)=0$; table of $\mat A$, $\mat B$ (move to Appendix~\ref{app:transfer} if long).}
+
+Undamped free vibration, $\hat w=W(x)\,\ee^{\ii\Omega\tau}$ and
+$\hat y=Y\ee^{\ii\Omega\tau}$, with dimensionless frequency $\Omega=\omega L/c_r$,
+gives
+\begin{equation}\label{eq:eigen}
+  W''+\kappa_j^2W=0\ \text{in segment } j,\qquad \kappa_r=\Omega,\quad \kappa_c=\gamma\Omega,
+\end{equation}
+with $W(0)=W(2)=0$, $W$ and $W'$ continuous at the head and tail pulleys, and, at the
+take-up,
+\begin{equation}\label{eq:eigen_tu}
+  \jump{W'}_\xi=0,\qquad Y=\frac{2\,W'(\xi)}{\beta\Omega^2},\qquad
+  \jump{W}_\xi=-\frac{4\,W'(\xi)}{\beta\Omega^2}.
+\end{equation}
+With the state vector $\mat z=(W,W')^\T$, a homogeneous segment of length $\ell$ and
+wavenumber $\kappa$, and the take-up pulley, act through the unimodular matrices
+\begin{equation}\label{eq:transfer}
+  \mat S(\ell,\kappa)=\begin{pmatrix}\cos\kappa\ell&\kappa^{-1}\sin\kappa\ell\\
+  -\kappa\sin\kappa\ell&\cos\kappa\ell\end{pmatrix},\qquad
+  \mat J=\begin{pmatrix}1&-4/(\beta\Omega^2)\\0&1\end{pmatrix}.
+\end{equation}
+Let $\mat A(\Omega)$ be the product of the segment matrices of strand~A, from the
+drive exit to the take-up, and $\mat B(\Omega)$ that of strand~B, from the take-up to
+the drive entry, so that $\mat z(2)=\mat B\mat J\mat A\,\mat z(0)$ with
+$\mat z(0)=(0,1)^\T$. The condition $W(2)=0$ and the identity
+$(\mat B\mat J\mat A)_{12}=(\mat B\mat A)_{12}-4A_{22}B_{11}/(\beta\Omega^2)$ give the
+characteristic equation
+\begin{equation}\label{eq:chareq}
+  D(\Omega)\equiv\beta\,\Omega^2\,(\mat B\mat A)_{12}-4\,A_{22}\,B_{11}=0 .
+\end{equation}
+$D$ is an entire function of $\Omega$, so its zeros can be bracketed without
+spurious roots at poles, and $D(0)=-4$: with the velocity prescribed at the drive
+there is no rigid-body mode. Each term has a direct meaning. $(\mat B\mat A)_{12}=0$
+gives the modes of the loop with the take-up pulley fixed in space (the belt fixed at
+both faces of the drive and running freely around the take-up pulley); $A_{22}=0$
+gives the modes of strand~A fixed at the drive and free of dynamic tension at the
+take-up, and $B_{11}=0$ the same for strand~B. \Cref{app:transfer} lists $\mat A$
+and $\mat B$ for every position of the drive; with at most three factors in each
+product, $D$ is an explicit trigonometric polynomial in $\Omega$ and $\gamma\Omega$.
+For a head drive ($\sigma_d=0$, $\xi=\sigma_t/L$),
+\begin{equation}\label{eq:chareq_head}
+  \begin{split}
+  \gamma\,D(\Omega)={}&\beta\Omega\left[\gamma\sin\Omega\cos\gamma\Omega+\cos\Omega\sin\gamma\Omega\right]\\
+  &-4\cos\Omega\xi\left[\gamma\cos\Omega(1-\xi)\cos\gamma\Omega-\sin\Omega(1-\xi)\sin\gamma\Omega\right].
+  \end{split}
+\end{equation}
+The mode shapes follow by propagating $\mat z(0)=(0,1)^\T$ through the chain.
+% tests: test_eigen.py (D against independent FE); verify_phase2 checks in test_modes.py
 
 \subsection{Properties}\label{sec:properties}
-% Six properties: direction of travel, uniform loop, light and heavy
-% take-up, tail take-up (li2018), interlacing (notes 4.3).
-\TODO{Properties, including interlacing.}
+
+\begin{enumerate}
+  \item \emph{Direction of travel.} Reversing the direction of travel reverses the
+  chain and leaves~\eqref{eq:chareq} unchanged (\cref{app:transfer}); the spectrum is
+  a property of the loop, consistent with (A4).
+  \item \emph{Uniform loop} ($\gamma=1$). Since $(\mat B\mat A)_{12}=\sin2\Omega/\Omega$,
+  $A_{22}=\cos\Omega\xi$ and $B_{11}=\cos\Omega(2-\xi)$,
+  \begin{equation}\label{eq:chareq_uniform}
+    \tan\Omega\xi+\tan\Omega(2-\xi)=\frac{4}{\beta\Omega}:
+  \end{equation}
+  only the distance from the drive to the take-up along the loop matters, and the
+  equation is symmetric under $\xi\to2-\xi$. The embedded-mass model of
+  Section~\ref{sec:interfaces} gives instead $\cot\Omega\xi+\cot\Omega(2-\xi)=\beta\Omega$.
+  \item \emph{Heavy take-up} ($\beta\to\infty$). The roots tend to those of
+  $(\mat B\mat A)_{12}=0$, plus one slow mode, $\Omega_0\simeq\sqrt{2/\beta}$, in which
+  the counterweight oscillates against the stiffness of the loop. Rayleigh's quotient
+  with the quasi-static shape ($W=x$ upstream and $W=x-2$ downstream of the take-up,
+  for $Y=1$) gives the bound
+  \begin{equation}\label{eq:rayleigh}
+    \Omega_0^2\le\frac{2}{\beta+\beta_b},\qquad \beta_b=\int_0^2\hat\mu\,W^2\,\dd x,
+  \end{equation}
+  with $\beta_b=[\xi^3+(2-\xi)^3]/3$ for $\gamma=1$. The bound is useful only for
+  $\beta\gg\beta_b$, which is not the regime of long conveyors
+  (Section~\ref{sec:betaregime}).
+  \item \emph{Take-up at the tail} ($\gamma=1$, $\xi=1$). Equation~\eqref{eq:chareq_uniform}
+  factorises into $\cos\Omega=0$, modes with zero dynamic tension at the take-up,
+  which stays at rest, and $\Omega\tan\Omega=2/\beta$, modes in which the take-up
+  moves. The second family is the characteristic equation $\eta\tan\eta=\alpha_{LP}$,
+  $\alpha_{LP}=2\mu_rL/\Mtu$, used by \citet{li2018} for a tail take-up and by
+  \citet{pang2015} for a single span with a mass at its end: each strand carries half
+  of the take-up inertia, because both strand ends move by $y$. The embedded-mass
+  model shares this family and replaces the first by $\sin\Omega=0$. The case checks
+  the formulation but does not discriminate between take-up models. Moreover, the
+  drive acceleration excites only the first family, whose modes leave the take-up at
+  rest: in this configuration the response to the drive acceleration does not depend
+  on the take-up mass (Section~\ref{sec:frequencies}).
+  \item \emph{Interlacing.} Dividing~\eqref{eq:chareq} by $\beta\Omega^2A_{22}B_{11}$
+  gives
+  \begin{equation}\label{eq:receptance}
+    H_A(\Omega)+H_B(\Omega)=\frac{4}{\beta\Omega^2},\qquad
+    H_A=\frac{A_{12}}{A_{22}},\quad H_B=\frac{B_{12}}{B_{11}},
+  \end{equation}
+  where $H_A$ and $H_B$ are the receptances of strands A and B at their free ends:
+  the displacement of the strand end per unit dynamic tension, with the strand fixed
+  at the drive. By Green's identity each receptance increases with $\Omega$ between
+  its poles, which are the fixed--free frequencies of the strand, whereas the
+  right-hand side decreases. Hence the natural frequencies interlace strictly with
+  the union of the fixed--free frequencies of the two strands: there is exactly one
+  root below the lowest strand frequency and exactly one between consecutive strand
+  frequencies, and a pair of coincident strand frequencies is itself a root. Every
+  mode of the loop therefore lies between two modes of the strands with the take-up
+  free. For small $\beta$, pairs of roots close to nearly coincident strand
+  frequencies are separated by $O(\beta)$ and are easily missed by a grid search;
+  bracketing the roots between consecutive strand frequencies finds all of them
+  (\cref{app:numerics}).
+  % tests: test_eigen.py (interlacing, all roots), test_beta_regime.py (Li-Pang tail)
+\end{enumerate}
 
 \subsection{The take-up as a free end}\label{sec:freeend}
-% beta -> 0: two fixed-free strands; also in the forced response.
-\TODO{Free-end structure.}
+
+As $\beta\to0$, Eq.~\eqref{eq:chareq} reduces to $A_{22}B_{11}=0$, and the take-up
+condition~\eqref{eq:bc_nd} to $\hat T(\xi,\tau)=0$ at all times: a light take-up is a
+device of constant force. The loop then splits into strands A and B, each fixed at
+the drive and free at the take-up, whose lengths are set by the take-up position. The
+split holds for the forced response as well, since a free end transmits no force:
+during a start-up each strand responds to its own inertial and resistance loads, and
+the take-up moves by half the sum of the elongations of the two strands. For a head
+drive, the frequencies of strand~B follow from
+\begin{equation}\label{eq:strandB}
+  \tan\Omega(1-\xi)\,\tan\gamma\Omega=\gamma,
+\end{equation}
+and those of strand~A, a uniform piece of return belt, are $(2j-1)\pi/(2\xi)$. For
+$\gamma=1$ the fundamental is the quarter-wave mode of the longer strand,
+$\Omega_1=\pi/[2(2-\xi)]$ for $\xi<1$; with the take-up next to the drive its period
+is $8L/c_r$, twice that with the take-up at the tail. Section~\ref{sec:frequencies}
+develops the consequences: the fundamental belongs to the strand that contains the
+carry strand, and moving the take-up changes the spectrum.
+
+The free-end limit also governs wave propagation. A harmonic wave on the return
+strand that meets the take-up is transmitted with the complex coefficient
+\begin{equation}\label{eq:transmission}
+  \chi=\frac{1}{1-2\ii/(\beta\Omega)},\qquad
+  |\chi|=\frac{\beta\Omega}{\sqrt{\beta^2\Omega^2+4}}=\frac{\Mtu_{\mathrm{eq}}\,\omega}
+  {\sqrt{\Mtu_{\mathrm{eq}}^2\omega^2+4Z_r^2}},
+\end{equation}
+obtained from $\mat J$ with an incident and a reflected wave on one side and a
+transmitted wave on the other; $Z_r=\mu_rc_r$ is the impedance of the return strand
+and $|\chi|^2+|1-\chi|^2=1$. The take-up is opaque, $|\chi|\to0$, when its inertial
+impedance is small against twice that of the belt, $\Mtu_{\mathrm{eq}}\,\omega\ll2Z_r$,
+and transparent, $|\chi|\to1$, in the opposite limit. In a long conveyor the
+stretching front of a start-up is therefore reflected at the take-up as at a free
+end, and the return belt beyond it stays at rest until the front arrives the other
+way round the loop. This is the mechanism recorded by \citet{harrison1985b}, which
+Section~\ref{sec:validation} compares with the model. An embedded mass behaves in the
+opposite way: it becomes transparent as its mass decreases.
+% tests: test_harrison.py::test_takeup_transmission_from_J (energy, both limits)
 
 \subsection{Closed-form correction for the take-up mass}\label{sec:masscorrection}
-% Omega ~ Omega_p / sqrt(1 + beta/(4 m_tilde)) and the two-pole version.
-\TODO{Mass correction.}
+
+For finite $\beta$ the receptance form~\eqref{eq:receptance} gives a closed-form
+correction. Each receptance is a sum over the fixed--free modes of its strand,
+\begin{equation}\label{eq:receptance_sum}
+  H_s(\Omega)=\sum_j\frac{1}{\tilde m_{s,j}\,(\Omega_{s,j}^2-\Omega^2)},\qquad s\in\{A,B\},
+\end{equation}
+where $\Omega_{s,j}$ are the fixed--free frequencies and $\tilde m_{s,j}=m_{s,j}/W_{s,j}(\xi)^2$
+the modal mass seen from the free end; for a uniform strand of length $\ell$ and
+density $\hat\mu$, $\tilde m=\hat\mu\ell/2$ for every mode. Keeping a single pole
+$\Omega_p$ of modal mass $\tilde m$,
+\begin{equation}\label{eq:onepole}
+  \Omega\simeq\frac{\Omega_p}{\sqrt{1+\beta/(4\tilde m)}},
+\end{equation}
+which is Rayleigh's quotient of the fixed--free mode with a mass $\beta/4$ attached to
+its free end. In physical terms, the take-up mass $\Mtu_{\mathrm{eq}}/4$ is a tip mass
+on the strand, and for a uniform strand the period lengthens by about
+$(\Mtu_{\mathrm{eq}}/4)/m_s$, with $m_s$ the mass of the strand. When a frequency of
+the other strand is close, both poles are kept: with $u=\Omega^2$, $P_s=\Omega_{p,s}^2$
+and $b_s=1/\tilde m_s$,
+\begin{equation}\label{eq:twopole}
+  \bigl[4+\beta(b_A+b_B)\bigr]u^2-\bigl[4(P_A+P_B)+\beta(b_AP_B+b_BP_A)\bigr]u+4P_AP_B=0 .
+\end{equation}
+For coincident poles one root stays at the pole and the other shifts with both
+strands, as in the family $\Omega\tan\Omega=2/\beta$ of the tail take-up
+(Section~\ref{sec:properties}). Against the exact roots, for a head drive,
+$1\le\gamma\le3$ and the take-up anywhere on the return strand, the frequencies
+of~\eqref{eq:twopole} are within \qty{\NumMassCorrErrTenth}{\percent} for
+$\beta\le0.1$ (first three modes) and the fundamental within
+\qty{\NumMassCorrErrFundOne}{\percent} up to $\beta=1$. Higher modes deviate for
+$\beta\sim1$, where the slow mode of the counterweight, $\Omega_0\simeq\sqrt{2/\beta}$,
+enters the spectrum of the belt.
+
+The take-up mass is thus a correction to the free-end spectrum, of relative size
+$\beta/(8\tilde m)$ on each frequency. The results of Section~\ref{sec:results} are
+computed with the exact roots, but organised around the free-end limit, with the
+mass as a correction whose size is mapped in Section~\ref{sec:betaregime}.
+% tests: test_beta_regime.py (m_tilde = l/2, residues, single and two poles, accuracy);
+% numbers: paper_numbers.py, section "Closed-form solution"
 
 \subsection{Modal expansion and start-up response}\label{sec:modal}
-% Orthogonality, participation, quasi-static limit (independent of
-% damping: notes 4.9 point 3), Duhamel, residual amplitude.
-\TODO{Modal expansion and start-up.}
 
-\subsection{Limit of validity: torque-controlled drive}\label{sec:torque}
-% model.tex sec:torque, generalised to m_d Omega^2 - i c Omega (4.9 point 6).
-% Decide in 6.3 whether it stays here or moves to Section 7.
-\TODO{Torque-controlled drive.}
+The modes are orthogonal with respect to the inner product
+\begin{equation}\label{eq:inner}
+  \bigl\langle(W_i,Y_i),(W_j,Y_j)\bigr\rangle=\int_0^2\hat\mu\,W_iW_j\,\dd x+\beta\,Y_iY_j,
+\end{equation}
+and $\int_0^2W_i'W_j'\,\dd x=\Omega_i^2\,m_i\,\delta_{ij}$, with modal mass
+$m_i=\langle(W_i,Y_i),(W_i,Y_i)\rangle$ (\cref{app:transfer}). Both the density
+weight and the take-up term are required; the unweighted product does not
+diagonalise the problem. The Kelvin--Voigt term acts only through the belt strain,
+and neither the take-up nor the drive adds stiffness, so damping is proportional to
+stiffness and the modes stay uncoupled. With $\hat w=\sum_kp_k(\tau)W_k(x)$ and
+$\hat y=\sum_kp_k(\tau)Y_k$, the weak form of~\eqref{eq:pde_nd}--\eqref{eq:bc_nd} gives
+\begin{equation}\label{eq:modal}
+  p_k''+2\zeta_k\Omega_k\,p_k'+\Omega_k^2\,p_k=-\Gamma_k\,\hat a(\tau)-R_k\,\varphi(\tau),
+  \qquad p_k(0)=p_k'(0)=0,
+\end{equation}
+with
+\begin{equation}\label{eq:participation}
+  \zeta_k=\hat\zeta\,\Omega_k=\frac{t_v\,\omega_k}{2},\qquad
+  \Gamma_k=\frac{1}{m_k}\int_0^2\hat\mu\,W_k\,\dd x,\qquad
+  R_k=\frac{1}{m_k}\int_0^2\hat r\,W_k\,\dd x .
+\end{equation}
+The damping ratio grows linearly with frequency, as in the formulation of
+\citet{pihnastyi2020}. The inertial load has no component on the take-up, because the
+rigid motion $U$ does not move it; for this reason $\Gamma_k$ has no $\beta Y_k$ term.
+By completeness of the modes in the space weighted by~\eqref{eq:inner}, the effective
+modal masses add up to the mass of the belt,
+\begin{equation}\label{eq:parseval}
+  \sum_k\Gamma_k^2\,m_k=\int_0^2\hat\mu\,\dd x=1+\gamma^2,
+\end{equation}
+so $\Gamma_k^2m_k/(1+\gamma^2)$ is the fraction of the belt inertia excited by the
+start-up in mode $k$. The dynamic tension and the take-up displacement are
+\begin{equation}\label{eq:outputs}
+  \hat T(x,\tau)=\sum_k\left(p_k+2\hat\zeta\,p_k'\right)W_k'(x),\qquad
+  \hat y(\tau)=\sum_kp_k\,Y_k .
+\end{equation}
+
+\paragraph{Quasi-static limit.} When the loads vary slowly compared with the
+fundamental period, $p_k\simeq-(\Gamma_k\hat a+R_k\varphi)/\Omega_k^2$ and the series
+sums to
+\begin{equation}\label{eq:quasistatic}
+  \hat T_{\mathrm{qs}}(x,\tau)=\hat a(\tau)\int_\xi^x\hat\mu\,\dd x'
+  +\varphi(\tau)\int_\xi^x\hat r\,\dd x',\qquad
+  \hat y_{\mathrm{qs}}(\tau)=\frac12\int_0^2\hat T_{\mathrm{qs}}\,\dd x .
+\end{equation}
+The take-up anchors the dynamic tension at zero, and the loads accumulate from the
+take-up towards the drive in both directions: the tension rises from the take-up to
+the drive entry and falls from the take-up back to the drive exit. The quasi-static
+field does not depend on $\beta$, nor on the damping: without inertia a Kelvin--Voigt
+belt carries exactly the applied tension, and only its strain lags, with the time
+constant $t_v$, equally in every mode. The take-up displacement is half the
+elongation of the loop; for a head drive and inertial load alone,
+$\hat y_{\mathrm{qs}}=\tfrac12\bigl(\tfrac32-2\xi+\tfrac12\gamma^2\bigr)\hat a$.
+Equation~\eqref{eq:quasistatic} is the reference for the dynamic amplification
+factors of Section~\ref{sec:startup}.
+
+\paragraph{Start-up profiles.} The base case is the sinusoidal acceleration
+\begin{equation}\label{eq:profile}
+  a(t)=a_m\sin\frac{\pi t}{t_a}\quad(0\le t\le t_a),\qquad a_m=\frac{\pi V_\infty}{2t_a},
+\end{equation}
+with $a=0$ for $t>t_a$; triangular and parabolic acceleration profiles serve for
+comparison. In dimensionless form $\hat a=\sin\varpi\tau$ on $0\le\tau\le\tau_a$, with
+$\varpi=\pi/\tau_a$. The modal equations~\eqref{eq:modal} are integrated exactly for
+any piecewise-polynomial profile and onset (\cref{app:numerics}). Without damping,
+the free oscillation that the acceleration phase leaves in mode $k$ has amplitude
+\begin{equation}\label{eq:residual}
+  P_k=\frac{|\Gamma_k|}{\Omega_k}\left|\int_0^{\tau_a}\hat a(\tau')\,
+  \ee^{\ii\Omega_k\tau'}\dd\tau'\right|
+  =\frac{|\Gamma_k|}{\Omega_k}\,\frac{2\varpi\,|\cos(\Omega_k\tau_a/2)|}{|\varpi^2-\Omega_k^2|},
+\end{equation}
+with the limit $|\Gamma_k|\tau_a/(2\Omega_k)$ at $\Omega_k=\varpi$, and a residual
+tension $P_k|W_k'(x)|$. This is the classical residual spectrum of a half-sine pulse:
+it vanishes when $t_a=(j+\tfrac12)\,t_k$, $j=1,2,\dots$, where $t_k=2\pi/\omega_k$ is the
+modal period, and decays as $\Omega_k^{-3}$ for $\Omega_k\gg\varpi$.
+
+\paragraph{Motion resistances.} With a unit step $\varphi$, each mode overshoots its
+quasi-static response by a factor of two, but the tension field is not bounded by
+that factor: with $\gamma=2$, $\beta=0.1$ and $\xi=0.05$, the undamped peak at the
+drive entry reaches \NumStepOvershootEntry\ times the quasi-static value. The factor
+is two only for a uniform loop with a light take-up. A smooth onset,
+$\varphi=V/V_\infty$, removes most of the overshoot (Section~\ref{sec:startup}).
+% tests: test_response.py::test_step_overshoot_can_exceed_two (2.18, confirmed with FE)
+
+\paragraph{Admissibility.} The linear solution holds while three conditions are met
+(Section~\ref{sec:validity}). (i)~The total tension, static tension at rest plus
+dynamic tension with the resistances included, stays positive along the loop; in
+steady running this sum is the running tension. (ii)~The take-up follows the belt:
+the total tension at the take-up stays positive, $\ddot y_c<\nstr\Tt/\Mtu$, which for a
+counterweight hung directly ($\lambda=1$, carriage mass neglected) reads $\ddot y_c<g$:
+the counterweight cannot be required to fall faster than gravity. (iii)~The drive
+does not slip, $T(2L,t)\le\egrip\,T(0,t)$ throughout the start, where $T$ is the total
+tension at the drive entry and exit.
+
+\subsection{Limit of validity: drive without speed control}\label{sec:torque}
+
+If the drive imposes a torque instead of a velocity, its faces move with an unknown
+displacement and the drive acts as a mass $M_d=J_d/R_d^2$ that joins the two ends of
+the loop ($J_d$ is the drive inertia reduced to the pulley shaft and $R_d$ the pulley
+radius). The linearised slip of an induction motor adds a viscous force towards the
+reference speed, with coefficient $c_d$. With $m_d=M_d/(\mu_rL)$ and
+$\hat c=c_d/(\mu_rc_r)$, the drive conditions become $W(0)=W(2)$ and
+$W'(0)-W'(2)=-(m_d\Omega^2-\ii\hat c\,\Omega)\,W(0)$, and the characteristic equation is
+\begin{equation}\label{eq:chareq_torque}
+  2-\operatorname{tr}\mat P+\left(m_d\Omega^2-\ii\hat c\,\Omega\right)P_{12}=0,
+  \qquad \mat P=\mat B\mat J\mat A,
+\end{equation}
+whose roots are complex when $\hat c>0$ (with the convention $\ee^{\ii\Omega\tau}$,
+damped roots have $\operatorname{Im}\Omega>0$). For $m_d\to\infty$ or $\hat c\to\infty$
+it reduces to $P_{12}=0$, the prescribed velocity~\eqref{eq:chareq}. For $m_d\to0$
+and $\hat c=0$ it gives the periodic condition $\operatorname{tr}\mat P=2$ of a free loop,
+which has a rigid-body mode: with the take-up next to the drive, $\beta\to0$ and
+$\gamma=1$, the fundamental changes from the quarter-wave mode of the loop under
+prescribed velocity (period $8L/c_r$) to its half-wave mode (period $4L/c_r$). With
+$m_d=0$ and $\beta\to0$ the dashpot alone reflects waves at the drive with the real
+coefficient $(\hat c-1)/(\hat c+1)$; for $\hat c>1$ it leaves the period of the
+prescribed-velocity limit unchanged and only adds damping, with
+$\operatorname{Re}\Omega=\pi/[2(2-\xi)]$ and
+$\operatorname{Im}\Omega=\ln\bigl[(\hat c+1)/(\hat c-1)\bigr]/[2(2-\xi)]$ for $\gamma=1$
+as $\xi\to0$. The prescribed velocity therefore represents drives whose speed is
+controlled in closed loop, as recommended for start-up and stopping of long
+conveyors \citep{jennings2013} and as in the frequency-controlled starts of
+\citet[\S8.6.2]{lodewijks1996}, or whose reduced inertia is large compared with the
+mass of the belt. Section~\ref{sec:validation} uses Eq.~\eqref{eq:chareq_torque} to
+test this assumption on a conveyor with a wound-rotor drive.
+% tests: test_harrison.py::test_damped_drive_limits; test_eigen.py (torque variant vs FE)
