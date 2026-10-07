@@ -17,6 +17,9 @@ Figures (numbering of the manuscript decided in phase 6):
   validity  validity conditions: slack at the exit, rebound, minimum T_2, tight side
   applications  start-ups of Lo, SM and Su in physical units against the take-up position
                 (phase 5.5; also writes table_applications.txt, about 30 s)
+The loop schematic (Figure 1) is drawn by maps/fig_loop.py and the lumped-mass validation figure
+by validation/fig_lumped_validation.py, both with style.py; the numbers that the captions and
+the text quote are written by maps/paper_numbers.py (step 6.2).
 """
 import sys
 from pathlib import Path
@@ -179,9 +182,9 @@ def fig_modal(d):
     xis, gams = d["xis"], d["gams"]
     fig, axs = plt.subplots(2, 2, figsize=(style.DOUBLE, 128 * style.MM), constrained_layout=True)
     specs = [(axs[0, 0], d["T1"], np.arange(4, 14.01, 1.0), CMAPS["a"], "%.0f",
-              r"$T_1 c_r / L$", "(a)"),
+              r"$\tau_1 = t_1 c_r / L$", "(a)"),
              (axs[0, 1], d["ratio"], np.arange(0.83, 1.0001, 0.01), CMAPS["b"], "%.2f",
-              r"$T_1 / (4 t_B)$", "(b)"),
+              r"$\tau_1 / (4 \tau_B)$", "(b)"),
              (axs[1, 0], d["F1"], np.arange(0.40, 0.8201, 0.02), CMAPS["c"], "%.1f",
               r"$\Gamma_1^2 m_1 / (1+\gamma^2)$", "(c)")]
     for ax, Z, lev, cmap, fmt, clab, lab in specs:
@@ -206,9 +209,11 @@ def fig_modal(d):
     ax.contourf(xis, gams, np.abs(d["dF1"]), levels=[0.05, 10], colors="none", hatches=["////"])
     ax.contour(xis, gams, np.abs(d["dF1"]), levels=[0.05], colors="w", linewidths=0.7)
     ax = axs[1, 1]
-    for g, r, c in zip(d["g_l1"], d["ratio_l1"], style.OKABE_ITO):
-        ax.plot(d["l1"], r, color=c, label=rf"$\gamma = {g:g}$")
-    ax.axhline(1.0, color="0.5", lw=0.6, ls=":")
+    for g, r, c, mk in zip(d["g_l1"], d["ratio_l1"], style.OKABE_ITO, style.MARKERS):
+        ax.plot(d["l1"], r, color=c, marker=mk, markevery=(0.06, 0.18), ms=2.8, mfc="w", mew=0.7,
+                label=rf"$\gamma = {g:g}$")
+        ax.annotate(rf"$\gamma = {g:g}$", (d["l1"][-1], r[-1]), xytext=(3, 0),   # direct label
+                    textcoords="offset points", fontsize=6, va="center", color="0.15")
     ax.plot(*d["nc"][:2], "k*", ms=7, zorder=6)
     ax.annotate(NORDELL_CIOZDA["tag"], d["nc"][:2], xytext=(-4, 3), textcoords="offset points", fontsize=6, ha="right")
     xs, ys = d["sasol"][:2]
@@ -217,10 +222,10 @@ def fig_modal(d):
         ax.plot(xs, d["sasol"][2], "k_", ms=3.0, mew=0.6, zorder=5)
     ax.plot(xs, ys, "kD", ms=3.5, mfc="w", zorder=6)
     ax.annotate(SASOL["tag"], (xs, ys), xytext=(4, -6), textcoords="offset points", fontsize=6)
-    ax.set(xlim=(0, 1), xlabel=r"drive offset from the head $\ell_1 = \sigma_d$",
-           ylabel=r"$T_1 / (4 t_B)$")
-    ax.legend(loc="upper left", bbox_to_anchor=(0.06, 1.0), ncol=1, fontsize=6.5)
-    ax.grid(alpha=0.25, lw=0.4)
+    ax.set(xlim=(0, 1.12), xlabel=r"drive offset from the head $\ell_1 = \sigma_d$",
+           ylabel=r"$\tau_1 / (4 \tau_B)$")
+    ax.set_xticks(np.linspace(0, 1, 6))
+    ax.grid(alpha=0.25, lw=0.4)                 # curves labelled directly (no legend)
     style.panel_label(ax, "(d)")
     style.save(fig, "fig_modal")
     print(f"  T1 c_r/L {d['T1'].min():.2f}-{d['T1'].max():.2f}; T1/(4 t_B) {d['ratio'].min():.3f}-"
@@ -571,12 +576,14 @@ def fig_startup(d):
     from beltloop import PEAK_FACTOR
     R = d["R"]
     kinds = (("sine", "sine"), ("triangular", "triangular"), ("parabolic", "parabolic"))
+    lss = ("-", "--", "-.")                    # profiles differ by line style as well as colour
     fig, axs = plt.subplots(2, 2, figsize=(style.DOUBLE, 112 * style.MM), constrained_layout=True)
     ax = axs[0, 0]
-    for (k, lab), c in zip(kinds, style.OKABE_ITO):
-        ax.plot(R, d[f"D_{k}"], color=c, label=lab)
+    for (k, lab), c, ls in zip(kinds, style.OKABE_ITO, lss):
+        ax.plot(R, d[f"D_{k}"], color=c, ls=ls, label=lab)
         w = d[f"wave_{k}"]
         ax.plot(R[w < 2.4], w[w < 2.4], ":", color=c, lw=0.8)
+    ax.plot([], [], ":", color="0.3", lw=0.8, label="wave law")
     ax.axvspan(2, 3, color="0.9", zorder=0)
     for tag, r in PRACTICE:
         ax.annotate(tag, (r, 0.06), xytext=(2, 0), textcoords="offset points", ha="left",
@@ -584,8 +591,9 @@ def fig_startup(d):
     ax.set(ylabel=r"$D = T_{\max} / (m a_m)$")
     ax.legend(loc="upper right")
     ax = axs[0, 1]
-    for (k, lab), c in zip(kinds, style.OKABE_ITO):
-        ax.plot(R, d[f"D_{k}"] * PEAK_FACTOR[k], color=c, label=lab)
+    for (k, lab), c, ls in zip(kinds, style.OKABE_ITO, lss):
+        ax.plot(R, d[f"D_{k}"] * PEAK_FACTOR[k], color=c, ls=ls, label=lab)
+    ax.legend(loc="lower right")
     ax.set(ylabel=r"$T_{\max} / (m V_\infty / t_a)$", ylim=(0, 3.0))
     ax = axs[1, 0]
     rc = d["rc"]
@@ -600,7 +608,7 @@ def fig_startup(d):
     ax.legend(loc="upper right", fontsize=6, ncol=1)
     ax = axs[1, 1]
     ax.plot(R, d["Dfree_sine"], color=style.OKABE_ITO[0], label="take-up travel (free end)")
-    ax.plot(R, d["D_res"], color=style.OKABE_ITO[1], label=r"resistances, $\varphi = V/V_\infty$")
+    ax.plot(R, d["D_res"], "--", color=style.OKABE_ITO[1], label=r"resistances, $\varphi = V/V_\infty$")
     ax.set(ylabel="peak / quasi-static")
     ax.legend(loc="upper right")
     for ax, lab in zip(axs.ravel(), ("(a)", "(b)", "(c)", "(d)")):
@@ -611,10 +619,10 @@ def fig_startup(d):
             ax.axhline(1.0, color="k", lw=0.5)
         if lab != "(c)":
             for tag, r in PRACTICE:
-                ax.axvline(r, color="0.3", lw=0.6, ls=(0, (2, 2)), zorder=1)
+                ax.axvline(r, color="0.55", lw=0.5, ls=(0, (1, 2)), zorder=1)
         ax.grid(alpha=0.25, lw=0.4, which="both")
-        ax.set_xlabel(r"$\tau_a / T_s$" if lab != "(c)" else
-                      r"$\tau_a / T_s$ ($T_1$ at the entry, $T_{A1}$ at the exit)")
+        ax.set_xlabel(r"$\tau_a / \tau_s$" if lab != "(c)" else
+                      r"$\tau_a / \tau_s$ ($\tau_1$ at the entry, $\tau_{A1}$ at the exit)")
         style.panel_label(ax, lab)
     style.save(fig, "fig_startup")
     print("  practice, tau_a / T_1: " + ", ".join(f"{t} {r:.2f}" for t, r in PRACTICE))
@@ -656,15 +664,17 @@ def fig_crawl(d):
     import matplotlib.pyplot as plt
     fig, axs = plt.subplots(1, 2, figsize=(style.DOUBLE, 58 * style.MM), sharey=True,
                             constrained_layout=True)
-    sty = {(1.0, 0.01): (style.OKABE_ITO[0], "-"), (1.0, 0.1): (style.OKABE_ITO[0], "--"),
-           (5.0, 0.01): (style.OKABE_ITO[1], "-"), (5.0, 0.1): (style.OKABE_ITO[1], "--")}
-    for (rho, z), (c, ls) in sty.items():
+    # rho by colour and marker, zeta_1 by line style (readable without colour)
+    sty = {(1.0, 0.01): (style.OKABE_ITO[0], "-", "o"), (1.0, 0.1): (style.OKABE_ITO[0], "--", "o"),
+           (5.0, 0.01): (style.OKABE_ITO[1], "-", "s"), (5.0, 0.1): (style.OKABE_ITO[1], "--", "s")}
+    for (rho, z), (c, ls, mk) in sty.items():
         lab = rf"$\rho = {rho:g}$, $\zeta_1 = {z:g}$"
-        axs[0].plot(d["trs"], d[f"ramp_{rho:g}_{z:g}"][:, 0], color=c, ls=ls, label=lab)
-        axs[1].plot(d["tps"], d[f"hold_{rho:g}_{z:g}"][:, 0], color=c, ls=ls, label=lab)
-    axs[0].set(xlabel=r"crawl ramp $\tau_r / T_1$ (no hold)", ylabel=r"entry peak / $(R + m a_m)$",
+        kw = dict(color=c, ls=ls, marker=mk, ms=2.8, mfc="w", mew=0.7, label=lab)
+        axs[0].plot(d["trs"], d[f"ramp_{rho:g}_{z:g}"][:, 0], markevery=(2, 5), **kw)
+        axs[1].plot(d["tps"], d[f"hold_{rho:g}_{z:g}"][:, 0], markevery=(3, 6), **kw)
+    axs[0].set(xlabel=r"crawl ramp $\tau_r / \tau_1$ (no hold)", ylabel=r"entry peak / $(R + m a_m)$",
                xlim=(0, 2), ylim=(0.95, 1.75))
-    axs[1].set(xlabel=r"hold $\tau_p / T_1$ (ramp $\tau_r = 0.05\,T_1$)", xlim=(0, 3))
+    axs[1].set(xlabel=r"hold $\tau_p / \tau_1$ (ramp $\tau_r = 0.05\,\tau_1$)", xlim=(0, 3))
     axs[0].legend(loc="upper right")
     for ax, lab in zip(axs, ("(a)", "(b)")):
         ax.axhline(1.0, color="k", lw=0.5)
@@ -716,46 +726,56 @@ def fig_validity(d):
     R = d["R"]
     fig, axs = plt.subplots(2, 2, figsize=(style.DOUBLE, 112 * style.MM), constrained_layout=True)
     ax = axs[0, 0]
-    for rho, c in zip(d["rhos"], style.OKABE_ITO):
-        ax.plot(R, d[f"cmax_{rho:g}"] - rho, color=c, label=rf"$\rho = {rho:g}$")
+    me = np.unique(np.linspace(4, len(R) - 3, 9).astype(int))   # R is log-spaced: even in log
+    for rho, c, mk in zip(d["rhos"], style.OKABE_ITO, style.MARKERS):
+        ax.plot(R, d[f"cmax_{rho:g}"] - rho, color=c, marker=mk, markevery=list(me), ms=2.8,
+                mfc="w", mew=0.7, label=rf"$\rho = {rho:g}$")
         ax.axhline(np.sqrt(1 + rho ** 2 / 4) - rho / 2, color=c, ls=":", lw=0.8)
-    ax.set(xscale="log", xlim=(R[0], R[-1]), ylim=(0, 4.6), xlabel=r"$\tau_a / T_{A1}$",
+    ax.set(xscale="log", xlim=(R[0], R[-1]), ylim=(0, 4.6), xlabel=r"$\tau_a / \tau_{A1}$",
            ylabel=r"required $T_2 / (m_A a_m)$, exit")
     ax.legend(loc="upper right")
     ax = axs[0, 1]
-    for rho, c in zip(d["rhos"], style.OKABE_ITO):
-        ax.plot(R, np.maximum(-d[f"cmin_{rho:g}"], 0.0), color=c, label=rf"$\rho = {rho:g}$")
+    for rho, c, mk in zip(d["rhos"], style.OKABE_ITO, style.MARKERS):
+        ax.plot(R, np.maximum(-d[f"cmin_{rho:g}"], 0.0), color=c, marker=mk, markevery=list(me),
+                ms=2.8, mfc="w", mew=0.7, label=rf"$\rho = {rho:g}$")
     ax.plot(R, d["Dm1"], "k--", lw=0.8, label=r"$\rho = 0$, $\zeta_1 = 0.01$")
-    ax.plot(R, 0.8 / R, "k:", lw=0.8, label=r"$0.8\,T_1/\tau_a$")
-    ax.set(xscale="log", xlim=(R[0], R[-1]), ylim=(0, 1.6), xlabel=r"$\tau_a / T_1$",
+    ax.plot(R, 0.8 / R, "k:", lw=0.8, label=r"$0.8\,\tau_1/\tau_a$")
+    ax.set(xscale="log", xlim=(R[0], R[-1]), ylim=(0, 1.6), xlabel=r"$\tau_a / \tau_1$",
            ylabel=r"rebound below running $/ (m_B a_m)$")
     ax.legend(loc="upper right", fontsize=6)
     ax = axs[1, 0]
-    names = ("exit (A)", "rebound (B)", r"grip, $E = 3$", r"grip, $E = 16$")
-    for k, (nm, c) in enumerate(zip(names, style.OKABE_ITO)):
+    names = ("exit (A)", "rebound (B)", r"grip, $\mathrm{e}^{\mu\theta} = 3$",
+             r"grip, $\mathrm{e}^{\mu\theta} = 16$")
+    for k, (nm, c, mk) in enumerate(zip(names, style.OKABE_ITO, style.MARKERS)):
         for r, ls in ((1.0, "-"), (3.0, "--")):
-            ax.plot(d["xis"], np.maximum(d[f"req_{r:g}"][:, k], 0.0), color=c, ls=ls)
-    h1 = [Line2D([], [], color=c, label=nm) for nm, c in zip(names, style.OKABE_ITO)]
+            v = np.maximum(d[f"req_{r:g}"][:, k], 0.0)
+            ax.plot(d["xis"], v, color=c, ls=ls)
+            sel = np.zeros(len(v), bool)
+            sel[2 + 2 * k::8] = True
+            sel &= v > 2e-3                      # no markers where the requirement vanishes
+            ax.plot(d["xis"][sel], v[sel], ls="none", color=c, marker=mk, ms=2.8, mfc="w", mew=0.7)
+    h1 = [Line2D([], [], color=c, marker=mk, ms=2.8, mfc="w", mew=0.7, label=nm)
+          for nm, c, mk in zip(names, style.OKABE_ITO, style.MARKERS)]
     h2 = [Line2D([], [], color="k", ls=ls, label=lab) for ls, lab in
-          (("-", r"$\tau_a = T_1$"), ("--", r"$\tau_a = 3T_1$"))]
+          (("-", r"$\tau_a = \tau_1$"), ("--", r"$\tau_a = 3\tau_1$"))]
     blank = [Line2D([], [], ls="none", label=" ")] * (len(h1) - len(h2))
     ax.legend(handles=h1 + h2 + blank, loc="upper left", bbox_to_anchor=(0.02, 0.62), fontsize=6,
               ncol=2, columnspacing=1.2)          # column 1: conditions; column 2: start times
     ax.set(xlim=(0, 1), ylim=(0, 1.4), xlabel=r"take-up position $\xi$ (head drive)",
-           ylabel=r"minimum $T_2 / (m_{belt} a_m)$")
+           ylabel=r"minimum $T_2 / (m_\mathrm{belt} a_m)$")
     ax = axs[1, 1]
     sts, T = d["sts"], d["tight"]
     left = sts < 0.5
     ax.axvspan(0, 0.5, color=style.OKABE_ITO[1], alpha=0.08, lw=0)
-    ax.plot(sts[left], T[left, 0], "o-", ms=2.5, color=style.OKABE_ITO[1], label=r"required $T_t$ ($E = 16$, $\tau_a = 20\,L/c_r$)")
-    ax.plot(sts[~left], T[~left, 0], "o-", ms=2.5, color=style.OKABE_ITO[0])
+    ax.plot(sts[left], T[left, 0], "o-", ms=2.5, color=style.OKABE_ITO[1], label=r"required $T_t$ ($\mathrm{e}^{\mu\theta} = 16$, $\tau_a = 20$)")
+    ax.plot(sts[~left], T[~left, 0], "s-", ms=2.5, color=style.OKABE_ITO[0])
     ax.plot(sts[left], T[left, 1], "k:", lw=0.9, label="resistance, drive exit to take-up")
     ax.plot(sts[~left], T[~left, 1], "k:", lw=0.9)
     ax.axvline(0.5, color="k", lw=0.6)
     ax.text(0.25, 2.25, "tight side", ha="center", fontsize=7)
     ax.text(0.75, 2.25, "slack side", ha="center", fontsize=7)
     ax.set(xlim=(0, 1), ylim=(0, 2.45), xlabel=r"take-up position from the head $\sigma_t$ (drive at $\sigma_d = 0.5$)",
-           ylabel=r"take-up tension $T_t / (m_{belt} a_m)$")
+           ylabel=r"take-up tension $T_t / (m_\mathrm{belt} a_m)$")
     ax.legend(loc="center right", fontsize=6)
     for ax, lab in zip(axs.ravel(), ("(a)", "(b)", "(c)", "(d)")):
         ax.grid(alpha=0.25, lw=0.4, which="both")

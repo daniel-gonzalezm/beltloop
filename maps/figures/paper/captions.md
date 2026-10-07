@@ -1,4 +1,9 @@
-# Draft captions of the paper figures (phase 4.8, revised in phase 5.3(d), fig_applications added in phase 5.5, cross-references to the tables in phase 5.6; numbering fixed in phase 6)
+# Draft captions of the paper figures (phase 4.8, revised in phase 5.3(d), fig_applications added in phase 5.5, cross-references to the tables in phase 5.6; manuscript notation and accessibility in step 6.2; numbering fixed in phase 6)
+
+Notation (step 6.2): periods are t (s) and tau (units of L/c_r), as t_a and tau_a; T is kept for
+tensions; the drive factor is e^{mu theta} (E is Young's modulus). See paper/sections/notation.tex.
+The numbers below are also written as LaTeX macros by maps/paper_numbers.py (paper/paper_numbers.tex);
+when a caption moves into the manuscript (steps 6.5-6.6) its numbers are taken from those macros.
 
 Figures are produced by `python maps/paper_figures.py`; the numbers below are the ones it prints
 and are pinned by `tests/test_figures.py` (and the phase 4-5 tests) where marked †.
@@ -17,18 +22,18 @@ instead of 0.999. Parameters in Table~\ref{tab:cases} (`table_cases.tex`, genera
 ## fig_modal
 
 **Natural frequencies and modal participation, head drive, beta -> 0 (the take-up as a free end).**
-(a) Fundamental period T_1 c_r / L, from 4.01 to 13.42. (b) T_1 over four transits of the
-downstream strand, t_B = 1 - xi + gamma (units of L/c_r): between 0.838 and 1 †; the
+(a) Fundamental period tau_1 = t_1 c_r / L, from 4.01 to 13.42. (b) tau_1 over four transits of the
+downstream strand, tau_B = 1 - xi + gamma (units of L/c_r): between 0.838 and 1 †; the
 quarter-wave rule overestimates the period by up to 19 %, and is exact for gamma = 1 or a
 take-up at the tail. (c) Effective-mass fraction of the fundamental, 0.41 to 0.81; hatched: a
 take-up mass beta = 0.1 changes it by more than 5 % (7 % of the plane, where B1 and A1 are close
 and exchange participation). (d) Intermediate drive at l_1 = sigma_d from the head, take-up right
 after it: the return run between the head and the drive sits at the fixed end of the heavy
-strand and acts as a spring, so T_1 exceeds four transits by up to 38 % (gamma = 3) †.
-NC: Nordell and Ciozda (1984), T_1 = 27.5 s against 19.8 s with a head drive (+39 %) †;
+strand and acts as a spring, so tau_1 exceeds four transits by up to 38 % (gamma = 3) †.
+NC: Nordell and Ciozda (1984), t_1 = 27.5 s against 19.8 s with a head drive (+39 %) †;
 Su: Surtees (1995), SASOL plant feed conveyor, design data, take-up after the secondary drive
-(their Fig. 10): T_1 / (4 t_B) = 0.952 with beta -> 0 (0.939 at alpha = 0.8, bar); its take-up
-mass (beta = 0.64) lengthens T_1 by a further 2.1 %.
+(their Fig. 10): tau_1 / (4 tau_B) = 0.952 with beta -> 0 (0.939 at alpha = 0.8, bar); its take-up
+mass (beta = 0.64) lengthens t_1 by a further 2.1 %.
 
 ## fig_beta
 
@@ -57,19 +62,19 @@ exact lengthening of A1 (+3.2 %).
 ## fig_startup
 
 **Universal start-up curve of a fixed-free strand (beta -> 0, undamped).** tau_a: start time,
-T_s: fundamental period of the strand. (a) Peak tension at the fixed end over m a_m for the sine,
-triangular and parabolic profiles; dotted, the wave law T = Z V, exact for tau_a <= T_s / 2.
-Sine: maximum 1.590 at tau_a / T_s = 0.87; D(1) = 1.574, D(2) = 1.206, D(5) = 1.077 †. Grey band:
-design rule tau_a = 2-3 T_1. Dashed lines (all panels except c): start times of the cases over
-their own T_1 (exact, with their beta): Lo 1.05 (speed-controlled, linear profile in the
+tau_s: fundamental period of the strand (both in units of L/c_r). (a) Peak tension at the fixed end over m a_m for the sine,
+triangular and parabolic profiles; dotted, the wave law T = Z V, exact for tau_a <= tau_s / 2.
+Sine: maximum 1.590 at tau_a / tau_s = 0.87; D(1) = 1.574, D(2) = 1.206, D(5) = 1.077 †. Grey band:
+design rule tau_a = 2-3 tau_1. Dotted vertical lines (all panels except c): start times of the cases over
+their own tau_1 (exact, with their beta): Lo 1.05 (speed-controlled, linear profile in the
 source), LL 1.49 (motors switched in 4 s steps), G 2.43 (simulated), Su 4.11 (fluid couplings,
 design value), S 7.43 (take-up at the head), Si 11.8 (fluid couplings with fill control).
 (b) The same per unit mean acceleration V_inf / t_a (same start time and final speed): the
 triangular profile is the worst, by about 25 % on slow starts. (c) How far the full loop departs
 from the curve of (a): largest |loop / strand - 1| over the take-up positions (xi = 0.01-0.95;
 0.2-0.95 at the exit), at each start time, sine profile, beta -> 0. Entry (one line per gamma)
-against tau_a / T_1; exit (all gamma) against tau_a / T_A1, T_A1 = 4 xi L / c_r. For
-tau_a / T_s >= 0.8 the loop stays within 1.1 % of the curve at the entry and 0.3 % at the exit;
+against tau_a / tau_1; exit (all gamma) against tau_a / tau_A1, tau_A1 = 4 xi. For
+tau_a / tau_s >= 0.8 the loop stays within 1.1 % of the curve at the entry and 0.3 % at the exit;
 within 5.2 % from 0.5. Faster starts with gamma != 1 depart by up to 57 % at the entry (impedance
 jump at the tail, outside the strand picture); with gamma = 1 the entry strand is uniform and the
 curve holds within 0.6 % at all start times. Dotted: 2 %. (d) Free-end displacement (take-up
@@ -79,10 +84,10 @@ zeta_1 = 0.02, 0.05 and 0.1 (text).
 
 ## fig_crawl
 
-**Initial crawl at 5 % of the final speed before a parabolic acceleration of 3 T_1 (uniform
+**Initial crawl at 5 % of the final speed before a parabolic acceleration of 3 tau_1 (uniform
 strand, resistances starting in full when the belt moves).** rho: running resistance over the
 inertial force; zeta_1: damping of the fundamental. (a) Duration of the ramp to crawl speed, no
-hold: a ramp of one period T_1 removes the overshoot of the resistance part (peak 1.01-1.07,
+hold: a ramp of one period tau_1 removes the overshoot of the resistance part (peak 1.01-1.07,
 against 1.17-1.66 with an abrupt onset). (b) Duration of the hold after an abrupt ramp: the hold
 alone barely helps; with light damping it only changes the phase of the residual oscillation.
 The take-up travel follows the same pattern (from 1.2-1.8 times quasi-static to about 1.03; text).
@@ -93,11 +98,11 @@ The take-up travel follows the same pattern (from 1.2-1.8 times quasi-static to 
 resistances proportional to the inertial density, r = rho mu a_m).** (a) Running tension at the
 drive exit needed to keep strand A taut during the start, per unit mass of strand A; dotted,
 slow-start limit sqrt(1 + rho^2/4) - rho/2. (b) Rebound of strand B below its running tension
-after the start: up to 1.43 m_B a_m without resistances, zero at tau_a = (j + 1/2) T_1, decaying
-as about 0.8 T_1 / tau_a; dashed, zeta_1 = 0.01. (c) Minimum running tension T_2 along the take-up
-position, head drive, gamma = 2, rho = 1: grip governs with a single drive pulley (E = 3); with a
-tandem drive (E = 16) slack, rebound and grip are comparable. (d) Required take-up tension with a
-drive at mid-length of the return strand (full loop, E = 16, tau_a = 20 L/c_r): 1.8-2.1 m_belt a_m
+after the start: up to 1.44 m_B a_m without resistances, zero at tau_a = (j + 1/2) tau_1, decaying
+as about 0.8 tau_1 / tau_a; dashed, zeta_1 = 0.01. (c) Minimum running tension T_2 along the take-up
+position, head drive, gamma = 2, rho = 1: grip governs with a single drive pulley (e^{mu theta} = 3); with a
+tandem drive (e^{mu theta} = 16) slack, rebound and grip are comparable. (d) Required take-up tension with a
+drive at mid-length of the return strand (full loop, e^{mu theta} = 16, tau_a = 20): 1.8-2.1 m_belt a_m
 on the tight side against 0.14-0.27 on the slack side, an impractical but valid region.
 
 ## fig_applications
@@ -108,18 +113,18 @@ resistances fitted to each F_U with onset phi = V/V_inf, gravity from each carry
 take-up is moved along the return strand with the case's counterweight. sigma_t: take-up position
 from the head pulley along the return (sigma_t = xi with a head drive; xi = sigma_t - sigma_d with
 the intermediate drive of Su). Filled triangle: real position; open triangle: alternative of the
-last row. Columns: Lo, Lodewijks (1996), 1 km, one drive pulley (E = 3.0), published 30 s start;
-SM, Suchorab-Matuszewska et al. (2025), 3 km incline, tandem drive (E = 16.4), reference start
-3 T_1 = 40.8 s (assumed); Su, Surtees (1995), 805 m, intermediate drive at sigma_d = 0.197
-(E = 11.5), published 25 s start. (a-c) Take-up tension required by each criterion (positive
-tension everywhere, during and after the start; grip T_entry <= E T_exit; running sag below 2 %),
+last row. Columns: Lo, Lodewijks (1996), 1 km, one drive pulley (e^{mu theta} = 3.0), published 30 s start;
+SM, Suchorab-Matuszewska et al. (2025), 3 km incline, tandem drive (e^{mu theta} = 16.4), reference start
+3 t_1 = 40.8 s (assumed); Su, Surtees (1995), 805 m, intermediate drive at sigma_d = 0.197
+(e^{mu theta} = 11.5), published 25 s start. (a-c) Take-up tension required by each criterion (positive
+tension everywhere, during and after the start; grip T_entry <= e^{mu theta} T_exit; running sag below 2 %),
 with the case's T_t. Lo needs 51.5 kN for its 30 s start against 21.3 kN (grip) †; SM, with the
 take-up near the high end, needs 60 kN just to hold the return strand on the slope at rest, 22 kN
 with the take-up at the tail; Su needs 234 kN on the tight side against 20 kN after the drive †.
-(d-f) Shortest start that the case's T_t admits, against 3 T_1 and the reference start; grey: no
-start is admissible (the running state already fails). Lo: 101 s at the real position (3.6 T_1) †,
+(d-f) Shortest start that the case's T_t admits, against 3 t_1 and the reference start; grey: no
+start is admissible (the running state already fails). Lo: 101 s at the real position (3.6 t_1) †,
 none beyond xi = 0.82 †; SM: 13 s; Su: 7.4 s. (g) Lo at its real position: the 30 s start
-(solid) and the 101 s start (dashed); grip is lost where entry / E (thin) exceeds the exit
+(solid) and the 101 s start (dashed); grip is lost where entry / e^{mu theta} (thin) exceeds the exit
 tension. (h) SM, real position (solid) and tail (dashed). (i) Su, real position (solid) and tight
 side (dashed), where the exit tension goes negative. Values for the real and alternative
 configurations in Table~\ref{tab:applications} (`table_applications.tex`).
@@ -151,20 +156,26 @@ configurations in Table~\ref{tab:applications} (`table_applications.tex`).
 - Reach of fig_beta (c), for the text (phase 5.3(d); pinned in tests/test_figures.py):
   (1) definition: for gamma = 2 the threshold of A1 is undefined everywhere below xi = 0.065
   (defined on 4 % of [0, 0.1], 29 % of [0, 0.2]); (2) damping: with Kelvin-Voigt,
-  zeta_A1 = zeta_1 T_1 / T_A1 = zeta_1 (T_1 c_r / L) / (4 xi), so A1 is overdamped for
-  xi <~ zeta_1 (T_1 c_r / L) / 4, between zeta_1 and 3.4 zeta_1 over the map (T_1 c_r / L =
-  4.01-13.42); (3) excitation: tau_a / T_A1 = tau_a c_r / (4 xi L) reaches the design value 3
+  zeta_A1 = zeta_1 tau_1 / tau_A1 = zeta_1 tau_1 / (4 xi), so A1 is overdamped for
+  xi <~ zeta_1 tau_1 / 4, between zeta_1 and 3.4 zeta_1 over the map (tau_1 =
+  4.01-13.42); (3) excitation: tau_a / tau_A1 = tau_a / (4 xi) reaches the design value 3
   only at xi = 1.11 (Lo), 1.27 (LL), 2.19 (G), 4.76 (Su), 5.83 (S), 10.8 (Si): no published start
   excites A1 beyond quasi-static, even with the take-up at the tail. A1 matters only with the
   take-up near the tail and a fast start (St).
 - fig_beta (c) has a single case left (St): candidate for removal (section 4.20 of the notes).
 - Practice lines mix drive types (speed control, fluid couplings, stepped motors): they show
-  where real start times sit relative to T_1, not that those drives follow the sine profile.
-- Accessibility (colour-only distinctions) still to be discussed before phase 6.
-- fig_applications (phase 5.5): accessibility not yet reviewed (in row 3 entry and exit differ
-  by colour, though the entry is always above the exit). Candidate to trim: panel (h), whose two
+  where real start times sit relative to tau_1, not that those drives follow the sine profile.
+- Accessibility (step 6.2): curves that differ by colour also differ by line style, marker or a
+  direct label: fig_startup profiles by line style (sine solid, triangular dashed, parabolic
+  dash-dot), resistances dashed in (d); fig_validity rho and the conditions of (c) by marker
+  (open circle, square, triangle, diamond); fig_crawl rho by marker, zeta_1 by line style;
+  fig_modal (d) gamma by marker and direct labels (no legend); fig_applications row 3 exit with
+  open squares, entry / e^{mu theta} thin. Practice lines of fig_startup are now thin grey dotted
+  (the triangular profile took the dashes). Maps keep their colour scales (monotonic in
+  lightness, so they read in grey).
+- fig_applications (phase 5.5): accessibility reviewed in step 6.2 (see above). Candidate to trim: panel (h), whose two
   histories barely differ. Sweep with the same counterweight; with the counterweight resized to
-  keep the running T_2, required T_t and T_1 change < 0.3 % and Lo's shortest start becomes ~101 s
+  keep the running T_2, required T_t and t_1 change < 0.3 % and Lo's shortest start becomes ~101 s
   at every position (sentence for the text).
 - Tables (phase 5.6): `python maps/paper_tables.py` writes `table_cases.tex` and
   `table_applications.tex` (booktabs, threeparttable, array, natbib); `tables_preview.tex`

@@ -1,0 +1,65 @@
+{
+ "lodewijks_grip": [
+  {
+   "T_t_req": 40527.421342026006,
+   "profile": "linear offset",
+   "ratio": 4.856138317048504,
+   "zeta1": 0.0
+  },
+  {
+   "T_t_req": 34546.69662604341,
+   "profile": "linear offset",
+   "ratio": 4.236518414350671,
+   "zeta1": 0.05
+  },
+  {
+   "T_t_req": 39304.27102431459,
+   "profile": "linear",
+   "ratio": 4.690149195465197,
+   "zeta1": 0.0
+  },
+  {
+   "T_t_req": 35152.76600989932,
+   "profile": "linear",
+   "ratio": 4.291024934399513,
+   "zeta1": 0.05
+  },
+  {
+   "T_t_req": 36039.8608528067,
+   "profile": "linear delayed",
+   "ratio": 4.4067343579691896,
+   "zeta1": 0.0
+  },
+  {
+   "T_t_req": 34023.4880786362,
+   "profile": "linear delayed",
+   "ratio": 4.194965016143272,
+   "zeta1": 0.05
+  },
+  {
+   "T_t_req": 51156.008658459694,
+   "profile": "Harrison (6.1)",
+   "ratio": 5.760355770226761,
+   "zeta1": 0.0
+  },
+  {
+   "T_t_req": 48570.66149532709,
+   "profile": "Harrison (6.1)",
+   "ratio": 5.526928182646966,
+   "zeta1": 0.05
+  },
+  {
+   "T_t_req": 54868.86048885564,
+   "profile": "Nordell (6.2)",
+   "ratio": 6.08860340771196,
+   "zeta1": 0.0
+  },
+  {
+   "T_t_req": 52417.56644051092,
+   "profile": "Nordell (6.2)",
+   "ratio": 5.869982510110444,
+   "zeta1": 0.05
+  }
+ ],
+ "note": "written by maps/paper_numbers.py --recompute; do not edit"
+}

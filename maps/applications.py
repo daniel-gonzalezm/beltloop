@@ -416,7 +416,7 @@ def figure(d: dict, path=None, lo_last_row: str = "duration"):
         style.panel_label(bx, f"({'def'[j]})")
         if j == 0:
             bx.plot([], [], "-", color=cols[0], label=r"shortest admissible, $T_t$ of the case")
-            bx.plot([], [], "--", color=cols[3], label=r"$3T_1$")
+            bx.plot([], [], "--", color=cols[3], label=r"$3t_1$")
             bx.plot([], [], ":", color="k", label="reference start")
             bx.legend(loc="upper left")
         lo_by_duration = tag == "Lo" and lo_last_row == "duration"
@@ -438,14 +438,19 @@ def figure(d: dict, path=None, lo_last_row: str = "duration"):
         for lab, ls in ((("ref", "-"), ("min", "--")) if by_duration else (("real", "-"), ("alt", "--"))):
             key = f"{tag}_dur_{lab}" if by_duration else f"{tag}_{lab}"
             t = d[f"{key}_t"]
+            # entry plain, exit with open squares, entry / e^{mu theta} thin: readable without
+            # colour (step 6.2); the curves are also labelled directly in panel (g)
             cx.plot(t, d[f"{key}_entry"] / 1e3, ls, color=cols[0])
-            cx.plot(t, d[f"{key}_exit"] / 1e3, ls, color=cols[1])
+            cx.plot(t, d[f"{key}_exit"] / 1e3, ls, color=cols[1], marker="s", ms=2.4, mfc="w",
+                    mew=0.6, markevery=(0.04 if ls == "-" else 0.09, 0.1))
             cx.plot(t, d[f"{key}_entry"] / 1e3 / c.E.value, ls, color=cols[0], lw=0.5)
             if by_duration:
                 tak = float(d[f"{key}_ta"])
                 cx.axvline(tak, color="0.6", lw=0.6, ls=ls)
-                cx.text(tak, 0.97, f" {tak:.0f} s", transform=cx.get_xaxis_transform(),
-                        fontsize=6.5, color="0.4", va="top")
+                right = lab == "ref"              # the longer start is labelled on its left,
+                cx.text(tak, 0.97, f" {tak:.0f} s" if right else f"{tak:.0f} s ",   # clear of the legend
+                        transform=cx.get_xaxis_transform(), fontsize=6.5, color="0.4", va="top",
+                        ha="left" if right else "right")
         if not by_duration:
             cx.axvline(ta, color="0.6", lw=0.6)
         cx.axhline(0, color="0.6", lw=0.6)
@@ -455,13 +460,16 @@ def figure(d: dict, path=None, lo_last_row: str = "duration"):
                                                    if by_duration else ""))
         if j == 0:
             cx.plot([], [], "-", color=cols[0], label="drive entry")
-            cx.plot([], [], "-", color=cols[0], lw=0.5, label=r"entry / $E$")
-            cx.plot([], [], "-", color=cols[1], label="drive exit")
-            cx.legend(loc="upper right")
+            cx.plot([], [], "-", color=cols[0], lw=0.5, label=r"entry / $\mathrm{e}^{\mu\theta}$")
+            cx.plot([], [], "-", color=cols[1], marker="s", ms=2.4, mfc="w", mew=0.6,
+                    label="drive exit")
+            cx.legend(loc="upper right", frameon=True, framealpha=0.85, edgecolor="none",
+                      facecolor="w", borderpad=0.3)
         if j == 1:
             cx.plot([], [], "-", color="0.3", label="real position")
             cx.plot([], [], "--", color="0.3", label="alternative")
-            cx.legend(loc="lower right")
+            cx.legend(loc="center right", bbox_to_anchor=(1.0, 0.42), frameon=True,
+                      framealpha=0.85, edgecolor="none", facecolor="w", borderpad=0.3)
     path = HERE / "figures" / "applications.pdf" if path is None else path
     fig.savefig(path)
     fig.savefig(Path(path).with_suffix(".png"), dpi=200)

@@ -310,7 +310,7 @@ CASES_FULL = [
          profile="two torque steps (wound-rotor motors, 1985b): not speed-controlled",
          F_U=D(151e3, "running T1 = 200 kN (1983, section 6) less T_t = 49 kN (20 t on 4 strands)"),
          takeup_basis="not stated; running T1 / T2 = 200 / 49 kN needs e^(mu theta) >= 4.1",
-         basis_short="not stated (grip at $E \\ge 4.1$)",
+         basis_short="not stated (grip at $\\mathrm{e}^{\\mu\\theta} \\ge 4.1$)",
          notes="consistency case; plotted at gamma = 1 on the maps; xi read from the inset "
                "of Fig. 5a (0.002-0.02). Belt SR2250 in 1983, SR2400 in 1985b. Running power "
                "900 kW (1985b). Not a start-up case: stepped-torque drive. EA not set (c_r is "
@@ -332,7 +332,7 @@ CASES_FULL = [
          p_A=P(236.0 / 225.0, "peak 2.36e5 N against the steady 2.25e5 N (Fig. 5 text)"),
          takeup_basis="not stated; their running tensions (337 / 113 kN, text) need "
                       "e^(mu theta) = 2.98: one pulley with mu = 0.3 and ~210 deg wrap",
-         basis_short="not stated (grip at $E = 2.98$)",
+         basis_short="not stated (grip at $\\mathrm{e}^{\\mu\\theta} = 2.98$)",
          notes="head (their Fig. 1) / tail (their model); inconsistent running tensions: "
                "structure only. ST1600, 1 m, 14.8 mm; relaxation coefficient 0.14"),
     Case("G", "Gao et al. 2026", "gao2026", L=P(4500.0), sigma_t=[0.001],
@@ -507,7 +507,7 @@ CASES_FULL = [
          l_o=P(1.2), l_u=P(3.0),
          takeup_basis="not stated; running tensions imply e^(mu theta) = 3.0 and about 1 % sag "
                       "at the tail (phase 5.4)",
-         basis_short="not stated (grip at $E = 3.0$)",
+         basis_short="not stated (grip at $\\mathrm{e}^{\\mu\\theta} = 3.0$)",
          notes="take-up position and rigging unknown (dotted line on the maps); no start time; "
                "drive 150 kW nameplate, below the 164 kW demand"),
     Case("Su", "Surtees 1995 (SASOL)", "surtees1995runback", L=P(805.0),

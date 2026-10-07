@@ -1,0 +1,15 @@
+{
+ "note": "written by validation/lodewijks_case.py; do not edit",
+ "peak_dev": {
+  "Harrison (6.1)": -0.022551155609469964,
+  "Nordell (6.2)": -0.17634762790202219,
+  "linear": -0.03459425119942994,
+  "linear delayed": -0.06592197730827987,
+  "linear offset": 0.004998649051723314
+ },
+ "peak_dev_max": 0.004998649051723314,
+ "peak_dev_min": -0.17634762790202219,
+ "period_lodewijks_strain": 18.32911166672419,
+ "period_lodewijks_travel": 18.35848544031889,
+ "period_model": 28.52887490336817
+}

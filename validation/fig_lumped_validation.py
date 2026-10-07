@@ -61,58 +61,75 @@ def convergence(cv, kind, Ns=(125, 250, 500, 1000)):
     return np.array(Ns), np.array(ef), np.array(et)
 
 
+SUMMARY = Path(__file__).parent / "data" / "lumped_validation.json"
+
+
 def main():
-    plt.rcParams.update({"font.family": "serif", "font.size": 8, "axes.labelsize": 8,
-                         "legend.fontsize": 7, "lines.linewidth": 1.0})
-    fig, ax = plt.subplots(2, 2, figsize=(7.0, 5.0))
-    colors = {"entry": "C0", "exit": "C3"}
-    summary = []
-    for panel, (name, (cv, kind)) in zip(ax[0], CASES.items()):
+    import json
+    import sys
+    sys.path.insert(0, str(Path(__file__).parents[1] / "maps"))
+    import style                                   # common style of the paper figures
+    style.apply()
+    C = style.OKABE_ITO
+    fig, ax = plt.subplots(2, 2, figsize=(style.DOUBLE, 112 * style.MM), constrained_layout=True)
+    # entry and exit differ by colour and marker; conveyors A and B in (c) by colour, marker
+    # and line style (readable without colour, step 6.2)
+    sty = {"entry": (C[0], "o"), "exit": (C[1], "s")}
+    summary = {}
+    for panel, (name, (cv, kind)), lab_p in zip(ax[0], CASES.items(), ("(a)", "(b)")):
         ref, res = run_case(cv, kind)
         x = res.x_mid[[-1, 0]]
         Tm = (cv.static_tension(x)[:, None] + ref.dynamic_tension(x)) / 1e3
         Tl = res.T_total[[-1, 0]] / 1e3
         sub = slice(0, None, 30)
         for i, lab in enumerate(("entry", "exit")):
-            panel.plot(ref.t, Tm[i], color=colors[lab], label=f"drive {lab}, modal")
-            panel.plot(res.t[sub], Tl[i][sub], "o", ms=2.5, mfc="none", color=colors[lab],
+            c, mk = sty[lab]
+            panel.plot(ref.t, Tm[i], color=c, label=f"drive {lab}, modal")
+            panel.plot(res.t[sub], Tl[i][sub], mk, ms=2.6, mfc="none", mew=0.6, color=c,
                        label=f"drive {lab}, lumped")
         panel.axvline(TA, color="0.6", lw=0.6, ls="--")
-        panel.set_xlabel("$t$ (s)"); panel.set_ylabel("belt tension (kN)")
-        panel.set_title(f"({'a' if name == 'A' else 'b'}) conveyor {name}: "
-                        f"$\\xi$ = {cv.xi:.2f}, $\\beta$ = {cv.beta:.3f}, $\\gamma$ = {cv.gamma:.2f}",
-                        fontsize=8, loc="left")
+        panel.set(xlabel=r"$t$ (s)", ylabel="belt tension (kN)")
+        style.panel_label(panel, f"{lab_p} conveyor {name}: $\\xi$ = {cv.xi:.2f}, "
+                                 f"$\\beta$ = {cv.beta:.3f}, $\\gamma$ = {cv.gamma:.2f}")
         Td = ref.dynamic_tension(res.x_mid)
-        summary.append((name, np.max(np.abs(res.T_dynamic - Td)) / np.max(np.abs(Td)),
-                        np.max(np.abs(res.y - ref.takeup_displacement())) / np.max(np.abs(res.y))))
-        ax[1, 0].plot(ref.t, ref.takeup_displacement(), color="C0" if name == "A" else "C2",
-                      label=f"{name}, modal")
-        ax[1, 0].plot(res.t[sub], res.y[sub], "o", ms=2.5, mfc="none",
-                      color="C0" if name == "A" else "C2", label=f"{name}, lumped")
-    ax[0, 0].legend(loc="center right", frameon=False)
-    ax[1, 0].set_xlabel("$t$ (s)"); ax[1, 0].set_ylabel("take-up travel $y$ (m)")
-    ax[1, 0].set_title("(c) take-up motion", fontsize=8, loc="left")
-    ax[1, 0].legend(frameon=False, ncol=2)
+        summary[name] = dict(tension_err=float(np.max(np.abs(res.T_dynamic - Td)) / np.max(np.abs(Td))),
+                             travel_err=float(np.max(np.abs(res.y - ref.takeup_displacement()))
+                                              / np.max(np.abs(res.y))),
+                             xi=cv.xi, beta=cv.beta, gamma=cv.gamma)
+        c, mk, ls = (C[0], "o", "-") if name == "A" else (C[2], "s", "--")
+        ax[1, 0].plot(ref.t, ref.takeup_displacement(), color=c, ls=ls, label=f"{name}, modal")
+        ax[1, 0].plot(res.t[sub], res.y[sub], mk, ms=2.6, mfc="none", mew=0.6, color=c,
+                      label=f"{name}, lumped")
+    ax[0, 0].legend(loc="center right")
+    ax[1, 0].set(xlabel=r"$t$ (s)", ylabel=r"take-up travel $y$ (m)")
+    style.panel_label(ax[1, 0], "(c) take-up motion")
+    ax[1, 0].legend(ncol=2, loc="lower right")
 
     a = ax[1, 1]
     for name, (cv, kind) in CASES.items():
         Ns, ef, et = convergence(cv, kind)
         mk = "s" if name == "A" else "^"
-        a.loglog(Ns, ef, mk + "-", ms=3.5, color="C1", label=f"{name}: first five frequencies")
-        a.loglog(Ns, et, mk + "--", ms=3.5, color="C4", label=f"{name}: tension field, all $t$")
-        summary.append((name + " conv", ef, et))
+        a.loglog(Ns, ef, mk + "-", ms=3.2, mfc="w", color=C[4], label=f"{name}: first five frequencies")
+        a.loglog(Ns, et, mk + "--", ms=3.2, mfc="w", color=C[3], label=f"{name}: tension field, all $t$")
+        summary[name].update(N=[int(n) for n in Ns], freq_err=[float(e) for e in ef],
+                             field_err=[float(e) for e in et],
+                             freq_order=float(-np.polyfit(np.log(Ns), np.log(ef), 1)[0]),
+                             field_order=float(-np.polyfit(np.log(Ns[:3]), np.log(et[:3]), 1)[0]))
     Ns = np.array([125, 1000])
     a.loglog(Ns, 3e-3 * (Ns / 125.0) ** -2, ":", color="0.4", label="slope $-2$")
     a.set_xticks([125, 250, 500, 1000]); a.set_xticklabels(["125", "250", "500", "1000"])
     a.minorticks_off()
-    a.set_xlabel("number of elements $N$"); a.set_ylabel("max. relative difference")
-    a.set_title("(d) lumped model vs closed form", fontsize=8, loc="left")
-    a.legend(frameon=False, fontsize=6.5)
-    fig.tight_layout()
+    a.set(xlabel=r"number of elements $N$", ylabel="max. relative difference")
+    style.panel_label(a, "(d) lumped model against closed form")
+    a.legend(fontsize=6, loc="lower left")
+    for b in ax.flat:
+        b.grid(alpha=0.25, lw=0.4, which="both")
     OUT.mkdir(exist_ok=True)
     fig.savefig(OUT / "lumped_validation.pdf"); fig.savefig(OUT / "lumped_validation.png", dpi=200)
-    for row in summary:
-        print(row)
+    summary["note"] = ("written by validation/fig_lumped_validation.py; field_order from N = "
+                       "125-500 (above N = 1000 a round-off floor of about 1e-6 appears)")
+    SUMMARY.write_text(json.dumps(summary, indent=1, sort_keys=True) + "\n")
+    print(json.dumps(summary, indent=1))
 
 
 if __name__ == "__main__":

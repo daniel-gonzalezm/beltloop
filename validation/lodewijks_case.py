@@ -150,6 +150,22 @@ def load_digitised():
 
 
 # ------------------------------------------------------------------------------ main
+SUMMARY = HERE / "data" / "lodewijks_case.json"
+
+
+def write_summary(table, pe, py, pm):
+    """Numbers of the cross-comparison (validation section) for maps/paper_numbers.py, which
+    reads this file instead of rerunning the starts (about 30 s). Peak strain of each Table 8.7
+    profile, model A undamped against Lodewijks, and the periods of the oscillation after the
+    start (fits over 30-60 s for Lodewijks, 30-90 s for model A)."""
+    import json
+    dev = {n: table[n][0]["eps_max"] / TABLE_8_7[n][1] - 1 for n in TABLE_8_7}
+    out = dict(peak_dev=dev, peak_dev_min=min(dev.values()), peak_dev_max=max(dev.values()),
+               period_lodewijks_strain=pe[2], period_lodewijks_travel=py[2], period_model=pm[2],
+               note="written by validation/lodewijks_case.py; do not edit")
+    SUMMARY.write_text(json.dumps(out, indent=1, sort_keys=True) + "\n")
+
+
 def main():
     OUT.mkdir(exist_ok=True)
     cv0 = conveyor()
@@ -202,6 +218,7 @@ def main():
     _, es = dig["eps_takeup"]
     print(f"  slack side, Lodewijks: strain {es.mean():.4f} +- {es.std():.4f} "
           f"(T_t/EA = {cv0.takeup.T_t / EA:.4f})")
+    write_summary(table, pe, py, pm)
 
     print("\nFundamental period [s] of candidate models (loaded unless stated):")
     for xi in (0.001, 0.25, 0.5, 0.75, 0.999):

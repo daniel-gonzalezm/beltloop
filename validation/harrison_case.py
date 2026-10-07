@@ -78,6 +78,68 @@ def periods_torque(rho, md, gamma=1.0, xi=XI0, n=2, strands=N_STRANDS):
     return 2 * np.pi * L / (cr * Om[:n])
 
 
+def periods_embedded(rho, xi=XI0, n=1):
+    """Thesis model (embedded mass, wrong): the whole take-up mass M sits in a uniform loop
+    (one wave speed c) fixed at both drive faces, cot(Om xi) + cot(Om (2 - xi)) = beta Om,
+    beta = M/(rho L). Kept only to quote what that model gives for Harrison's belt. Roots are
+    bracketed between consecutive poles of the left-hand side (one root per interval)."""
+    beta = M / (rho * L)
+    f = lambda Om: 1 / np.tan(Om * xi) + 1 / np.tan(Om * (2 - xi)) - beta * Om
+    poles = np.sort(np.r_[np.arange(1, 4 * n + 2) * np.pi / xi, np.arange(1, 4 * n + 2) * np.pi / (2 - xi)])
+    edges = np.r_[0.0, poles]
+    roots = []
+    for a, b in zip(edges[:-1], edges[1:]):
+        lo, hi = a + 1e-9 * (b - a) + 1e-12, b - 1e-9 * (b - a)
+        if np.sign(f(lo)) != np.sign(f(hi)):
+            roots.append(brentq(f, lo, hi, xtol=1e-14))
+        if len(roots) == n:
+            break
+    return 2 * np.pi * L / (C * np.array(roots))
+
+
+STILL_MEAS = 7.6                       # return belt still after the start, Harrison (1985) text
+CARRIAGE_MEAS = 2.0                    # carriage travel in the start, about 2 m (1983 Fig. 5e)
+
+
+def startup_check(rho=79.0, strands=N_STRANDS, V=1.6, am=0.63, t_end=15.0):
+    """First start plateau of Harrison (1985) Fig. 2b (1.6 m/s in about 4 s) as a sine ramp,
+    undamped, gamma = 1: carriage travel at 7 s and its maximum up to t_end, belt stored in
+    the loop, and the largest speed just downstream of the take-up before the wave returns."""
+    t = np.linspace(0, t_end, int(40 * t_end) + 1)
+    lp, beta, cr, _ = setup(rho, strands=strands)
+    b = modal_basis(lp, beta, 300)
+    ts = L / cr
+    W = b.W(np.array([XI0 + 1e-7]))[:, 0]
+    prof = StartProfile("sine", np.pi * V / (2 * am) / ts, "none")
+    r = startup_response(b, prof, 0.0, t / ts)
+    ybelt = r.takeup_displacement() * am * L ** 2 / cr ** 2
+    ycar = 2 / strands * ybelt
+    vS = (W @ r.dp) * am * L / cr + V * prof.velocity(t / ts)
+    t_back = (2 - XI0) * ts
+    i7 = np.argmin(abs(t - 7.0))
+    return dict(carriage_7s=ycar[i7], carriage_max=ycar.max(), stored_max=2 * ybelt.max(),
+                v_still=abs(vS[t < t_back - 0.1]).max(), t_back=t_back)
+
+
+def summary():
+    """Numbers of the validation section (Harrison 1983, 1985b), for maps/paper_numbers.py.
+    Base model: n = 4, measured gamma = 0.97, loop transit fixed, xi = 0.005, rho = 79 kg/m."""
+    T = periods(79.0, GAMMA_MEAS)
+    band = [periods(79.0, g)[0] for g in GAMMA_MEAS_BAND]
+    second = [periods(rho, g)[1] for rho in RHOS for g in (GAMMA_MEAS,)]
+    emb = [periods_embedded(rho, xi)[0] for rho in RHOS for xi in (0.002, 0.005, 0.02, 0.2)]
+    tr = []
+    for rho in RHOS:
+        _, beta, cr, _ = setup(rho, GAMMA_MEAS)
+        tr.append(abs(takeup_transmission(beta, 2 * np.pi * L / (cr * 7.0))))
+    st = startup_check()
+    return dict(slow=T[0], slow_band=(min(band), max(band)), second=(min(second), max(second)),
+                slow_meas=MEAS_SLOW, wave_meas=MEAS_WAVE, gamma_meas=GAMMA_MEAS,
+                gamma_band=GAMMA_MEAS_BAND, embedded_max=max(emb),
+                transmission_7s=(min(tr), max(tr)), still_meas=STILL_MEAS,
+                carriage_meas=CARRIAGE_MEAS, **st)
+
+
 def main():
     OUT.mkdir(exist_ok=True)
     print(f"Loop transit 2L/c = {T_TR:.2f} s; measured ratio slow/wave = "

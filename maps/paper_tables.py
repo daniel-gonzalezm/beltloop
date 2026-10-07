@@ -16,7 +16,7 @@ Table of applications (`table_applications.tex`), from `applications.real_alt_ro
 5.5): the configurations of the last row of `fig_applications`, plus Lo with the take-up at
 the tail. The rows are cached in `data/table_applications.json`.
 
-The tables use array, booktabs, threeparttable and natbib (\\citet); keys as in the project .bib files.
+The tables use array, booktabs, threeparttable and natbib (\\citet); keys of paper/references.bib.
 `figures/paper/tables_preview.tex` compiles both on their own.
 """
 from __future__ import annotations
@@ -204,7 +204,7 @@ def table_cases_tex(rows=None) -> str:
         "from the drive exit along the return strand, in units of $L$; $\\mu_r$: inertial line "
         "density of the return strand (belt and reduced idler mass); $\\gamma=c_r/c_c$ at full "
         "material coupling ($\\alpha=1$) and, in brackets, at the lowest coupling of the material "
-        "class \\citep{lodewijks2002}; $c_r$: wave speed of the return strand; $T_1$: fundamental "
+        "class \\citep{lodewijks2002}; $c_r$: wave speed of the return strand; $t_1$: fundamental "
         "period with the take-up mass ($\\alpha=1$); $T_t$: static belt tension at the take-up; "
         "$n$: belt strands that carry the take-up pulley; $W_r=g\\mu_rL$; "
         "$\\beta=4M/(n^2\\mu_rL)=(4/n)\\lambda T_t/W_r$; $\\beta_5$: take-up mass that lengthens "
@@ -213,7 +213,7 @@ def table_cases_tex(rows=None) -> str:
         "\\label{tab:cases}",
         "\\begin{tabular}{@{}lrcrlrrrclll>{\\raggedright\\arraybackslash}p{24mm}@{}}",
         "\\toprule",
-        "Case & $L$ & $\\xi$ & $\\mu_r$ & $\\gamma$ & $c_r$ & $T_1$ & $T_t$ & $n$ "
+        "Case & $L$ & $\\xi$ & $\\mu_r$ & $\\gamma$ & $c_r$ & $t_1$ & $T_t$ & $n$ "
         "& $T_t/W_r$ & $\\beta$ & $\\beta/\\beta_5$ & $T_t$ set by \\\\",
         " & (km) & & (kg/m) & & (m/s) & (s) & (kN) & & & & & \\\\",
         "\\midrule",
@@ -249,16 +249,16 @@ def table_cases_tex(rows=None) -> str:
         "Si": "KPC.",
         "LL": "$n$ read from the tensions of their Fig.~4.",
         "S": "take-up at the head in their Fig.~1 and at the tail in their model, where $T_t$ is "
-             "published; $T_1$ and $\\beta/\\beta_5$ for both positions.",
+             "published; $t_1$ and $\\beta/\\beta_5$ for both positions.",
         "H": f"consistency case, stepped-torque drive; $\\mu_r={H_lo:.0f}$--${H_hi:.0f}$~kg/m "
              f"($\\beta={nt['H_beta'][1]:.3f}$--${nt['H_beta'][0]:.3f}$); $\\xi=0.002$--$0.02$.",
         "G": "$\\beta$ of one 1000~kg counterweight on two strands; the number of counterweights "
              "is not given and $\\beta$ scales with it.",
-        "SM": f"KGHM, variant~1; take-up between $\\xi=0$ and $0.1$ ($T_1$ changes "
+        "SM": f"KGHM, variant~1; take-up between $\\xi=0$ and $0.1$ ($t_1$ changes "
               f"{100 * nt['SM_dT1']:.1f}\\,\\%).",
-        "Pa": f"$\\xi=0.005$--$0.05$ ($T_1$ changes {100 * nt['Pa_dT1']:.1f}\\,\\%).",
+        "Pa": f"$\\xi=0.005$--$0.05$ ($t_1$ changes {100 * nt['Pa_dT1']:.1f}\\,\\%).",
         "NC": f"case~1; intermediate drive at {cs.BY_TAG['NC'].sigma_d.value:.3f}$L$ from the "
-              f"head; no take-up data, $T_1$ with $\\beta\\to0$.",
+              f"head; no take-up data, $t_1$ with $\\beta\\to0$.",
         "Lo": "chapter~8.",
         "Su": f"SASOL; intermediate drive at {cs.BY_TAG['Su'].sigma_d.value:.3f}$L$ from the head, "
               f"take-up after the secondary drive pulley; design~2 (design~1: "
@@ -277,7 +277,7 @@ def table_cases_tex(rows=None) -> str:
         "m, measured. Unmarked values are published or derived from published data. The "
         "counterweight is taken as hung directly on the $n$ strands ($\\lambda=1$) unless the "
         "rigging is published; for a roped rig that reduces the travel of the weight this is an "
-        "upper bound of $\\beta$. $E$: drive factor $e^{\\mu\\theta}$ implied by the published "
+        "upper bound of $\\beta$. $\\mathrm{e}^{\\mu\\theta}$: drive factor implied by the published "
         "running tensions. Full provenance, notes and ranges of every input: \\texttt{cases.py} "
         "in the code archive.",
         "\\item " + " ".join(note_by_tag[r["tag"]] for r in rows),
@@ -311,9 +311,9 @@ def app_rows(recompute: bool = False):
 def table_applications_tex(rows=None) -> str:
     rows = app_rows() if rows is None else rows
     head = {
-        "Lo": "Lo: 1~km, one drive pulley ($E=3.0$), $T_t=@T1@$~kN; published start 30~s",
-        "SM": "SM: 3~km incline, tandem drive ($E=16.4$), $T_t=@T0@$~kN; start $3T_1$ (assumed)",
-        "Su": "Su: 805~m, drive at $\\sigma_d=@SD@$ ($E=11.5$), $T_t=@T0@$~kN; published start 25~s",
+        "Lo": "Lo: 1~km, one drive pulley ($\\mathrm{e}^{\\mu\\theta}=3.0$), $T_t=@T1@$~kN; published start 30~s",
+        "SM": "SM: 3~km incline, tandem drive ($\\mathrm{e}^{\\mu\\theta}=16.4$), $T_t=@T0@$~kN; start $3t_1$ (assumed)",
+        "Su": "Su: 805~m, drive at $\\sigma_d=@SD@$ ($\\mathrm{e}^{\\mu\\theta}=11.5$), $T_t=@T0@$~kN; published start 25~s",
     }
     lines = [
         "% Generated by maps/paper_tables.py (phase 5.6) from maps/applications.py; do not edit by hand.",
@@ -338,7 +338,7 @@ def table_applications_tex(rows=None) -> str:
         " & & & & & \\multicolumn{2}{c}{Entry peak} & Exit & & \\multicolumn{3}{c}{Required} "
         "& Shortest \\\\",
         "\\cmidrule(lr){6-7}\\cmidrule(lr){10-12}",
-        "Take-up & $\\sigma_t$ & $T_1$ & $t_a$ & $t_a/T_1$ & (kN) & /running & min. & Travel "
+        "Take-up & $\\sigma_t$ & $t_1$ & $t_a$ & $t_a/t_1$ & (kN) & /running & min. & Travel "
         "& $T_t$ & governs & $T_2$ & start \\\\",
         " & & (s) & (s) & & & & (kN) & (m) & (kN) & & (kN) & (s) \\\\",
     ]
@@ -376,18 +376,19 @@ def table_applications_tex(rows=None) -> str:
     return "\n".join(lines) + "\n"
 
 
-PREVIEW = r"""% Standalone preview of the generated tables (phase 5.6). Compile with
+PREVIEW = r"""% Standalone preview of the generated tables (phase 5.6). Compile from this folder with
 %   pdflatex tables_preview && bibtex tables_preview && pdflatex tables_preview (x2)
-% after copying the project .bib files next to it (Referencias.bib and refs_*.bib).
+% It reads the bibliography of the manuscript, paper/references.bib (step 6.2), with the
+% same numbered citations as the manuscript; the manuscript itself compiles both tables too.
 \documentclass[a4paper,10pt]{article}
 \usepackage[margin=18mm]{geometry}
 \usepackage{amsmath,array,booktabs,threeparttable}
-\usepackage[authoryear,round]{natbib}
+\usepackage[numbers,sort&compress]{natbib}
 \begin{document}
 \input{table_cases}
 \input{table_applications}
 \bibliographystyle{plainnat}
-\bibliography{Referencias,refs_phase2,refs_phase4,refs_phase45,refs_phase56}
+\bibliography{../../../paper/references}
 \end{document}
 """
 

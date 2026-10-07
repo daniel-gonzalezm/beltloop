@@ -3,7 +3,8 @@
 Widths follow the usual two-column journal sizes (single column 85 mm, full width 174 mm);
 check them against the author guidelines of the chosen journal before submission (phase 7).
 Fonts are STIX (bundled with matplotlib, Times-like, so the figures reproduce on any machine);
-line colours are the Okabe-Ito colour-blind safe set; maps use perceptually uniform colour maps.
+line colours are the Okabe-Ito colour-blind safe set, and curves that differ by colour also differ
+by line style, marker or a direct label (step 6.2); maps use perceptually uniform colour maps.
 """
 from pathlib import Path
 
@@ -16,6 +17,9 @@ SINGLE = 85 * MM
 DOUBLE = 174 * MM
 
 OKABE_ITO = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#E69F00", "#56B4E9", "#F0E442", "#000000"]
+# Markers paired with OKABE_ITO, so that curves told apart by colour can also be told apart
+# without it (step 6.2: accessibility). Open markers (mfc="w") read best on thin lines.
+MARKERS = ["o", "s", "^", "D", "v", "P", "X", "*"]
 
 RC = {
     "font.family": "STIXGeneral",
