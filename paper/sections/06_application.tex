@@ -1,18 +1,122 @@
 % =====================================================================
-% Section 6 -- Application to field conveyors. Step 6.6.
-% Inputs: notes 4.27; fig_applications; table_applications (generated).
+% Section 6 -- Application to field conveyors. Written in step 6.6.
+% Inputs: notes 4.26-4.27; fig_applications; table_applications (generated
+% by maps/paper_tables.py). Lodewijks (1996) re-read in step 6.6: drive
+% grip checked with the start-up factor 1.2 of a drain-type fluid coupling
+% (Table 8.2, Eqs. 8.7-8.9, pp. 154-155); only single hinge elements, so no
+% slip, at the drive pulleys (p. 137). DIN 22101 sec. 8.2.3 re-read: relative
+% sag below 0.01 in steady operation, more allowed in non-steady operation.
+% Numbers: paper_numbers.py, section "Application to field conveyors".
+% Tests: test_applications.py, test_tables.py.
 % =====================================================================
 \section{Application to field conveyors}\label{sec:application}
 
 \begin{figure}[tbp]
   \centering
   \includegraphics[width=\linewidth]{fig_applications}
-  \caption{\TODO{fig\_applications caption (captions.md).}}
+  \caption{Start-ups of three conveyors from the literature in physical units, against the
+  take-up position (sine profile, $\hat\zeta=0.01$, DIN~22101 strand resistances fitted to
+  each $F_U$ and building up with the belt speed, gravity from each carry profile; the take-up
+  is moved along the return strand with the case's counterweight). $\sigma_t$: take-up
+  position from the head pulley along the return strand, in units of $L$ ($\sigma_t=\xi$ with
+  a head drive). Filled triangle: real position; open triangle: alternative of the last row.
+  Columns: Lo \citep{lodewijks1996}, \qty{1}{\kilo\metre}, one drive pulley
+  ($\egrip=\NumLoGripFactor$), published \qty{30}{\second} start; SM
+  \citep{suchorab2025longdistance}, \qty{3}{\kilo\metre} incline, tandem drive
+  ($\egrip=16.4$), reference start $3\tper{1}=\qty{\NumSMReferenceStart}{\second}$ (assumed);
+  Su \citep{surtees1995runback}, \qty{805}{\metre}, drive on the return strand at
+  $\sigma_d=0.197$ ($\egrip=11.5$), published \qty{25}{\second} start. (a--c) Take-up tension
+  required by each condition (positive tension along the loop during and after the start;
+  grip; running sag below \qty{2}{\percent}), with the case's $\Tt$. (d--f) Shortest sine
+  start that the case's $\Tt$ admits, with $3\tper{1}$ and the reference start; grey, no start
+  is admissible (the running state already fails). (g) Lo at its real position: the published
+  \qty{30}{\second} start (solid) and the shortest admissible one,
+  \qty{\NumLoShortest}{\second} (dashed); grip is lost where the entry tension over $\egrip$
+  (thin) exceeds the exit tension. (h) SM, real position (solid) and tail (dashed). (i) Su,
+  real position (solid) and tight side of the drive (dashed), where the exit tension becomes
+  negative. Values in \cref{tab:applications}.}
   \label{fig:applications}
 \end{figure}
 \input{../maps/figures/paper/table_applications}
-% Lo, SM, Su; the 30 s starts of Lodewijks (1996) would slip (ratio
-% 4.2-6.1 against e^{mu theta} = 3; 101 s with his take-up); position matters more
-% through the statics than through the dynamics; tight side of Su.
-% Limit: the shortest start ignores belt resistance and motor torque.
-\TODO{Application.}
+
+The formulas of Section~\ref{sec:results} rest on idealised resistances and a horizontal
+path. To see how the take-up position acts on real layouts, three conveyors of
+\cref{tab:cases} are started in physical units with the full model: a \qty{1}{\kilo\metre}
+conveyor with a single drive pulley and published speed-controlled starts
+\citep[\S8.6.2]{lodewijks1996}, a \qty{3}{\kilo\metre} incline with a tandem head drive
+\citep{suchorab2025longdistance}, and an \qty{805}{\metre} conveyor whose drive sits on the
+return strand \citep{surtees1995runback}. Resistances follow DIN~22101 strand by strand, with
+the coefficient fitted to the running peripheral force of each case, and build up with the
+belt speed; gravity enters through each carry profile; the start is a sine profile with the
+base damping $\hat\zeta=0.01$. The take-up is moved along the whole return strand with the
+counterweight of the case, so $\Tt$ and $\beta$ stay fixed. At fixed take-up mass the total
+tension is $\Tt$ plus a field that does not depend on $\Tt$, so each condition of
+Section~\ref{sec:validity} gives a closed bound on $\Tt$ from a single run: positive tension
+along the loop during and after the start, drive grip, and a running sag below
+\qty{2}{\percent}. The last is the value used in the design calculations of
+\citet{surtees1995runback}; DIN~22101 recommends less than \qty{1}{\percent} in steady
+operation, mainly for energy efficiency \citep[\S8.2.3]{din22101}. The largest of the three
+bounds is the required take-up tension, and the shortest admissible start is the shortest
+sine start for which the case's $\Tt$ meets all three, at that duration and beyond. The
+second condition, that the take-up follows the belt, never comes close: its margin is at
+least \NumAppAccelMarginMin\ in all runs. Resizing the counterweight to keep the running exit
+tension, instead of keeping the counterweight, changes the required tension and $\tper{1}$ by
+less than \qty{0.3}{\percent}.
+% tests: test_applications.py (exact superposition; slow-start limit equal to the running grip
+% condition; carriage margin > 10; same-counterweight convention immaterial within 0.3 %)
+
+\paragraph{One drive pulley: the grip sets the start time.} Lodewijks' conveyor has a single
+drive pulley with $\egrip=\NumLoGripFactor$ and a take-up tension of
+\qty{\NumLoTt}{\kilo\newton}, which he dimensioned for grip with the start-up factor 1.2 of a
+drain-type fluid coupling \citep[Table~8.2 and Eqs.~8.7--8.9]{lodewijks1996}. His
+\qty{30}{\second} speed-controlled starts last about one fundamental period and fall in the
+overshoot of the universal curve: across the start profiles of his Table~8.7 the ratio of
+drive-entry to drive-exit tension reaches \NumLoGripRatioMin\ to \NumLoGripRatioMax, against
+the limit of \NumLoGripFactor. With the sine profile the belt would need
+\qty{\NumLoTtReq}{\kilo\newton} at the take-up, \NumLoSineTtFactor\ times the installed
+tension, to stay in grip. His simulations could not show this, since the drive pulleys were
+modelled without slip \citep[p.~137]{lodewijks1996}. With his take-up the shortest admissible
+sine start is \qty{\NumLoShortest}{\second}, \NumLoShortestOverPeriod\ periods, above the
+$2$--$3\,\tper{1}$ of the design rule: with one drive pulley the grip, not the dynamic
+amplification, fixes the start time. Moving the take-up away from the drive adds the
+resistance of the return run to the required tension, while the required running exit
+tension hardly changes (\cref{tab:applications}), and beyond $\xi=\NumLoXiLimit$ the installed
+tension no longer holds grip even in steady running (\cref{fig:applications}a,~d). The real
+position, next to the drive, is the best one.
+
+\paragraph{Tandem drive on an incline: the statics decide.} The incline of
+\citet{suchorab2025longdistance} has a tandem drive ($\egrip=16.4$) and a take-up tension of
+\qty{\NumSMTt}{\kilo\newton}. Its take-up sits at $\xi=0.1$, near the high end, where at rest
+it must hold the weight of the return strand down the slope: this alone requires
+\qty{\NumSMTtReq}{\kilo\newton}, against \qty{\NumSMTtReqTail}{\kilo\newton} with the take-up
+at the tail, where grip governs, and up to \qty{\NumSMTtReqMax}{\kilo\newton} next to the
+drive. The installed tension covers every position, and the start could be as short as
+\qty{\NumSMShortest}{\second}, about \NumSMShortestOverPeriod\ fundamental period. Moving the
+take-up to the tail shortens the fundamental period by \qty{\NumSMPeriodChange}{\percent}
+(\qty{\NumLoPeriodChange}{\percent} in Lodewijks' conveyor), but changes the peak drive-entry
+tension by less than one per cent (\cref{tab:applications}): with a large wave-speed ratio
+the carry strand dominates strand~B wherever the take-up is.
+
+\paragraph{Drive on the return strand: the tight side.} Surtees' conveyor has its drive at
+$\sigma_d=0.197$ from the head and the take-up right after it, on the slack side. There the
+running sag governs and requires \qty{\NumSuTtReq}{\kilo\newton}, close to the lowest value
+along the slack side (\qty{\NumSuTtReqBest}{\kilo\newton}); the installed
+\qty{100}{\kilo\newton} admits starts from \qty{\NumSuShortest}{\second}, about
+\NumSuShortestOverPeriod\ fundamental periods. On the tight side of the drive the take-up
+would need \qty{\NumSuTtReqTight}{\kilo\newton}, \NumSuTightFactor\ times more: with the
+installed counterweight the exit tension is negative already in running and falls to
+\qty{\NumSuExitTight}{\kilo\newton} during the start (\cref{fig:applications}i). The
+impractical region of Section~\ref{sec:validity} appears on a real layout.
+
+\paragraph{What the take-up position does on real conveyors.} In these three conveyors the
+take-up position acts mainly through the statics: through the resistance of the return run
+between the drive and the take-up, and through the weight of the return strand on a slope.
+Its dynamic effect, a fundamental period that changes by \NumLoPeriodChange\ to
+\qty{\NumSMPeriodChange}{\percent} between the real position and the tail, enters through the
+start time, which scales with $\tper{1}$. With one drive pulley the grip fixes the start time;
+with a tandem drive or a generous take-up tension the three conditions admit starts of about
+one fundamental period, and the limits then come from the belt strength and the motor, which
+this analysis does not evaluate. In Lodewijks' and Surtees' conveyors the designers placed
+the take-up at, or very near, its best position; in the incline the positions near the tail
+would be the best and the one next to the drive the worst, and the installed counterweight
+covers both.

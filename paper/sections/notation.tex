@@ -1,6 +1,6 @@
 % =====================================================================
 % notation.tex -- table of notation (included in Section 2).
-% Draft of step 6.2 (completed for Sections 2-3 in step 6.3), from model.tex and the notes (sections 4.1,
+% Draft of step 6.2 (completed for Sections 2-3 in step 6.3 and for Section 5 in 6.5-6.6), from model.tex and the notes (sections 4.1,
 % 4.14-4.26). Complete in 6.3-6.6 as symbols enter the text; prune in 6.8.
 %
 % Decisions of step 6.2 (clashes resolved):
@@ -65,7 +65,7 @@ $y$, $y_c$ & take-up displacement (two-strand equivalent, positive when the loop
 $T_0$, $T_d$ & static and dynamic belt tension; $\hat T=T_d/(\mu_rLa_m)$\\
 $V$, $a$, $a_m$ & drive velocity, acceleration and peak acceleration\\
 $t_a$, $\tau_a$ & start (acceleration) time; $\tau_a=c_rt_a/L$\\
-$r$, $\varphi$ & motion resistance per unit length; its onset function\\
+$r$, $\varphi$; $\rho$ & motion resistance per unit length; its onset function; $r/(\mu a_m)$\\
 \midrule
 \multicolumn{2}{@{}l}{\emph{Dimensionless parameters and modal quantities}}\\
 $\gamma=c_r/c_c$ & wave-speed ratio, $\gamma^2=\mu_c/\mu_r$\\
@@ -78,8 +78,9 @@ $W_k$, $Y_k$, $m_k$, $\Gamma_k$ & mode shape, take-up amplitude, modal mass and 
 $H_A$, $H_B$; $\tilde m$ & receptances of strands A and B at the take-up; modal mass of a strand mode seen from its free end\\
 $\tper{1}$, $\tauper{1}$ & fundamental period of the loop; $\tauper{1}=c_r\tper{1}/L$\\
 $\tper{s}$, $\tauper{s}$ & fundamental period of a fixed--free strand\\
-$\tauB$ & transit time of the strand downstream of the take-up, $1-\xi+\gamma$ ($\gamma+\ell_1+\ell_2$ with the drive on the return strand)\\
-$m_A$, $m_B$ & masses of strands A and B; $m_B=\mu_rL(1-\xi+\gamma^2)$ with a head drive\\
+$\tauB$ & transit time of strand B, $1-\xi+\gamma$ (head drive) or $\gamma+\ell_1+\ell_2$\\
+$m_A$, $m_B$, $m_\mathrm{belt}$ & masses of strands A, B and of the loop; $m_\mathrm{belt}=\mu_rL(1+\gamma^2)$\\
+$D$, $D_y$; $C_\mathrm{max,min}$ & start-up curves of a strand of mass $m_s$: peak end tension over $m_sa_m$, peak travel over quasi-static; extremes with resistances\\
 A1, B1, \dots & modes followed by strand: the $j$th mode born at a fixed--free frequency of strand A or B\\
 $\betafive$ & take-up mass ratio at which a natural period lengthens by 5\,\%\\
 \bottomrule

@@ -101,14 +101,34 @@ def figure_data(name):
     return pf.cached(name, pf.FIGS[name][0], False)
 
 
-def slow_inputs(recompute=False) -> dict:
-    if SLOW.exists() and not recompute:
-        return json.loads(SLOW.read_text())
+def _slow_lodewijks_grip():
     import applications as ap
     rows = ap.lodewijks_grip()
-    out = dict(lodewijks_grip=[dict(profile=p, zeta1=z, ratio=r, T_t_req=q) for p, z, r, q in rows],
-               note="written by maps/paper_numbers.py --recompute; do not edit")
-    SLOW.write_text(json.dumps(out, indent=1, sort_keys=True) + "\n")
+    return [dict(profile=p, zeta1=z, ratio=r, T_t_req=q) for p, z, r, q in rows]
+
+
+def _slow_takeup_kinematics():
+    """Envelope of the take-up velocity and acceleration (belt side) over 1 <= gamma <= 3 and
+    the take-up position, sine profile, beta -> 0 (maps/validity.kinematics, about 2 min)."""
+    import validity as va
+    rs, ev, ea = va.kinematics()
+    return dict(r=[float(x) for x in rs], v=[float(x) for x in ev], a=[float(x) for x in ea])
+
+
+SLOW_KEYS = {"lodewijks_grip": _slow_lodewijks_grip,           # step 6.2
+             "takeup_kinematics": _slow_takeup_kinematics}     # step 6.6
+
+
+def slow_inputs(recompute=False) -> dict:
+    """Slow inputs, cached in maps/data/paper_numbers_slow.json. A key missing from the cache is
+    computed and added; --recompute refreshes them all."""
+    out = {} if recompute or not SLOW.exists() else json.loads(SLOW.read_text())
+    missing = [k for k in SLOW_KEYS if k not in out]
+    for k in missing:
+        out[k] = SLOW_KEYS[k]()
+    if missing:
+        out["note"] = "written by maps/paper_numbers.py (--recompute refreshes all); do not edit"
+        SLOW.write_text(json.dumps(out, indent=1, sort_keys=True) + "\n")
     return out
 
 
@@ -286,7 +306,7 @@ def startup(N: Numbers):
     i = int(np.argmax(D))
     N.add("StartPeakMax", D[i], 3, "largest amplification D")
     N.add("StartPeakAt", R[i], 2, "at tau_a / tau_s")
-    for r, name in ((1, "One"), (2, "Two"), (5, "Five"), (10, "Ten")):
+    for r, name in ((1, "One"), (2, "Two"), (3, "Three"), (5, "Five"), (10, "Ten")):
         N.add(f"StartD{name}", np.interp(r, R, D), 3, f"D at tau_a / tau_s = {r}")
     N.add("StartTriangularMax", d["D_triangular"].max(), 3)
     N.add("StartParabolicMax", d["D_parabolic"].max(), 3)
@@ -307,6 +327,9 @@ def startup(N: Numbers):
         N.add(f"CollapseExit{name}", 100 * d["dev_out"][ok].max(), 1, "the same at the exit (%)")
     N.add("CollapseFastMax", 100 * d["dev_in"][:, 0].max(), 0,
           f"entry, fastest start (tau_a = {rc[0]:.1f} tau_1), gamma != 1 (%)")
+    one = np.isclose(d["g_c"], 1.0)
+    N.add("CollapseUniformMax", 100 * d["dev_in"][one].max(), 1,
+          "entry, gamma = 1 (uniform strand B), any start time (%)")
     for tag, r in pf.PRACTICE:
         N.add(f"Practice{tag}", r, 2, f"{tag}: published start time over its t_1")
 
@@ -326,9 +349,13 @@ def crawl(N: Numbers):
     N.add("CrawlTravelAbruptMin", min(a[0, 1] for a in ramp), 1, "take-up travel / quasi-static")
     N.add("CrawlTravelAbruptMax", max(a[0, 1] for a in ramp), 1)
     N.add("CrawlTravelRampOneMax", max(at(a, 1.0, 1) for a in ramp), 2)
+    hold = d["hold_1_0.1"]                          # rho = 1, zeta_1 = 0.1, abrupt ramp
+    for x, name in ((0.0, "Zero"), (1.0, "One"), (2.0, "Two")):
+        N.add(f"CrawlHoldDamped{name}", np.interp(x, d["tps"], hold[:, 0]), 2,
+              f"rho = 1, zeta_1 = 0.1: entry peak after a hold of {x:g} tau_1")
 
 
-def validity(N: Numbers):
+def validity(N: Numbers, slow: dict):
     d = figure_data("validity")
     N.section("Validity conditions (fig_validity; gamma = 2, rho = 1 in (c) and (d))")
     N.add("ReboundMax", np.max(-d["cmin_0"]), 2, "rebound of strand B, no resistances, / (m_B a_m)")
@@ -344,6 +371,14 @@ def validity(N: Numbers):
     N.add("TightMax", T[left].max(), 2)
     N.add("SlackMin", T[~left].min(), 2, "the same on the slack side")
     N.add("SlackMax", T[~left].max(), 2)
+    k = slow["takeup_kinematics"]
+    r, v, a = (np.array(k[x]) for x in ("r", "v", "a"))
+    N.section("Take-up kinematics (maps/validity.kinematics; 1 <= gamma <= 3, any xi, sine, beta -> 0)")
+    N.add("TakeupAccEnvelope", a.max(), 1, "largest |y''| / a_m, belt side, any start time")
+    N.add("TakeupVelFast", v[np.argmin(r)], 2, f"largest |y'| / V_inf, tau_a = {r.min():g} tau_1")
+    for r0, name in ((0.2, "Fifth"), (1.0, "One"), (1.4, "OneFour")):
+        N.add(f"TakeupVel{name}", v[r >= r0].max(), 2, f"largest |y'| / V_inf, tau_a >= {r0:g} tau_1")
+    N.add("TakeupAccSlow", a[r >= 1.4].max(), 1, "largest |y''| / a_m, tau_a >= 1.4 tau_1")
 
 
 def applications(N: Numbers, slow: dict):
@@ -385,6 +420,17 @@ def applications(N: Numbers, slow: dict):
     N.add("SuTightFactor", sut["req"] / su["req"], 0, "tight over slack side")
     N.add("SuShortest", su["t_a_req"], 1, "shortest admissible start (s)")
     N.add("SuExitTight", sut["exit_min"] / 1e3, 0, "lowest exit tension on the tight side (kN)")
+    N.add("SMShortestOverPeriod", sm["t_a_req"] / sm["T1"], 1, "SM: shortest start over t_1")
+    N.add("SuShortestOverPeriod", su["t_a_req"] / su["T1"], 1, "Su: shortest start over t_1")
+    d = figure_data("applications")
+    req = lambda t: np.maximum.reduce([d[f"{t}_req_slack"], d[f"{t}_req_grip"], d[f"{t}_req_sag"]])
+    N.add("SMTtReqMax", req("SM").max() / 1e3, 0, "SM: largest required T_t along the return (kN)")
+    su_req = req("Su")
+    slack_side = su_req < 0.5 * sut["req"]
+    N.add("SuTtReqBest", su_req[slack_side].min() / 1e3, 1,
+          "Su: smallest required T_t along the return, slack side (kN)")
+    N.add("AppAccelMarginMin", min(d[f"{t}_accel_margin"].min() for t in ("Lo", "SM", "Su")), 0,
+          "condition 2 (take-up follows the belt): smallest margin in the application runs")
 
 
 def validation(N: Numbers):
@@ -578,7 +624,7 @@ def build(recompute=False) -> Numbers:
     slow = slow_inputs(recompute)
     N = Numbers()
     for f in SECTIONS:
-        f(N, slow) if f is applications else f(N)
+        f(N, slow) if f in (applications, validity) else f(N)
     return N
 
 

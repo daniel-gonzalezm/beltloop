@@ -329,7 +329,7 @@ def table_applications_tex(rows=None) -> str:
         "along the return strand, in units of $L$. Peak drive-entry tension and its ratio to the "
         "running value; lowest drive-exit tension during and after the start; carriage travel; "
         "take-up tension required by the three conditions (positive tension along the loop, "
-        "grip $T_\\mathrm{entry}\\le E\\,T_\\mathrm{exit}$, running sag below 2\\,\\%), the one "
+        "grip $T_\\mathrm{entry}\\le \\mathrm{e}^{\\mu\\theta}T_\\mathrm{exit}$, running sag below 2\\,\\%), the one "
         "that governs and the running exit tension it implies; shortest sine start that the "
         "case's $T_t$ admits.}",
         "\\label{tab:applications}",

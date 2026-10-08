@@ -6,6 +6,9 @@ The numbers below are also written as LaTeX macros by maps/paper_numbers.py (pap
 when a caption moves into the manuscript (steps 6.5-6.6) its numbers are taken from those macros.
 **Step 6.5:** the captions of fig_modal and fig_beta now live in paper/sections/05_results.tex
 (with macros); the drafts below are kept for reference only and are no longer the source.
+**Step 6.6:** the captions of fig_startup, fig_crawl and fig_validity now live in
+paper/sections/05_results.tex and that of fig_applications in paper/sections/06_application.tex,
+all with macros. Every figure caption is now in the manuscript; this file is reference only.
 
 Figures are produced by `python maps/paper_figures.py`; the numbers below are the ones it prints
 and are pinned by `tests/test_figures.py` (and the phase 4-5 tests) where marked †.

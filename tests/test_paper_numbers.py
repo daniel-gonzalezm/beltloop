@@ -106,6 +106,24 @@ PINNED = {
     "AOneStartRatioMin": "3.3", "WRCLength": "91", "WRCBeta": "2.13", "WRCRatio": "1.38",
     "WRBRatio": "0.84", "BetaFiveMinGammaOneFour": "0.33", "BetaFiveBOneMedian": "0.76",
     "LongBetaMax": "0.205", "WRRatioLowMax": "1.02", "SuRatio": "0.42",
+    # Sections 5.3-5.4 and 6 (step 6.6): universal curve (4.16), crawl (4.17), validity and
+    # take-up kinematics (4.18, envelope of maps/validity.kinematics), applications (4.27)
+    "StartDThree": "1.130", "StartDTen": "1.038", "StartTriangularMax": "1.333",
+    "StartParabolicMax": "1.621", "StartTriangularExcess": "26", "StartResOne": "1.273",
+    "StartResTwo": "1.054", "StartResFive": "1.008", "CollapseUniformMax": "0.6",
+    "CollapseExitFive": "0.4", "PracticeLo": "1.05", "PracticeSi": "11.81",
+    "CrawlAbruptMin": "1.17", "CrawlAbruptMax": "1.66", "CrawlRampOneMin": "1.01",
+    "CrawlRampOneMax": "1.07", "CrawlTravelRampOneMax": "1.09", "CrawlHoldDampedZero": "1.17",
+    "CrawlHoldDampedOne": "1.09", "CrawlHoldDampedTwo": "1.05",
+    "ReboundMax": "1.44", "ValidityExitMax": "0.14", "ValidityGripThreeMin": "0.88",
+    "ValidityGripThreeMax": "1.28", "ValidityGripSixteenMin": "0.12",
+    "ValidityGripSixteenMax": "0.29", "TightMin": "1.80", "TightMax": "2.08", "SlackMin": "0.14",
+    "SlackMax": "0.27", "TakeupAccEnvelope": "2.5", "TakeupAccSlow": "0.5",
+    "TakeupVelFast": "1.75", "TakeupVelFifth": "1.14", "TakeupVelOne": "0.30",
+    "TakeupVelOneFour": "0.08", "SMShortestOverPeriod": "1.0", "SuShortestOverPeriod": "1.2",
+    "SMTtReqMax": "83", "SuTtReqBest": "18.1", "AppAccelMarginMin": "38", "SuTtReq": "19.8",
+    "SuExitTight": "-114", "LoPeriodChange": "12", "SMPeriodChange": "20", "SMTt": "140",
+    "SMReferenceStart": "40.8", "LoGripFactor": "3.0",
 }
 
 

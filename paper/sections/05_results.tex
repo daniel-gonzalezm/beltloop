@@ -1,7 +1,7 @@
 % =====================================================================
-% Section 5 -- Results. Steps 6.5 (5.1-5.2, written) and 6.6 (5.3-5.4).
+% Section 5 -- Results. Written in steps 6.5 (5.1-5.2) and 6.6 (5.3-5.4).
 % Inputs: notes 4.15-4.19 and 4.26; 4.9 points 13, 14, 16-18;
-% captions.md (draft captions, to be moved into the .tex in 6.5-6.6).
+% captions.md (draft captions; every figure of this section now carries its caption here).
 % Mechanics first (JSV emphasis); engineering material condensed.
 % =====================================================================
 \section{Results}\label{sec:results}
@@ -276,31 +276,261 @@ none of the field records of Section~\ref{sec:validation} can test the take-up m
 % WRB/WRC from maps/beta_min.regime(); tests: test_beta_min.py, test_tables.py, test_figures.py
 
 \subsection{Start-up: the universal curve of a fixed--free strand}\label{sec:startup}
+% Step 6.6, from notes 4.16 (universal curve, collapse, three formulas, profiles, damping,
+% resistances, practice), 4.17 (initial crawl), 4.19 (intermediate drive) and 4.9 point 14
+% (wave law: love1906, Art. 284, read in step 6.6). Numbers: paper_numbers.py, sections
+% "Universal start-up curve" and "Initial crawl". Tests: test_metrics.py,
+% test_intermediate.py::test_startup_collapse_intermediate, test_figures.py.
 \begin{figure}[tbp]
   \centering
   \includegraphics[width=\linewidth]{fig_startup}
-  \caption{\TODO{fig\_startup caption (captions.md).}}
+  \caption{Universal start-up curve of a fixed--free strand ($\beta\to0$, undamped).
+  $\tauper{s}$: fundamental period of the strand; $\tau_a$: start time. (a) Peak tension at
+  the fixed end over $m_sa_m$ for the sine, triangular and parabolic acceleration profiles;
+  dotted, the wave law $T=ZV$, exact for $\tau_a\le\tauper{s}/2$. Sine: maximum
+  \NumStartPeakMax\ at $\tau_a/\tauper{s}=\NumStartPeakAt$. Grey band: design rule
+  $\tau_a=2$--$3\,\tauper{1}$. Dotted vertical lines (all panels but c): published start
+  times of the conveyors of \cref{tab:cases} over their own fundamental period, Lo
+  \NumPracticeLo\ (speed control), LL \NumPracticeLL\ (motors switched in steps), G
+  \NumPracticeG\ (simulated), Su \NumPracticeSu\ (fluid couplings), S \NumPracticeS\
+  (take-up at the head) and Si \NumPracticeSi\ (fluid couplings with fill control).
+  (b) The same peak per unit mean acceleration $V_\infty/t_a$, i.e.\ at equal start time and
+  final speed. (c) Largest departure of the full loop from the curve of (a) over the take-up
+  positions ($\xi=0.01$--$0.95$; $0.2$--$0.95$ at the exit), sine profile: drive entry
+  against $\tau_a/\tauper{1}$, one line per $\gamma$; drive exit, all $\gamma$, against
+  $\tau_a/\tauper{A1}$, $\tauper{A1}=4\xi$. Dotted: \qty{2}{\percent}. (d) Peak displacement
+  of the free end (take-up travel) over its quasi-static value, and peak tension due to
+  resistances that build up with the belt speed ($\varphi=V/V_\infty$).}
   \label{fig:startup}
 \end{figure}
 \begin{figure}[tbp]
   \centering
   \includegraphics[width=\linewidth]{fig_crawl}
-  \caption{\TODO{fig\_crawl caption (captions.md).}}
+  \caption{Initial crawl at \qty{5}{\percent} of the final speed before a parabolic
+  acceleration of $3\tauper{1}$ (uniform fixed--free strand; resistances, Coulomb-like,
+  appear in full once the belt moves). $\rho$: running resistance over the inertial force
+  $m_sa_m$; $\zeta_1$: damping ratio of the fundamental. Peak at the fixed end over
+  $R+m_sa_m$, with $R$ the running resistance of the strand. (a) Duration $\tau_r$ of the
+  ramp to crawl speed, without hold: a ramp of one period removes the overshoot of the
+  resistances. (b) Duration $\tau_p$ of a hold after a short ramp ($\tau_r=0.05\,\tauper{1}$):
+  with light damping the hold only shifts the phase of the remaining oscillation.}
   \label{fig:crawl}
 \end{figure}
-% Wave law T = Z V exact for tau_a <= tau_s/2 (classic citation still to be
-% found and read, 4.9 point 14); quasi-static limit; collapse of the loop;
-% three formulas; fair comparison of profiles; rule tau_a >~ 2-3 tau_1;
-% initial crawl (notes 4.17).
-\TODO{Universal start-up curve.}
+
+With the take-up as a free end, the drive-entry tension depends only on strand~B and the
+drive-exit tension only on strand~A, and each strand is a fixed--free string driven at its
+fixed end. For a uniform strand the only time scale is its transit time, so the peak
+tension that a start of given profile produces at the fixed end, divided by the inertial
+force $m_sa_m$ of the strand, depends on the ratio $\tau_a/\tauper{s}$ alone. This
+amplification $D(\tau_a/\tauper{s})$ is the universal curve of \cref{fig:startup}a. Its
+two limits are elementary. For a slow start the strand moves as a rigid body and $D\to1$,
+the quasi-static tension~\eqref{eq:quasistatic}. For a fast start, the fixed end launches a
+simple wave, and until it returns from the free end, after half a period, the tension there
+follows the drive velocity, $T=ZV(t)$, with $Z=\mu c=EA/c$ the impedance of the strand; this
+is the classical relation between stress and particle velocity at a wave front in a rod
+\citep[Art.~284]{love1906}. Since $V$ peaks at the end of the acceleration, the wave law gives
+the peak exactly while $\tau_a\le\tauper{s}/2$: $D=4\,(\tau_a/\tauper{s})$ times the ratio of
+mean to peak acceleration of the profile, $D=8\tau_a/(\pi\tauper{s})$ for the sine. Between
+the two limits the sine curve reaches its maximum, \NumStartPeakMax\ at
+$\tau_a/\tauper{s}=\NumStartPeakAt$, and then decays: $D=\NumStartDOne$, \NumStartDTwo,
+\NumStartDThree, \NumStartDFive\ and \NumStartDTen\ at one, two, three, five and ten periods.
+The decay is slow, as the inverse of $\tau_a/\tauper{s}$, because the sine acceleration
+starts and ends with a jump in jerk: by Eq.~\eqref{eq:residual} the residual of each mode
+relative to its quasi-static response falls as $\varpi/\Omega_k$, not faster.
+% tests: test_metrics.py (wave law, exact for tau_a <= T_s/2; peak 1.590 at 0.87; D(1), D(2), D(5))
+
+\paragraph{Collapse of the loop.} Applied to the two strands, the curve gives the three
+quantities that matter in a start, all in closed form:
+\begin{equation}\label{eq:startup_formulas}
+  \frac{\Delta T_\mathrm{entry}}{m_Ba_m}\simeq D\!\left(\frac{t_a}{\tper{1}}\right),\qquad
+  \frac{\Delta T_\mathrm{exit}}{m_Aa_m}\simeq -D\!\left(\frac{t_a}{\tper{A1}}\right),\qquad
+  \frac{y_\mathrm{max}}{a_mL^2/c_r^2}\simeq\frac12\left[D_y\!\left(\frac{t_a}{\tper{1}}\right)S_B-S_A\right],
+\end{equation}
+where $\Delta T$ is the extreme dynamic tension at each face of the drive, $m_A=\mu_r\xi L$ is
+the mass of strand~A and $\tper{A1}=4\xi L/c_r$ its period, $D_y$ is the curve of the
+free-end displacement (\cref{fig:startup}d; maximum \NumStartTravelMax), and
+$S_B=\int_\xi^2\int_\xi^x\hat\mu\,\dd x'\,\dd x$ and $S_A=\xi^2/2$ are the quasi-static
+elongations of the two strands, so that $\tfrac12(S_B-S_A)$ is the quasi-static travel of
+Section~\ref{sec:modal}. Strand~B is not uniform when $\gamma\ne1$, but its fundamental
+dominates (Eq.~\eqref{eq:F1}) and the loop collapses onto the curve
+(\cref{fig:startup}c): within \qty{\NumCollapseEntryEight}{\percent} at the entry and
+\qty{\NumCollapseExitEight}{\percent} at the exit for $\tau_a\ge0.8\,\tauper{s}$, within
+\qty{\NumCollapseEntryFive}{\percent} from $0.5\,\tauper{s}$, and within
+\qty{\NumCollapseUniformMax}{\percent} at any start time for $\gamma=1$, where strand~B is
+uniform. Faster starts with $\gamma\ne1$ depart by up to \qty{\NumCollapseFastMax}{\percent}:
+before the wave returns, the entry tension is set by the impedance of the carry strand, not by
+the mass of strand~B, and the jump of impedance at the tail lies outside the picture of a
+uniform strand. The travel estimate holds within \qty{6}{\percent} for $\gamma\ge2$ and
+$\tau_a\ge\tauper{1}$; for $\gamma\approx1$ with the take-up towards the tail the two terms
+nearly cancel and the estimate loses its relative accuracy, while the travel itself becomes
+small. With the drive on the return strand, strand~A is still uniform and the exit formula
+remains exact; the entry peak lies slightly above the curve, by at most
+\qty{4.5}{\percent} for $\tau_a=\tauper{1}$ and \qty{2.5}{\percent} for $2\tauper{1}$ with
+the drive within $0.2L$ of the head.
+% tests: test_metrics.py::test_travel_from_the_strands (rel 0.06);
+% test_intermediate.py::test_startup_collapse_intermediate (+4.5 %, +2.5 %)
+
+\paragraph{Profiles, damping and resistances.} By peak acceleration the triangular profile
+seems the mildest (\cref{fig:startup}a, maximum \NumStartTriangularMax\ against
+\NumStartPeakMax\ for the sine and \NumStartParabolicMax\ for the parabolic profile), but
+the three profiles reach the same speed in the same time with different peaks. Compared at
+equal start time and final speed (\cref{fig:startup}b), the triangular profile is the worst,
+by \qty{\NumStartTriangularExcess}{\percent} over the sine at five periods, the same ranking
+as in the \qty{30}{\second} starts of \citet[Table~8.7]{lodewijks1996}
+(Section~\ref{sec:crosscheck}). Damping lowers the maximum of the sine curve to
+\NumStartDampTwo, \NumStartDampFive\ and \NumStartDampTen\ for $\zeta_1=0.02$, $0.05$ and
+$0.1$, and leaves slow starts almost unchanged. The resistances follow a curve of their own
+(\cref{fig:startup}d): if they build up with the belt speed, $\varphi=V/V_\infty$, their
+peak exceeds the running value by a factor \NumStartResOne\ at one period, \NumStartResTwo\
+at two and \NumStartResFive\ at five, whereas a step onset doubles every modal response
+(Section~\ref{sec:modal}).
+
+\paragraph{Design rule.} Since the amplification depends on $t_a/\tper{1}$ only, the start
+time needed for a given amplification is proportional to the fundamental period. A start of
+two to three periods keeps the inertial amplification at \NumStartDThree--\NumStartDTwo\ and
+that of the resistances below \NumStartResTwo; we therefore take $t_a\gtrsim2$--$3\,\tper{1}$
+as the rule, with $\tper{1}$ from the closed-form equations of Section~\ref{sec:frequencies}.
+Every change that lengthens $\tper{1}$, such as moving the drive away from the head or the
+take-up towards it, lengthens the required start in the same proportion. Published start
+times span the whole curve (\cref{fig:startup}a): the speed-controlled \qty{30}{\second}
+starts of \citet{lodewijks1996} last \NumPracticeLo\ periods and fall in the overshoot,
+whereas the starts with fluid couplings of \citet{surtees1995runback} and
+\citet{sinaga2008kpc} last \NumPracticeSu\ and \NumPracticeSi\ periods; since these lines mix
+drive types, they show where real start times sit relative to $\tper{1}$, not that those
+drives follow the sine profile. A criterion on the overshoot of belt speed (below
+\qty{1}{\percent}) led \citet{lodewijks2002} to starts longer than five axial wave periods in
+his examples; the criterion here is the tension amplification.
+% numbers: Practice* (paper_figures.PRACTICE, exact t_1 of each case)
+
+\paragraph{Initial crawl.} Practice often starts with a crawl at low speed: a ramp to
+\qty{4}{\percent} of the speed in \qty{20}{\second} held for \qty{60}{\second} at ZISCO
+\citep{nordell1997zisco}, and a plateau of \qty{60}{\second} at \qty{10}{\percent} added at
+Henderson so that the take-up could keep pace with the belt stretch
+\citep{kung2005henderson}. The model separates the two parts of such a start
+(\cref{fig:crawl}), with resistances of Coulomb type that appear in full once the belt moves.
+The effective part is the ramp to crawl speed: an abrupt onset gives peaks of
+\NumCrawlAbruptMin--\NumCrawlAbruptMax\ times the running-plus-inertial force, a ramp of half
+a period \NumCrawlRampHalfMin--\NumCrawlRampHalfMax, and a ramp of one period
+\NumCrawlRampOneMin--\NumCrawlRampOneMax. A ramp of one period $\tper{s}$ lasts an odd number
+of periods of every mode of a uniform fixed--free strand, so the resistance load leaves no
+residual oscillation; the take-up travel drops in the same way, from
+\NumCrawlTravelAbruptMin--\NumCrawlTravelAbruptMax\ times its quasi-static value to at most
+\NumCrawlTravelRampOneMax. The hold alone barely helps: with light damping the first
+overshoot of the resistances occurs during the hold, and the hold only changes the phase
+with which the remaining oscillation meets the main acceleration. With heavier damping
+($\zeta_1=0.1$) a hold lets the transient decay, from \NumCrawlHoldDampedZero\ to
+\NumCrawlHoldDampedOne\ and \NumCrawlHoldDampedTwo\ after one and two periods. A hold is
+thus useful when the drive cannot ramp smoothly at low speed and the real damping is high;
+with speed control, a ramp to crawl speed of at least one period does the work. Because the
+resistances appear along the whole loop at once in the model, while in a real start they
+follow the stretch front, the abrupt onset is an upper bound.
+% numbers: Crawl* macros; tests: test_metrics.py (crawl: ramp of one period removes the
+% resistance overshoot)
 
 \subsection{Validity: slack, take-up and drive grip}\label{sec:validity}
+% Step 6.6, from notes 4.18 (three conditions, accuracy, tight side) and 4.9 point 16
+% (grip, DIN 22101 sec. 7.3.1 and 8.2.2, Eqs. 47-50, read again in step 6.6).
+% Numbers: paper_numbers.py, sections "Validity conditions" and "Take-up kinematics".
+% Tests: test_validity.py.
 \begin{figure}[tbp]
   \centering
   \includegraphics[width=\linewidth]{fig_validity}
-  \caption{\TODO{fig\_validity caption (captions.md).}}
+  \caption{Validity of the linear model with prescribed drive velocity ($\beta\to0$, sine
+  profile, undamped, resistances proportional to the inertial density, $r=\rho\,\mu\,a_m$,
+  starting with the belt speed). (a) Running tension at the drive exit needed to keep
+  strand~A taut during the start, per unit inertial force of strand~A; dotted, the slow-start
+  limit $\sqrt{1+\rho^2/4}-\rho/2$. (b) Rebound of strand~B below its running tension after
+  the start: up to \NumReboundMax\,$m_Ba_m$ without resistances, zero at
+  $\tau_a=(j+\tfrac12)\,\tauper{1}$ and decaying as about $0.8\,\tauper{1}/\tau_a$; dashed,
+  $\zeta_1=0.01$. (c) Minimum running tension $T_2$ against the take-up position, head drive,
+  $\gamma=2$, $\rho=1$, for $\tau_a=\tauper{1}$ (solid) and $3\tauper{1}$ (dashed): grip
+  governs with a single drive pulley ($\egrip=3$); with a tandem drive ($\egrip=16$) slack,
+  rebound and grip are comparable. (d) Take-up tension required with the drive at mid-length
+  of the return strand (full loop, $\gamma=2$, $\rho=1$, $\egrip=16$, $\tau_a=20$): on the
+  tight side of the drive it is \NumTightMin--\NumTightMax\,$m_\mathrm{belt}a_m$, against
+  \NumSlackMin--\NumSlackMax\ on the slack side; dotted, the running resistance between the
+  drive exit and the take-up.}
   \label{fig:validity}
 \end{figure}
-% Three conditions (notes 4.18); grip condition with the start factor from
-% the universal curve; DIN 22101 sec. 7.3.1 and 8.2.2 (4.9 point 16).
-\TODO{Validity conditions.}
+
+The three admissibility conditions of Section~\ref{sec:modal} become explicit requirements
+on the running tension with the strand curves. Take, as a generic case, resistances
+proportional to the inertial density, $r=\rho\,\mu\,a_m$ in each strand ($\rho=fg/a_m$ for a
+common resistance coefficient $f$), starting with the belt speed.
+The take-up holds $\Tt=T_2+\rho\,m_Aa_m$, where $T_2$ is the running tension at the drive
+exit, and gravity on an inclined path only shifts the static level (Section~\ref{sec:increment}).
+Let $C_\mathrm{max}$ and $C_\mathrm{min}$ be the extremes of the fixed-end tension of a
+uniform strand under the combined load, per unit inertial force $m_sa_m$; for $\rho=0$,
+$C_\mathrm{max}=D$.
+
+\paragraph{(i) Slack.} With the take-up as a free end the strands share only $\Tt$, and the
+belt can lose tension in two places. During the start, the tension at the drive exit drops by the
+dynamic tension of strand~A, which requires $T_2\ge m_Aa_m\,[C_\mathrm{max}(t_a/\tper{A1})-\rho]$
+(\cref{fig:validity}a). This estimate is exact, since strand~A is uniform; for slow starts it
+tends to $m_Aa_m(\sqrt{1+\rho^2/4}-\rho/2)$, and it grows with $\xi$ but remains small: at
+most \NumValidityExitMax\,$m_\mathrm{belt}a_m$ for $\gamma=2$, $\rho=1$ and starts of one to
+three periods, with
+$m_\mathrm{belt}=\mu_rL(1+\gamma^2)$. After the start, the oscillation left in strand~B swings
+the entry tension below its running value, which requires
+$T_2\ge-m_Ba_m\,C_\mathrm{min}(t_a/\tper{1})-\rho\,m_Aa_m$ (\cref{fig:validity}b). Without
+resistances this rebound reaches \NumReboundMax\,$m_Ba_m$ for fast starts, where after the
+reflection at the free end the tension passes from $ZV_\infty$ to $-ZV_\infty$; it vanishes
+for $t_a=(j+\tfrac12)\,\tper{1}$, where the first mode is left at rest, and decays as about
+$0.8\,\tper{1}/t_a$. For $\rho\ge1$ it almost disappears, because the running resistances
+hold strand~B in tension.
+
+\paragraph{(ii) The take-up follows the belt.} The carriage moves with $2/\nstr$ of the
+belt-side acceleration and must not be asked to accelerate faster than $\nstr\Tt/\Mtu$ ($g$
+for a counterweight hung directly). For $1\le\gamma\le3$, any take-up position and any start
+time, the belt-side acceleration stays below \NumTakeupAccEnvelope\,$a_m$ (the exact bound
+for $\gamma=1$ is $2a_m$, by d'Alembert's solution), and below \NumTakeupAccSlow\,$a_m$ for
+$\tau_a\ge1.4\,\tauper{1}$. The condition therefore holds with a wide margin, about
+$g/(\NumTakeupAccEnvelope\,a_m)$, in any realistic start, and it is inactive in every
+application of Section~\ref{sec:application}. The take-up velocity, a datum for the tower and
+its buffers, stays below \NumTakeupVelFast\,$V_\infty$ for very fast starts (the impedance
+jump at the tail), \NumTakeupVelFifth\,$V_\infty$ for $\tau_a\ge0.2\,\tauper{1}$,
+\NumTakeupVelOne\,$V_\infty$ for $\tau_a\ge\tauper{1}$ and \NumTakeupVelOneFour\,$V_\infty$
+for $\tau_a\ge1.4\,\tauper{1}$.
+% numbers: Takeup* macros (maps/validity.kinematics, cached in paper_numbers_slow.json);
+% tests: test_validity.py (d'Alembert, exact gamma = 1 bounds, envelope 2.5 a_m)
+
+\paragraph{(iii) Drive grip.} The prescribed velocity presumes that the belt does not slip
+on the drive pulley, $T(2L,t)\le\egrip\,T(0,t)$ throughout the start. Adding the peaks of
+the two strands, which is conservative,
+\begin{equation}\label{eq:grip}
+  T_2\ge\frac{m_Ba_m\,C_\mathrm{max}(t_a/\tper{1})+\egrip\,m_Aa_m\,C_\mathrm{max}(t_a/\tper{A1})}
+  {\egrip-1}-\rho\,m_Aa_m ,
+\end{equation}
+which for slow starts reduces to the running condition $T_2\ge F_U/(\egrip-1)$ of
+DIN~22101 (Eqs.~47--50), with $F_U=\rho\,(m_A+m_B)\,a_m$. The condition itself is standard:
+the design standard checks grip with the largest peripheral force in starting, braking and
+running, and recommends limiting the start-up factor, the peak force at start-up over the
+running force, to 1.7 for large conveyors \citep[\S7.3.1, \S8.2.2]{din22101}. Here the factor
+follows from the start time relative to the fundamental period, through the universal
+curve. With a single drive pulley ($\egrip\approx3$) grip governs over slack for every
+take-up position, requiring \NumValidityGripThreeMin--\NumValidityGripThreeMax\,%
+$m_\mathrm{belt}a_m$ for $\gamma=2$, $\rho=1$ and starts of one to three periods; with a
+tandem drive ($\egrip\approx16$) the requirement drops to
+\NumValidityGripSixteenMin--\NumValidityGripSixteenMax\,$m_\mathrm{belt}a_m$ and slack,
+rebound and grip are comparable (\cref{fig:validity}c). Since the required tension sets the
+take-up tension, Eq.~\eqref{eq:beta_tension} turns it into a lower bound on $\beta$; most
+design tensions of Section~\ref{sec:betaregime} sit at such floors.
+
+The strand estimates were checked against the full loop on the cases of the test suite: for
+$\tau_a\ge\tauper{1}/2$ the slack estimate stays within $0.04\,m_\mathrm{belt}a_m$ of the
+full loop on the unsafe side, and the grip estimate within \qty{3}{\percent}, usually on the
+safe side because the peaks of the two strands do not coincide. For faster starts with
+$\gamma\ne1$ the impedance jump at the tail leaves a tension drop in strand~B that the
+uniform curve does not capture, and the full loop should be used; the design rule of
+Section~\ref{sec:startup} keeps starts well outside that range.
+% tests: test_validity.py::test_requirement_against_full_loop, test_requirement_accuracy_band
+% (0.04 m_belt), test_grip_requirement (3 %), test_rebound_curve (0.8 / r)
+
+\paragraph{Take-up on the tight side.} With the drive on the return strand, a take-up
+upstream of it, on its tight side, leaves the model valid but is impractical
+(\cref{fig:validity}d). The take-up then anchors the drive-entry tension, and the
+resistance of the carry strand is subtracted from the slack side, so the counterweight must
+hold nearly the whole working tension: \NumTightMin--\NumTightMax\,$m_\mathrm{belt}a_m$
+against \NumSlackMin--\NumSlackMax\ on the slack side for $\gamma=2$, $\rho=1$ and a tandem
+drive. Surtees' conveyor shows the same on a real layout
+(Section~\ref{sec:application}).

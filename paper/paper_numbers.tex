@@ -114,6 +114,7 @@
 \newcommand{\NumStartPeakAt}{0.87}  % at tau_a / tau_s
 \newcommand{\NumStartDOne}{1.574}  % D at tau_a / tau_s = 1
 \newcommand{\NumStartDTwo}{1.206}  % D at tau_a / tau_s = 2
+\newcommand{\NumStartDThree}{1.130}  % D at tau_a / tau_s = 3
 \newcommand{\NumStartDFive}{1.077}  % D at tau_a / tau_s = 5
 \newcommand{\NumStartDTen}{1.038}  % D at tau_a / tau_s = 10
 \newcommand{\NumStartTriangularMax}{1.333}
@@ -131,6 +132,7 @@
 \newcommand{\NumCollapseEntryFive}{5.2}  % loop against the strand curve at the drive entry, tau_a >= 0.5 tau_1 (%)
 \newcommand{\NumCollapseExitFive}{0.4}  % the same at the exit (%)
 \newcommand{\NumCollapseFastMax}{57}  % entry, fastest start (tau_a = 0.2 tau_1), gamma != 1 (%)
+\newcommand{\NumCollapseUniformMax}{0.6}  % entry, gamma = 1 (uniform strand B), any start time (%)
 \newcommand{\NumPracticeLo}{1.05}  % Lo: published start time over its t_1
 \newcommand{\NumPracticeLL}{1.49}  % LL: published start time over its t_1
 \newcommand{\NumPracticeG}{2.43}  % G: published start time over its t_1
@@ -148,6 +150,9 @@
 \newcommand{\NumCrawlTravelAbruptMin}{1.2}  % take-up travel / quasi-static
 \newcommand{\NumCrawlTravelAbruptMax}{1.8}
 \newcommand{\NumCrawlTravelRampOneMax}{1.09}
+\newcommand{\NumCrawlHoldDampedZero}{1.17}  % rho = 1, zeta_1 = 0.1: entry peak after a hold of 0 tau_1
+\newcommand{\NumCrawlHoldDampedOne}{1.09}  % rho = 1, zeta_1 = 0.1: entry peak after a hold of 1 tau_1
+\newcommand{\NumCrawlHoldDampedTwo}{1.05}  % rho = 1, zeta_1 = 0.1: entry peak after a hold of 2 tau_1
 
 % ---- Validity conditions (fig_validity; gamma = 2, rho = 1 in (c) and (d))
 \newcommand{\NumReboundMax}{1.44}  % rebound of strand B, no resistances, / (m_B a_m)
@@ -160,6 +165,14 @@
 \newcommand{\NumTightMax}{2.08}
 \newcommand{\NumSlackMin}{0.14}  % the same on the slack side
 \newcommand{\NumSlackMax}{0.27}
+
+% ---- Take-up kinematics (maps/validity.kinematics; 1 <= gamma <= 3, any xi, sine, beta -> 0)
+\newcommand{\NumTakeupAccEnvelope}{2.5}  % largest |y''| / a_m, belt side, any start time
+\newcommand{\NumTakeupVelFast}{1.75}  % largest |y'| / V_inf, tau_a = 0.01 tau_1
+\newcommand{\NumTakeupVelFifth}{1.14}  % largest |y'| / V_inf, tau_a >= 0.2 tau_1
+\newcommand{\NumTakeupVelOne}{0.30}  % largest |y'| / V_inf, tau_a >= 1 tau_1
+\newcommand{\NumTakeupVelOneFour}{0.08}  % largest |y'| / V_inf, tau_a >= 1.4 tau_1
+\newcommand{\NumTakeupAccSlow}{0.5}  % largest |y''| / a_m, tau_a >= 1.4 tau_1
 
 % ---- Application to field conveyors (fig_applications, table_applications)
 \newcommand{\NumLoTt}{21.3}  % Lodewijks: take-up tension of the case (kN)
@@ -184,6 +197,11 @@
 \newcommand{\NumSuTightFactor}{12}  % tight over slack side
 \newcommand{\NumSuShortest}{7.4}  % shortest admissible start (s)
 \newcommand{\NumSuExitTight}{-114}  % lowest exit tension on the tight side (kN)
+\newcommand{\NumSMShortestOverPeriod}{1.0}  % SM: shortest start over t_1
+\newcommand{\NumSuShortestOverPeriod}{1.2}  % Su: shortest start over t_1
+\newcommand{\NumSMTtReqMax}{83}  % SM: largest required T_t along the return (kN)
+\newcommand{\NumSuTtReqBest}{18.1}  % Su: smallest required T_t along the return, slack side (kN)
+\newcommand{\NumAppAccelMarginMin}{38}  % condition 2 (take-up follows the belt): smallest margin in the application runs
 
 % ---- Validation: Harrison (1983, 1985b) (validation/harrison_case.py)
 \newcommand{\NumHarrisonSlowMeas}{24.9}  % measured slow period (s), our read-out of Fig. 5e
