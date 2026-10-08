@@ -82,6 +82,20 @@ PINNED = {
     "SMShortest": "13", "SuShortest": "7.4",
     # closed-form solution, Section 3 (step 6.3; notes 4.14 and 4.9 point 1)
     "MassCorrErrTenth": "0.4", "MassCorrErrFundOne": "3.1", "StepOvershootEntry": "2.2",
+    # Section 4 and Appendix B (step 6.4; notes 4.31): drive without speed control on
+    # Harrison's conveyor, wave-speed checks, Lodewijks and Song cross-comparison, split
+    "HarrisonFreeDriveSlow": "14.2", "HarrisonFreeDriveSecond": "7.0",
+    "HarrisonDriveMassMeas": "4.8", "HarrisonDriveMassBeltRatio": "2.5",
+    "HarrisonDriveMassSecond": "9.2", "HarrisonDashpotNatural": "19",
+    "HarrisonDashpotNaturalChange": "0.4", "HarrisonDashpotSoftMin": "1.9",
+    "HarrisonDashpotSoftMax": "2.8", "HarrisonSoftSlowMin": "23.9", "HarrisonSoftSlowMax": "26.4",
+    "HarrisonSoftZetaMin": "0.08", "HarrisonSoftZetaMax": "0.23", "HarrisonSoftSecondMin": "8.9",
+    "HarrisonSoftSecondMax": "9.1", "HarrisonBetaMin": "0.012", "HarrisonBetaMax": "0.024",
+    "HarrisonStoredMax": "10", "HarrisonTransit": "7.0", "HarrisonStillSpeed": "0.007",
+    "MujaSpeedDiff": "0.9", "SongCcModel": "995.6", "SongCrModel": "1658.7", "SongFRunModel": "224",
+    "SongTtMass": "22", "SongTravelTensions": "1.8", "LodewijksLinearGap": "1",
+    "LodewijksLinearGapHis": "3", "LodewijksTravelMeanHis": "3.6", "LodewijksTravelMeanModel": "2.6",
+    "LodewijksPeriodEmpty": "18.9", "LodewijksPeriodOwnDrive": "16.4", "SplitErr": "2e-5",
 }
 
 

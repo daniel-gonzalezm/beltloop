@@ -153,16 +153,24 @@ def load_digitised():
 SUMMARY = HERE / "data" / "lodewijks_case.json"
 
 
-def write_summary(table, pe, py, pm):
+def write_summary(table, pe, py, pm, extra=None):
     """Numbers of the cross-comparison (validation section) for maps/paper_numbers.py, which
     reads this file instead of rerunning the starts (about 30 s). Peak strain of each Table 8.7
     profile, model A undamped against Lodewijks, and the periods of the oscillation after the
-    start (fits over 30-60 s for Lodewijks, 30-90 s for model A)."""
+    start (fits over 30-60 s for Lodewijks, 30-90 s for model A). Step 6.4 adds the peak
+    strains themselves (Lodewijks, model A with zeta_1 = 0 and 0.05), the mean take-up travel
+    after the 30 s start (Lodewijks' record and model A), his travel for the 50 s start of the
+    duration sweep, and the periods of the two alternatives that would give his 18 s period."""
     import json
     dev = {n: table[n][0]["eps_max"] / TABLE_8_7[n][1] - 1 for n in TABLE_8_7}
+    eps = {n: dict(lodewijks=TABLE_8_7[n][1], model=table[n][0]["eps_max"],
+                   model_damped=table[n][1]["eps_max"]) for n in TABLE_8_7}
     out = dict(peak_dev=dev, peak_dev_min=min(dev.values()), peak_dev_max=max(dev.values()),
                period_lodewijks_strain=pe[2], period_lodewijks_travel=py[2], period_model=pm[2],
+               peak_eps=eps, travel_mean_lodewijks=py[0], travel_mean_model=pm[0],
+               travel_sweep_50_lodewijks=SWEEP[50][1],
                note="written by validation/lodewijks_case.py; do not edit")
+    out.update(extra or {})
     SUMMARY.write_text(json.dumps(out, indent=1, sort_keys=True) + "\n")
 
 
@@ -218,7 +226,6 @@ def main():
     _, es = dig["eps_takeup"]
     print(f"  slack side, Lodewijks: strain {es.mean():.4f} +- {es.std():.4f} "
           f"(T_t/EA = {cv0.takeup.T_t / EA:.4f})")
-    write_summary(table, pe, py, pm)
 
     print("\nFundamental period [s] of candidate models (loaded unless stated):")
     for xi in (0.001, 0.25, 0.5, 0.75, 0.999):
@@ -236,8 +243,13 @@ def main():
         print(f"  A with torque drive, m_d = {md}: {2 * np.pi * L / (cv0.c_r * Om[0]):.1f}"
               + ("  (m_d = 0.95: motor + gearbox + pulley, Eqs. 8.14-8.16)" if md == 0.95 else ""))
     cv_e = conveyor(mu_c=MU_C_EMPTY)
-    print(f"  A, empty carry strand: "
-          f"{2 * np.pi * L / (cv_e.c_r * natural_frequencies(cv_e.loop(), cv_e.beta, 1)[0]):.1f}")
+    T_empty = 2 * np.pi * L / (cv_e.c_r * natural_frequencies(cv_e.loop(), cv_e.beta, 1)[0])
+    print(f"  A, empty carry strand: {T_empty:.1f}")
+    T_md = {md: 2 * np.pi * L / (cv0.c_r * natural_frequencies_torque(lp, cv0.beta, md, 3.0, 20000)[0])
+            for md in (0.95, 3.0)}
+    write_summary(table, pe, py, pm, dict(period_empty_carry=T_empty,
+                                          period_torque_own_drive=T_md[0.95],
+                                          period_torque_md3=T_md[3.0], md_own_drive=0.95))
     rb = sliding_drive_slack()
     print(f"  B, linear offset start (lumped, undamped): slack-side tension {rb[0] / 1e3:.1f} to "
           f"{rb[1] / 1e3:.1f} kN; Lodewijks: constant at about T_t")

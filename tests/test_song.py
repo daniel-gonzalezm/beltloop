@@ -34,3 +34,21 @@ def test_song_relocation_is_not_equivalent():
     assert T(1 - 1e-3) == pytest.approx(4 * L / c_c, rel=5e-3)   # carrying-strand quarter wave
     assert T(1e-3) == pytest.approx(40.0, abs=0.1)               # take-up at the head
     assert T(1e-3) / T(1 - 1e-3) > 1.35
+
+
+def test_song_case_summary():
+    """Step 6.4 cross-comparison (validation/song_case.py): wave speeds and running drive force
+    from their data, take-up tension their counterweight can hold, and the take-up travel that
+    their own running tensions imply (half the change of loop elongation)."""
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).parents[1] / "validation"))
+    import song_case as sc
+    s = sc.summary()
+    assert s["c_c"] == pytest.approx(995.6, abs=0.1)
+    assert s["c_r"] == pytest.approx(1658.7, abs=0.1)
+    assert s["F_run"] / s["pub"]["F_run"] == pytest.approx(1.0, abs=0.015)
+    assert s["takeup_mass_tension"] < 0.15 * s["pub"]["T_t"]
+    # their tensions and the resistances give the same travel (within 2 %), far from 2.81 m
+    assert s["travel_from_their_tensions"] == pytest.approx(s["travel_model"], rel=0.02)
+    assert s["travel_from_their_tensions"] < 0.7 * s["pub"]["travel"]

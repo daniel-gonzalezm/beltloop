@@ -87,3 +87,14 @@ def takeup_transmission(beta: float, Om) -> complex:
     beta Om -> infinity (transparent pulley). In SI, beta Om = M omega/(mu_r c_r) = M omega/Z
     for a single loop, 4 M omega/(n^2 Z) with n strands."""
     return 1.0 / (1.0 - 2j / (beta * Om))
+
+
+def takeup_transmission_impedance(z):
+    """Transmission coefficient through a take-up pulley of mechanical impedance z (force
+    on the pulley per unit pulley velocity, belt side, divided by the impedance Z_r of the
+    belt on both sides):  chi = z / (z + 2).
+    A mass gives z = i beta Om (takeup_transmission); a dashpot of coefficient c_h, z =
+    c_h/Z_r, real: a frequency-independent fraction of any front crosses at once. With n
+    strands the belt-side impedance is 4 z_carriage / n^2, as for the mass."""
+    z = np.asarray(z, dtype=complex)
+    return z / (z + 2.0)

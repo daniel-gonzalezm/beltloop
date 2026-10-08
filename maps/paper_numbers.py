@@ -19,7 +19,10 @@ validation scripts already hold as data, which are marked "measured" in the comm
   * maps/data/paper_numbers_slow.json: the grip ratios of Lodewijks' 30 s starts (about 30 s to
     compute; refreshed with --recompute).
   * beltloop itself (step 6.3, Section 3): accuracy of the two-pole take-up mass correction and
-    the overshoot of a step onset of the resistances (about 6 s).
+    the overshoot of a step onset of the resistances (about 6 s);
+  * step 6.4 (Section 4, Appendix B): harrison_case.drive_check() (drive without speed control,
+    about 9 s), validation/song_case.py, the published Nordell-Ciozda and Muja values, and the
+    convergence of the modal tension (about 10 s).
 tests/test_paper_numbers.py checks that paper_numbers.tex equals the output of this script and
 pins the key numbers against the values of the state document, so a change in the code that
 moves a number in the text cannot pass unnoticed.
@@ -359,6 +362,8 @@ def validation(N: Numbers):
     N.add("HarrisonWaveMeas", h["wave_meas"], 1, "measured ripple (s), Fig. 5c")
     N.add("HarrisonEmbeddedMax", h["embedded_max"], 1,
           "embedded-mass model, largest fundamental for xi <= 0.2 (s)")
+    N.add("HarrisonBetaMin", h["beta"][0], 3, "beta = 4M/(n^2 mu_r L), n = 4, rho = 79 and 39 kg/m")
+    N.add("HarrisonBetaMax", h["beta"][1], 3)
     N.add("HarrisonGammaMeas", h["gamma_meas"], 2, "gamma measured on the empty belt (1985b)")
     N.add("HarrisonGammaMeasMin", h["gamma_band"][0], 2)
     N.add("HarrisonGammaMeasMax", h["gamma_band"][1], 2)
@@ -368,8 +373,35 @@ def validation(N: Numbers):
     N.add("HarrisonCarriageModel", h["carriage_7s"], 1, "model: carriage travel at 7 s (m)")
     N.add("HarrisonCarriageMeas", h["carriage_meas"], 0, "measured carriage travel, about (m)")
     N.add("HarrisonStoredMax", h["stored_max"], 0, "model: belt stored in the loop (m)")
+    N.add("HarrisonStoredMeas", 24, 0, "belt released by the loop at start-up, 1985b text (m)")
     N.add("HarrisonTransmissionMin", h["transmission_7s"][0], 2, "|t| through the take-up at 7 s")
     N.add("HarrisonTransmissionMax", h["transmission_7s"][1], 2)
+
+    N.section("Validation: Harrison, drive without speed control (Section 3.6; step 6.4)")
+    # base model n = 4, gamma = 0.97, rho = 79 kg/m; harrison_case.drive_check()
+    N.add("HarrisonFreeDriveSlow", h["drive_free_slow"], 1, "free drive (m_d -> 0): slow period (s)")
+    N.add("HarrisonFreeDriveSecond", h["drive_free_second"], 1, "free drive: second period (s), the loop transit")
+    N.add("HarrisonDriveMassMeas", h["drive_md_meas"], 1, "m_d that alone gives the measured slow period")
+    N.add("HarrisonDriveMassBeltRatio", h["drive_md_meas_belt_ratio"], 1,
+          "that reduced drive mass over the mass of the whole belt")
+    N.add("HarrisonDriveMassSecond", h["drive_md_meas_second"], 1, "second period with that m_d (s)")
+    N.add("HarrisonRunForce", h["drive_run_force"] / 1e3, 0, "running force 900 kW / 3.7 m/s (kN)")
+    N.add("HarrisonSlipNatural", 100 * hc.SLIP_NATURAL, 0, "assumed slip, natural characteristic (%)")
+    N.add("HarrisonSlipSoftMin", 100 * min(hc.SLIP_SOFT), 0, "assumed slip, rotor resistance in circuit (%)")
+    N.add("HarrisonSlipSoftMax", 100 * max(hc.SLIP_SOFT), 0)
+    N.add("HarrisonDashpotNatural", h["drive_c_natural"], 0, "c_hat on the natural characteristic")
+    N.add("HarrisonDashpotNaturalChange", 100 * h["drive_natural_change"], 1,
+          "largest change of the slow period with it, m_d = 0.1-3 (%)")
+    N.add("HarrisonDashpotSoftMin", h["drive_c_soft"][0], 1, "c_hat with rotor resistance in circuit")
+    N.add("HarrisonDashpotSoftMax", h["drive_c_soft"][1], 1)
+    N.add("HarrisonSoftSlowMin", h["drive_soft_slow"][0], 1, "slow period with it, m_d = 1-3 (s)")
+    N.add("HarrisonSoftSlowMax", h["drive_soft_slow"][1], 1)
+    N.add("HarrisonSoftZetaMin", h["drive_soft_zeta"][0], 2, "its damping ratio")
+    N.add("HarrisonSoftZetaMax", h["drive_soft_zeta"][1], 2)
+    N.add("HarrisonSoftSecondMin", h["drive_soft_second"][0], 1, "second period with it (s)")
+    N.add("HarrisonSoftSecondMax", h["drive_soft_second"][1], 1)
+    N.add("HarrisonDriveMassMin", min(hc.DRIVE_MASSES), 1, "range of m_d tried")
+    N.add("HarrisonDriveMassMax", max(hc.DRIVE_MASSES), 0)
 
     N.section("Validation: Nordell and Ciozda (1984), arrival times (case geometry, two wave speeds)")
     L, cr = nc["L"], nc["c_r"]
@@ -379,6 +411,34 @@ def validation(N: Numbers):
     tC = xd / cr + L / cc + (1 - nc["sigma_t"]) * L / cr
     N.add("NCArrivalB", tB, 2, "wave from the drive to point B (s); measured 3.72")
     N.add("NCArrivalC", tC, 2, "wave from the drive to the take-up, point C (s); measured 5.86")
+    N.add("NCArrivalBMeas", 3.72, 2, "measured (their Fig. 10)")
+    N.add("NCArrivalCMeas", 5.86, 2, "measured (their Fig. 11)")
+    N.add("NCSpeedReturn", nc["c_r"], 0, "their wave speed on the empty return strand (m/s)")
+    N.add("NCSpeedCarry", cr / nc["gamma"], 0, "their wave speed on the loaded carry strand (m/s)")
+
+    N.section("Validation: Muja P2 (cdi1998), published values")
+    muja = dict(L=6.1, t=3.1, c_meas=1968.0, c_calc=1985.0)   # 6.1 km, 3.1 s; E = 5154 N/mm^2, 1307 kg/m^3
+    N.add("MujaLength", muja["L"], 1, "km")
+    N.add("MujaTime", muja["t"], 1, "wave travel time in an emergency stop, empty belt (s)")
+    N.add("MujaSpeedMeas", muja["c_meas"], 0, "(m/s)")
+    N.add("MujaSpeedCalc", muja["c_calc"], 0, "from E and density (m/s)")
+    N.add("MujaSpeedDiff", 100 * (1 - muja["c_meas"] / muja["c_calc"]), 1, "(%)")
+
+    N.section("Cross-comparison: Song et al. (2012) (validation/song_case.py)")
+    import song_case as sc
+    so = sc.summary()
+    N.add("SongCcModel", so["c_c"], 1, "carry wave speed from their data (m/s)")
+    N.add("SongCcPub", so["pub"]["c_c"], 1, "published")
+    N.add("SongCrModel", so["c_r"], 1, "return wave speed from their data (m/s)")
+    N.add("SongCrPub", so["pub"]["c_r"], 1, "published")
+    N.add("SongFRunModel", so["F_run"] / 1e3, 0, "running drive force from their resistance law (kN)")
+    N.add("SongFRunPub", so["pub"]["F_run"] / 1e3, 1, "published (kN)")
+    N.add("SongFRunDiff", 100 * abs(so["F_run"] / so["pub"]["F_run"] - 1), 0, "(%)")
+    N.add("SongTtPub", so["pub"]["T_t"] / 1e3, 0, "published tension at the tail take-up (kN)")
+    N.add("SongTtMass", so["takeup_mass_tension"] / 1e3, 0, "what 4500 kg hold on two strands (kN)")
+    N.add("SongTravelPub", so["pub"]["travel"], 2, "published steady take-up travel (m)")
+    N.add("SongTravelTensions", so["travel_from_their_tensions"], 1,
+          "take-up travel implied by their own running tensions (m)")
 
     N.section("Cross-comparison: Lodewijks (1996) ch. 8 (validation/data/lodewijks_case.json)")
     lc = json.loads((ROOT / "validation" / "data" / "lodewijks_case.json").read_text())
@@ -386,6 +446,20 @@ def validation(N: Numbers):
     N.add("LodewijksPeakDevMax", 100 * lc["peak_dev_max"], 0)
     N.add("LodewijksPeriodMeas", lc["period_lodewijks_strain"], 1, "his oscillation period (s)")
     N.add("LodewijksPeriodModel", lc["period_model"], 1, "ours (s)")
+    pk = lc["peak_eps"]
+    N.add("LodewijksLinearGap", 100 * abs(pk["linear offset"]["model"] / pk["linear"]["model"] - 1), 0,
+          "model: offset vs plain linear ramp, peak strain difference (%)")
+    N.add("LodewijksLinearGapHis", 100 * abs(pk["linear offset"]["lodewijks"] / pk["linear"]["lodewijks"] - 1),
+          0, "the same in his Table 8.7 (%)")
+    N.add("LodewijksTravelMeanHis", lc["travel_mean_lodewijks"], 1,
+          "mean take-up travel after his 30 s start (m), our fit of his Fig. 8.42")
+    N.add("LodewijksTravelSweepHis", lc["travel_sweep_50_lodewijks"], 1,
+          "his largest take-up travel for a 50 s start (m), Fig. 8.46")
+    N.add("LodewijksTravelMeanModel", lc["travel_mean_model"], 1, "ours after the 30 s start (m)")
+    N.add("LodewijksPeriodEmpty", lc["period_empty_carry"], 1, "ours with an empty carry strand (s)")
+    N.add("LodewijksPeriodOwnDrive", lc["period_torque_own_drive"], 1,
+          "ours, torque-imposed drive with his drive inertia (s)")
+    N.add("LodewijksOwnDriveMass", lc["md_own_drive"], 2, "m_d of his motor, gearbox and pulley")
 
     N.section("Verification: lumped-mass model (validation/data/lumped_validation.json)")
     lv = json.loads((ROOT / "validation" / "data" / "lumped_validation.json").read_text())
@@ -430,8 +504,32 @@ def solution(N: Numbers):
           "xi = 0.05, undamped")
 
 
+def numerics(N: Numbers):
+    """Step 6.4, Appendix B: convergence of the tension with the quasi-static split
+    (tests/test_response.py::test_split_convergence_with_damping, about 10 s)."""
+    from beltloop import Loop, StartProfile, modal_basis, startup_response
+    N.section("Appendix B (numerical methods): convergence of the modal tension")
+    lp = Loop.from_positions(0.0, 0.02, 1.58, r_return=0.3, r_carry=0.9)
+    prof = StartProfile("sine", 30.0, "velocity")
+    tau = np.linspace(0, 80, 801)
+    x = np.array([0.0, 0.5, 1.0, 2.0])
+    b300, b20 = modal_basis(lp, 0.12, 300), modal_basis(lp, 0.12, 20)
+    err, err_plain = 0.0, 0.0
+    for zh in (0.0, 0.02, 0.1):
+        ref = startup_response(b300, prof, zh, tau).tension(x)
+        r20 = startup_response(b20, prof, zh, tau)
+        scale = np.max(np.abs(ref))
+        err = max(err, np.max(np.abs(r20.tension(x) - ref)) / scale)
+        if zh == 0.02:
+            err_plain = np.max(np.abs(r20.tension(x, "plain") - ref)) / scale
+    N.add("SplitModes", 20, 0, "modes kept")
+    N.add("SplitRefModes", 300, 0, "reference modes")
+    N.add("SplitErr", err, "e1", "largest relative tension error, damping 0 to 0.1")
+    N.add("PlainErr", err_plain, "e1", "the plain modal sum, same modes, zeta_hat = 0.02")
+
+
 SECTIONS = (claims, modal, beta_regime, startup, crawl, validity, applications, validation,
-            solution)
+            solution, numerics)
 
 
 def build(recompute=False) -> Numbers:

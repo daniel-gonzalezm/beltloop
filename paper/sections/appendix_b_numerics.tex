@@ -1,4 +1,113 @@
-% Appendix B -- numerical methods (4.9 point 5). Step 6.4.
+% =====================================================================
+% Appendix B -- Numerical methods (notes 4.8 and 4.9 point 5). Written in
+% step 6.4. Implementation: beltloop/src/beltloop (eigen.py, transfer.py,
+% forcing.py, response.py, lumped.py); numbers in paper_numbers.tex
+% (section "Appendix B").
+% =====================================================================
 \section{Numerical methods}\label{app:numerics}
-\TODO{Root bracketing by interlacing; exact integration of the modal
-equations; quasi-static decomposition with lag; lumped-mass model.}
+
+The closed-form solution is implemented in the open-source Python package
+\texttt{beltloop} (see Data availability), together with the lumped-mass model of
+Section~\ref{sec:lumped} and the scripts that produce every figure, table and number
+of the paper. This appendix describes the numerical steps that the closed form leaves
+open, and the lumped-mass model used for its verification.
+
+\paragraph{Natural frequencies.} The roots of~\eqref{eq:chareq} are found without a
+search grid, from the interlacing property of Section~\ref{sec:properties}. The poles
+of~\eqref{eq:receptance}, the fixed--free frequencies of each strand, are bracketed
+first with the scaled Pr\"ufer angle $\phi=\operatorname{atan2}(\kappa W,W')$ of the
+chain started from $(W,W')=(0,1)$ at the drive. Inside a segment $\phi$ grows by
+$\kappa\ell$; at a change of density $W$ and $W'$ are continuous, so $\tan\phi$ is
+multiplied by the ratio of the wavenumbers and $\phi$ is mapped within its quadrant.
+The end value $\phi(\Omega)$ increases with $\Omega$ (Sturm), and the $j$-th
+fixed--free frequency is the root of $\phi(\Omega)=(j-\tfrac12)\pi$. Since each of the
+$m$ density changes of a strand moves $\phi$ by less than $\pi/2$, that root lies in
+\begin{equation}\label{eq:prufer_bracket}
+  \frac{(j-\tfrac12)\pi-\tfrac{m}{2}\pi}{\Phi}\le\Omega_j\le\frac{(j-\tfrac12)\pi+\tfrac{m}{2}\pi}{\Phi},
+  \qquad \Phi=\sum_i\kappa_i\ell_i/\Omega,
+\end{equation}
+which is used as the bracket for Brent's method. The poles of the two strands are then
+merged and sorted, $p_1\le p_2\le\dots$, and the $k$-th natural frequency is sought in
+$(p_{k-1},p_k)$, $p_0=0$. In that interval $D/(\beta\Omega^2A_{22}B_{11})$ increases
+from $-\infty$ to $+\infty$ and $A_{22}B_{11}$ keeps its sign, so $D$ multiplied by that
+sign changes from negative to positive across the interval; the end values are replaced
+by these limit signs, and Brent's method converges to the single root. A pair of
+coincident poles is itself a root and is returned exactly. The method finds every
+root, including pairs separated by $O(\beta)$ near nearly coincident poles, which a grid
+search with a fixed step misses when $\beta$ is small. The limit $\beta=0$ returns the
+poles themselves. For the drive without speed control, Eq.~\eqref{eq:chareq_torque},
+the interlacing argument is not available: real roots are located by a sign scan on a
+fine grid, and the complex roots with a slip dashpot by Newton's method started from
+the root with prescribed velocity, the limit $\hat c\to\infty$. Both serve only for the
+checks of Section~\ref{sec:fieldchecks}.
+% tests: test_eigen.py (fixed-free roots, all roots against a dense scan, close roots
+%        at beta = 1e-7, FE agreement, torque variant), test_harrison.py (damped drive)
+
+\paragraph{Modes and modal quantities.} Each mode is obtained by propagating
+$(W,W')=(0,1)$ through the chain with the matrices~\eqref{eq:transfer}, with the jump of
+$W$ and the take-up amplitude $Y$ of~\eqref{eq:eigen_tu} at the take-up. On a segment
+$W$ is a combination of $\cos\kappa x$ and $\sin\kappa x$, so the integrals that enter
+the modal mass~\eqref{eq:inner}, the participation factors~\eqref{eq:participation}
+and the stiffness identity $\int W'^2\dd x=\Omega^2m$ are evaluated in closed form,
+segment by segment; the last identity is kept as a check of every mode. The modes are
+normalised to unit modal mass. The take-up term $\beta Y^2$ of the modal mass requires
+$\beta>0$; the limit $\beta\to0$ of the forced response is computed with a small
+$\beta$, which the free-end structure makes harmless.
+% tests: test_modes.py (interfaces, closed-form integrals, weighted orthogonality,
+%        Parseval, quasi-static sums)
+
+\paragraph{Exact integration of the modal equations.} On each interval of a start-up
+profile the loads $\hat a(\tau)$ and $\varphi(\tau)$ are outputs of a small linear
+system $\mat z'=\mat E\mat z$: the polynomial pieces of the triangular, parabolic and
+piecewise-linear profiles, and the sine and cosine of the sinusoidal profile, whose
+velocity gives the onset $\varphi=V/V_\infty$. Appending $\mat z$ to the state
+$(p_k,p_k')$ of each mode gives an autonomous linear system, which is advanced exactly
+to every output time by its matrix exponential, interval by interval, with the modal
+state carried across the breaks. The integration has no time step and no truncation
+error; it holds for any damping, including overdamped high modes, and for exact
+resonance $\Omega_k=\varpi$. A jump of the drive velocity, as in the offset start of
+\citet{lodewijks1996}, is replaced by a short ramp so that the load stays bounded.
+% tests: test_response.py (exosystem against closed form, exact integration against an
+%        ODE solver, residual amplitude at exact resonance, damping ratio)
+
+\paragraph{Quasi-static split.} The modal sum~\eqref{eq:outputs} for the tension
+converges slowly, because the tension is the derivative of the displacement and the
+loads reach every mode. It is therefore split into the quasi-static
+field~\eqref{eq:quasistatic}, summed in closed form, and a dynamic remainder. With
+Kelvin--Voigt damping the quasi-static tension is exact but the strain lags; the
+quasi-static modal coordinates are accordingly
+$p_k^{\mathrm{qs}}=-(\Gamma_k\hat a_f+R_k\varphi_f)/\Omega_k^2$, where the lagged loads
+obey $2\hat\zeta\hat a_f'+\hat a_f=\hat a$ and $2\hat\zeta\varphi_f'+\varphi_f=\varphi$,
+a first-order filter with the same time constant for every mode, and
+\begin{equation}\label{eq:split}
+  \hat T=\hat T_{\mathrm{qs}}+\sum_k\left(q_k+2\hat\zeta q_k'\right)W_k',\qquad
+  \hat y=\tfrac12\bigl(\hat a_fI_\mu+\varphi_fI_r\bigr)+\sum_kq_kY_k,\qquad
+  q_k=p_k-p_k^{\mathrm{qs}},
+\end{equation}
+with $I_\mu=\int_0^2\int_\xi^x\hat\mu\,\dd x'\,\dd x$ and $I_r$ defined likewise. The
+remainder $q_k$ is driven only by the rate of change of the quasi-static response and
+converges fast with or without damping. With \NumSplitModes\ modes the tension differs
+from a reference with \NumSplitRefModes\ modes by at most \num{\NumSplitErr} of its
+maximum for $0\le\hat\zeta\le0.1$, against \num{\NumPlainErr} for the plain sum with the
+same modes. Splitting off the undamped quasi-static response instead, $p_k-F_k/\Omega_k^2$,
+leaves a remainder of order $2\hat\zeta F_k'/\Omega_k^2$, which converges as slowly as
+the plain sum.
+% tests: test_response.py (split convergence with damping, lagged loads, quasi-static
+%        limit); numbers: paper_numbers.py, section "Appendix B"
+
+\paragraph{Lumped-mass model.} The model of Section~\ref{sec:lumped} divides the loop,
+from the drive exit to the drive entry, into $N$ elements with nodes at the head and
+tail pulleys and at the take-up. Each element carries half of its mass at each end, a
+linear spring $EA/h$ and a Kelvin--Voigt dashpot, so that the damping matrix is
+$\mat C=t_v\mat K$. The take-up adds the carriage displacement $y_c$ as a degree of
+freedom, with mass $\Mtu$ and the static force $\nstr\Tt$, and enters the element that
+wraps the take-up pulley through its elongation $u_R-u_L+\nstr y_c$. The weight
+components of belt and material along the path and the counterweight are constant
+loads, the motion resistances are applied with the same onset $\varphi$ as in the
+modal solution, and the two end nodes follow the prescribed drive displacement. The
+static state is solved first, and the start is integrated with the Newmark
+average-acceleration scheme, which is implicit, unconditionally stable, second-order
+accurate and free of numerical damping; the time step is refined in proportion to the
+element length, so that the convergence of \cref{fig:validation}(d) measures the
+combined error in space and time.
+% src/beltloop/lumped.py; tests: test_lumped.py, test_strands.py

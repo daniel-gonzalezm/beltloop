@@ -1,4 +1,5 @@
 {
+ "md_own_drive": 0.95,
  "note": "written by validation/lodewijks_case.py; do not edit",
  "peak_dev": {
   "Harrison (6.1)": -0.022551155609469964,
@@ -9,7 +10,40 @@
  },
  "peak_dev_max": 0.004998649051723314,
  "peak_dev_min": -0.17634762790202219,
+ "peak_eps": {
+  "Harrison (6.1)": {
+   "lodewijks": 0.0303,
+   "model": 0.029616699985033062,
+   "model_damped": 0.02835178914232379
+  },
+  "Nordell (6.2)": {
+   "lodewijks": 0.0382,
+   "model": 0.03146352061414275,
+   "model_damped": 0.030256403407331153
+  },
+  "linear": {
+   "lodewijks": 0.0246,
+   "model": 0.023748981420494024,
+   "model_damped": 0.02188558592136218
+  },
+  "linear delayed": {
+   "lodewijks": 0.0236,
+   "model": 0.022044241335524593,
+   "model_damped": 0.021230722133912684
+  },
+  "linear offset": {
+   "lodewijks": 0.0238,
+   "model": 0.023918967847431017,
+   "model_damped": 0.021573969871064642
+  }
+ },
+ "period_empty_carry": 18.88473568301095,
  "period_lodewijks_strain": 18.32911166672419,
  "period_lodewijks_travel": 18.35848544031889,
- "period_model": 28.52887490336817
+ "period_model": 28.52887490336817,
+ "period_torque_md3": 18.78290282724948,
+ "period_torque_own_drive": 16.436664237216668,
+ "travel_mean_lodewijks": 3.557413413484667,
+ "travel_mean_model": 2.6221930022110005,
+ "travel_sweep_50_lodewijks": 2.0
 }

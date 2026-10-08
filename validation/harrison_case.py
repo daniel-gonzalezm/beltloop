@@ -121,6 +121,54 @@ def startup_check(rho=79.0, strands=N_STRANDS, V=1.6, am=0.63, t_end=15.0):
                 v_still=abs(vS[t < t_back - 0.1]).max(), t_back=t_back)
 
 
+RUN_POWER = 900e3                      # running power (Harrison 1985b, original design), W
+V_RUN = 3.7                            # running speed (1983 Fig. 5a), m/s
+SLIP_NATURAL = 0.03                    # assumed slip on the natural characteristic (rotor shorted)
+SLIP_SOFT = (0.2, 0.3)                 # assumed slip with rotor resistance in circuit
+DRIVE_MASSES = (0.1, 0.3, 1.0, 3.0)    # reduced drive masses m_d tried (not published)
+
+
+def slip_dashpot(slip, rho=79.0, gamma=GAMMA_MEAS):
+    """Dimensionless slip dashpot c_hat = c_d/(mu_r c_r) of an induction drive whose force
+    falls linearly from the running force F = P/V at slip s to zero at synchronous speed:
+    c_d = F/(s V). Order of magnitude only (running force for rated force)."""
+    _, _, cr, mur = setup(rho, gamma)
+    return RUN_POWER / V_RUN / (slip * V_RUN) / (mur * cr)
+
+
+def drive_check(rho=79.0, gamma=GAMMA_MEAS):
+    """Step 6.4: test the prescribed-velocity assumption on Harrison's wound-rotor drive with
+    the drive without speed control of Section 3.6 (mass m_d, slip dashpot c_hat), on the base
+    model (n = 4, gamma = 0.97, xi = 0.005). Returns the free-drive limit, the drive mass that
+    alone would give the measured slow period, and the periods (first two) and damping ratios
+    with a slip dashpot on the natural characteristic and with rotor resistance in circuit."""
+    lp, beta, cr, mur = setup(rho, gamma)
+    free = periods_torque(rho, 1e-4, gamma)
+    lm = brentq(lambda lm: periods_torque(rho, 10 ** lm, gamma)[0] - MEAS_SLOW, -1, 2)
+    md_meas = 10 ** lm
+    second_md = periods_torque(rho, md_meas, gamma)[1]
+    Om = natural_frequencies(lp, beta, 2)
+    T0 = 2 * np.pi * L / (cr * Om)
+
+    def roots(md, ch):
+        r = [damped_drive_root(lp, beta, md, ch, o + 1e-4j) for o in Om]
+        return [2 * np.pi * L / (cr * x.real) for x in r], [x.imag / abs(x) for x in r]
+
+    c_nat = slip_dashpot(SLIP_NATURAL, rho, gamma)
+    nat = [roots(md, c_nat) for md in DRIVE_MASSES]
+    soft_c = [slip_dashpot(s, rho, gamma) for s in SLIP_SOFT]
+    soft = [roots(md, ch) for md in (1.0, 3.0) for ch in soft_c]
+    return dict(
+        free_slow=free[0], free_second=free[1], md_meas=md_meas,
+        md_meas_belt_ratio=md_meas * mur * L / (rho * 2 * L), md_meas_second=second_md,
+        c_natural=c_nat, natural_change=max(abs(t[0][0] / T0[0] - 1) for t in nat),
+        c_soft=(min(soft_c), max(soft_c)),
+        soft_slow=(min(t[0][0] for t in soft), max(t[0][0] for t in soft)),
+        soft_zeta=(min(t[1][0] for t in soft), max(t[1][0] for t in soft)),
+        soft_second=(min(t[0][1] for t in soft), max(t[0][1] for t in soft)),
+        run_force=RUN_POWER / V_RUN)
+
+
 def summary():
     """Numbers of the validation section (Harrison 1983, 1985b), for maps/paper_numbers.py.
     Base model: n = 4, measured gamma = 0.97, loop transit fixed, xi = 0.005, rho = 79 kg/m."""
@@ -133,7 +181,9 @@ def summary():
         _, beta, cr, _ = setup(rho, GAMMA_MEAS)
         tr.append(abs(takeup_transmission(beta, 2 * np.pi * L / (cr * 7.0))))
     st = startup_check()
-    return dict(slow=T[0], slow_band=(min(band), max(band)), second=(min(second), max(second)),
+    dr = {"drive_" + k: v for k, v in drive_check().items()}
+    betas = [setup(rho, GAMMA_MEAS)[1] for rho in RHOS]
+    return dict(**dr, beta=(min(betas), max(betas)), slow=T[0], slow_band=(min(band), max(band)), second=(min(second), max(second)),
                 slow_meas=MEAS_SLOW, wave_meas=MEAS_WAVE, gamma_meas=GAMMA_MEAS,
                 gamma_band=GAMMA_MEAS_BAND, embedded_max=max(emb),
                 transmission_7s=(min(tr), max(tr)), still_meas=STILL_MEAS,

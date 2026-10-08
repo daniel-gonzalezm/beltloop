@@ -12,6 +12,7 @@ from .metrics import (StartupMetrics, TakeupKinematics, TensionRequirement, take
                       startup_with_onset, strand_curves, strand_travel_estimate)
 from .response import (StartupResponse, integrate_modes, lagged_loads, residual_amplitude_sine,
                        startup_response)
-from .transfer import AB, J, S, char_fun, char_fun_torque, takeup_transmission
+from .transfer import (AB, J, S, char_fun, char_fun_torque, takeup_transmission,
+                       takeup_transmission_impedance)
 
 __version__ = "0.1.0"

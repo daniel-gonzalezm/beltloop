@@ -181,6 +181,8 @@
 \newcommand{\NumHarrisonSecondMax}{9.4}
 \newcommand{\NumHarrisonWaveMeas}{7.3}  % measured ripple (s), Fig. 5c
 \newcommand{\NumHarrisonEmbeddedMax}{14.1}  % embedded-mass model, largest fundamental for xi <= 0.2 (s)
+\newcommand{\NumHarrisonBetaMin}{0.012}  % beta = 4M/(n^2 mu_r L), n = 4, rho = 79 and 39 kg/m
+\newcommand{\NumHarrisonBetaMax}{0.024}
 \newcommand{\NumHarrisonGammaMeas}{0.97}  % gamma measured on the empty belt (1985b)
 \newcommand{\NumHarrisonGammaMeasMin}{0.90}
 \newcommand{\NumHarrisonGammaMeasMax}{1.06}
@@ -190,18 +192,74 @@
 \newcommand{\NumHarrisonCarriageModel}{2.0}  % model: carriage travel at 7 s (m)
 \newcommand{\NumHarrisonCarriageMeas}{2}  % measured carriage travel, about (m)
 \newcommand{\NumHarrisonStoredMax}{10}  % model: belt stored in the loop (m)
+\newcommand{\NumHarrisonStoredMeas}{24}  % belt released by the loop at start-up, 1985b text (m)
 \newcommand{\NumHarrisonTransmissionMin}{0.02}  % |t| through the take-up at 7 s
 \newcommand{\NumHarrisonTransmissionMax}{0.04}
+
+% ---- Validation: Harrison, drive without speed control (Section 3.6; step 6.4)
+\newcommand{\NumHarrisonFreeDriveSlow}{14.2}  % free drive (m_d -> 0): slow period (s)
+\newcommand{\NumHarrisonFreeDriveSecond}{7.0}  % free drive: second period (s), the loop transit
+\newcommand{\NumHarrisonDriveMassMeas}{4.8}  % m_d that alone gives the measured slow period
+\newcommand{\NumHarrisonDriveMassBeltRatio}{2.5}  % that reduced drive mass over the mass of the whole belt
+\newcommand{\NumHarrisonDriveMassSecond}{9.2}  % second period with that m_d (s)
+\newcommand{\NumHarrisonRunForce}{243}  % running force 900 kW / 3.7 m/s (kN)
+\newcommand{\NumHarrisonSlipNatural}{3}  % assumed slip, natural characteristic (%)
+\newcommand{\NumHarrisonSlipSoftMin}{20}  % assumed slip, rotor resistance in circuit (%)
+\newcommand{\NumHarrisonSlipSoftMax}{30}
+\newcommand{\NumHarrisonDashpotNatural}{19}  % c_hat on the natural characteristic
+\newcommand{\NumHarrisonDashpotNaturalChange}{0.4}  % largest change of the slow period with it, m_d = 0.1-3 (%)
+\newcommand{\NumHarrisonDashpotSoftMin}{1.9}  % c_hat with rotor resistance in circuit
+\newcommand{\NumHarrisonDashpotSoftMax}{2.8}
+\newcommand{\NumHarrisonSoftSlowMin}{23.9}  % slow period with it, m_d = 1-3 (s)
+\newcommand{\NumHarrisonSoftSlowMax}{26.4}
+\newcommand{\NumHarrisonSoftZetaMin}{0.08}  % its damping ratio
+\newcommand{\NumHarrisonSoftZetaMax}{0.23}
+\newcommand{\NumHarrisonSoftSecondMin}{8.9}  % second period with it (s)
+\newcommand{\NumHarrisonSoftSecondMax}{9.1}
+\newcommand{\NumHarrisonDriveMassMin}{0.1}  % range of m_d tried
+\newcommand{\NumHarrisonDriveMassMax}{3}
 
 % ---- Validation: Nordell and Ciozda (1984), arrival times (case geometry, two wave speeds)
 \newcommand{\NumNCArrivalB}{3.74}  % wave from the drive to point B (s); measured 3.72
 \newcommand{\NumNCArrivalC}{5.86}  % wave from the drive to the take-up, point C (s); measured 5.86
+\newcommand{\NumNCArrivalBMeas}{3.72}  % measured (their Fig. 10)
+\newcommand{\NumNCArrivalCMeas}{5.86}  % measured (their Fig. 11)
+\newcommand{\NumNCSpeedReturn}{1450}  % their wave speed on the empty return strand (m/s)
+\newcommand{\NumNCSpeedCarry}{590}  % their wave speed on the loaded carry strand (m/s)
+
+% ---- Validation: Muja P2 (cdi1998), published values
+\newcommand{\NumMujaLength}{6.1}  % km
+\newcommand{\NumMujaTime}{3.1}  % wave travel time in an emergency stop, empty belt (s)
+\newcommand{\NumMujaSpeedMeas}{1968}  % (m/s)
+\newcommand{\NumMujaSpeedCalc}{1985}  % from E and density (m/s)
+\newcommand{\NumMujaSpeedDiff}{0.9}  % (%)
+
+% ---- Cross-comparison: Song et al. (2012) (validation/song_case.py)
+\newcommand{\NumSongCcModel}{995.6}  % carry wave speed from their data (m/s)
+\newcommand{\NumSongCcPub}{995.6}  % published
+\newcommand{\NumSongCrModel}{1658.7}  % return wave speed from their data (m/s)
+\newcommand{\NumSongCrPub}{1668.7}  % published
+\newcommand{\NumSongFRunModel}{224}  % running drive force from their resistance law (kN)
+\newcommand{\NumSongFRunPub}{226.8}  % published (kN)
+\newcommand{\NumSongFRunDiff}{1}  % (%)
+\newcommand{\NumSongTtPub}{173}  % published tension at the tail take-up (kN)
+\newcommand{\NumSongTtMass}{22}  % what 4500 kg hold on two strands (kN)
+\newcommand{\NumSongTravelPub}{2.81}  % published steady take-up travel (m)
+\newcommand{\NumSongTravelTensions}{1.8}  % take-up travel implied by their own running tensions (m)
 
 % ---- Cross-comparison: Lodewijks (1996) ch. 8 (validation/data/lodewijks_case.json)
 \newcommand{\NumLodewijksPeakDevMin}{-18}  % peak strain, model / his - 1 (%)
 \newcommand{\NumLodewijksPeakDevMax}{0}
 \newcommand{\NumLodewijksPeriodMeas}{18.3}  % his oscillation period (s)
 \newcommand{\NumLodewijksPeriodModel}{28.5}  % ours (s)
+\newcommand{\NumLodewijksLinearGap}{1}  % model: offset vs plain linear ramp, peak strain difference (%)
+\newcommand{\NumLodewijksLinearGapHis}{3}  % the same in his Table 8.7 (%)
+\newcommand{\NumLodewijksTravelMeanHis}{3.6}  % mean take-up travel after his 30 s start (m), our fit of his Fig. 8.42
+\newcommand{\NumLodewijksTravelSweepHis}{2.0}  % his largest take-up travel for a 50 s start (m), Fig. 8.46
+\newcommand{\NumLodewijksTravelMeanModel}{2.6}  % ours after the 30 s start (m)
+\newcommand{\NumLodewijksPeriodEmpty}{18.9}  % ours with an empty carry strand (s)
+\newcommand{\NumLodewijksPeriodOwnDrive}{16.4}  % ours, torque-imposed drive with his drive inertia (s)
+\newcommand{\NumLodewijksOwnDriveMass}{0.95}  % m_d of his motor, gearbox and pulley
 
 % ---- Verification: lumped-mass model (validation/data/lumped_validation.json)
 \newcommand{\NumLumpedTensionErr}{7e-7}  % dynamic tension, N = 1000, largest relative difference
@@ -216,3 +274,9 @@
 
 % ---- Closed-form solution (Section 3): step onset of the resistances
 \newcommand{\NumStepOvershootEntry}{2.2}  % peak / quasi-static resistance tension at the drive entry, gamma = 2, beta = 0.1, xi = 0.05, undamped
+
+% ---- Appendix B (numerical methods): convergence of the modal tension
+\newcommand{\NumSplitModes}{20}  % modes kept
+\newcommand{\NumSplitRefModes}{300}  % reference modes
+\newcommand{\NumSplitErr}{2e-5}  % largest relative tension error, damping 0 to 0.1
+\newcommand{\NumPlainErr}{1e-2}  % the plain modal sum, same modes, zeta_hat = 0.02

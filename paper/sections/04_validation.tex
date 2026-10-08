@@ -1,27 +1,243 @@
 % =====================================================================
-% Section 4 -- Verification and validation, in three levels. Step 6.4.
-% Inputs: claims 3(a)-(d) in section 3 of the notes; validation figure
-% and caption (notes 4.9, end); notes 4.10, 4.11, 4.13; 4.9 points 5, 7, 10.
+% Section 4 -- Verification and validation, in three levels. Written in
+% step 6.4 from claims 3(a)-(f) (state, section 3), notes 4.8, 4.9 points
+% 5, 7 and 10, 4.10-4.13, and the drive check of step 6.4 (notes 4.31).
+% Every number is a macro of paper_numbers.tex; scripts:
+%   validation/fig_lumped_validation.py, harrison_case.py, lodewijks_case.py,
+%   song_case.py.
 % =====================================================================
 \section{Verification and validation}\label{sec:validation}
 
+The closed-form solution is checked at three levels. It is first verified against an
+independent numerical model of the same idealisation (\cref{sec:lumped}). It is then
+confronted with the field records that bear on its distinctive assumptions, the
+two wave speeds, the take-up as a 2:1 pulley and the prescribed drive velocity
+(\cref{sec:fieldchecks}). A full validation would need a record that combines a free
+gravity take-up, a speed-controlled start, a time history of the take-up and published
+parameters of the conveyor; no such record was found in the literature, so the field
+checks are partial and are presented as such. Finally, the model is compared with two
+published models of long conveyors (\cref{sec:crosscheck}).
+
 \subsection{Verification against an independent lumped-mass model}\label{sec:lumped}
+
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{lumped_validation}
-  \caption{\TODO{Validation caption (notes 4.9, end).}}
+  \caption{Verification of the closed-form modal solution against an independent
+  lumped-mass model (absolute displacements, gravity and counterweight applied as
+  loads, Newmark integration). (a, b) Total belt tension at the two faces of the drive
+  pulley during a \qty{60}{\second} start to \qty{5}{\metre\per\second} of conveyor~A
+  (head drive, inclined carry strand, sinusoidal start) and conveyor~B (drive on the
+  return strand, horizontal, parabolic start); the dashed line marks the end of the
+  acceleration. (c) Take-up travel. (d) Largest relative difference between the two
+  models against the number of elements~$N$, for the first five natural frequencies and
+  for the dynamic tension over the whole loop and time span. Lines: modal solution
+  (120 modes); markers: lumped model ($N=\NumLumpedElements$). The parameters are
+  illustrative.}
   \label{fig:validation}
 \end{figure}
-\TODO{Lumped-mass verification.}
+
+The lumped-mass model shares only the input data with the modal solution; every
+modelling step is made differently. It uses absolute belt displacements, with the two
+faces of the drive pulley moving with the prescribed rigid motion $U(t)$, so the
+inertial load of the start emerges instead of being applied. Gravity and the
+counterweight are applied as constant loads, and the run starts from the static
+equilibrium obtained by a linear solve, so the cancellation of the static terms
+(Section~\ref{sec:interfaces}) is computed rather than assumed. The take-up is an
+additional degree of freedom loaded by the counterweight force, and the element that
+wraps the take-up pulley has the elongation $u_R-u_L+\nstr y_c$; for $\nstr=4$ this
+kinematics is written directly, not through the equivalent mass~\eqref{eq:nmap}. The
+belt is a chain of masses, linear springs and Kelvin--Voigt dashpots, integrated in
+time with the average-acceleration Newmark scheme (\cref{app:numerics}).
+
+Two illustrative conveyors are compared in \cref{fig:validation}: conveyor~A, with a
+head drive, the take-up \qty{60}{\metre} downstream of it and an inclined carry strand
+with a break of grade, and conveyor~B, with the drive on the return strand
+\qty{1200}{\metre} from the head and the take-up \qty{300}{\metre} downstream of the
+drive. The static tension of the lumped model, with gravity and counterweight as
+loads, coincides with the closed form~\eqref{eq:static} to round-off. During the
+start, the dynamic tension over the whole loop and time span and the take-up travel
+differ by at most \num{\NumLumpedTensionErr} and \num{\NumLumpedTravelErr} of their
+maxima for $N=\NumLumpedElements$, and the first five natural frequencies by
+\num{\NumLumpedFreqErr}. The differences decrease as $N^{-2}$, the order of the lumped
+discretisation (observed order \NumLumpedOrder), down to a round-off floor of about
+$10^{-6}$ set by absolute displacements of hundreds of metres. The same agreement is
+obtained with the carriage hung on four strands and with a step onset of the
+resistances. The verification covers the interface conditions, the characteristic
+equation, the modal expansion with damping and the quasi-static split of
+\cref{app:numerics}; it does not cover the idealisation itself, which is the object of
+the next subsection.
+% tests: test_lumped.py (static state, rigid motion, frequencies, starts, step onset),
+%        test_strands.py (n = 4 written directly)
 
 \subsection{Consistency with field records}\label{sec:fieldchecks}
-% Harrison (1983, 1985b): slow period 25 s, compatible only with a nearly
-% free take-up and a speed-rigid drive (consistency check, not a proof).
-% Kinematic checks: nordell1984 (wave arrival), Muja (cdi1998: 3.1 s over
-% 6.1 km). Declare what the model does not reproduce (notes 4.10).
-\TODO{Consistency checks.}
+
+\paragraph{Wave speeds.} Assumption (A2) sets the wave speed of each strand from the
+axial stiffness and the inertial line density. Two published records check this
+input. \Citet{nordell1984} recorded the stop of a loaded \qty{2.5}{\kilo\metre}
+conveyor with the drive on the return strand and the take-up just downstream of it.
+With the wave speeds they computed from the belt data,
+\qty{\NumNCSpeedReturn}{\metre\per\second} on the empty return strand and
+\qty{\NumNCSpeedCarry}{\metre\per\second} on the loaded carry strand, the two-speed
+kinematics of the loop places the arrival of the front on the carry strand above the
+drive at \qty{\NumNCArrivalB}{\second} and at the take-up at \qty{\NumNCArrivalC}{\second},
+against \qty{\NumNCArrivalBMeas}{\second} and \qty{\NumNCArrivalCMeas}{\second} measured.
+On the \qty{\NumMujaLength}{\kilo\metre} Muja conveyor \citep{cdi1998}, a front crossed
+the empty belt in \qty{\NumMujaTime}{\second} during an emergency stop,
+\qty{\NumMujaSpeedMeas}{\metre\per\second}, against \qty{\NumMujaSpeedCalc}{\metre\per\second}
+computed from the belt modulus and density. Both comparisons were made by the authors
+themselves; they are recalled because they support wave speeds computed from the belt
+data, which (A2) uses, and the two-speed kinematics of the loop. They do not test the
+take-up model, and both records are stops, outside the start-up analysis.
+
+\paragraph{The take-up as a free end.} \Citet{harrison1983,harrison1985b} recorded the
+starts of an empty \qty{5.1}{\kilo\metre} steel-cord conveyor with a
+\qty{20}{\tonne} gravity take-up a few tens of metres downstream of the head drive,
+hung on four belt strands \citep[Fig.~2a]{harrison1985b}, and three wound-rotor motors
+started by torque steps. The model is set up from these records alone: the loop
+transit from the period of the elastic waves that Harrison reports, \qty{7}{\second}
+for $2L/c$ with $c=\qty{1450}{\metre\per\second}$ \citep{harrison1983}, and the
+wave-speed ratio from the times between three sensors on the carry strand near the
+head, at the tail and on the return strand, $\gamma=\NumHarrisonGammaMeas$
+(\NumHarrisonGammaMeasMin--\NumHarrisonGammaMeasMax) \citep[Fig.~4a]{harrison1985b};
+the take-up mass gives $\beta=\NumHarrisonBetaMin$--$\NumHarrisonBetaMax$
+with~\eqref{eq:nmap}, for the two line densities compatible with Harrison's data. The take-up is
+thus deep in the free-end regime of Section~\ref{sec:freeend}.
+
+The start of the original design \citep[Fig.~2b]{harrison1985b} shows the free end
+directly: the carry strand moved at once, whereas the return belt downstream of the
+take-up stayed at rest and surged away \qty{\NumHarrisonStillMeas}{\second} later. In the
+model the take-up transmits only $|\chi|=\NumHarrisonTransmissionMin$--$\NumHarrisonTransmissionMax$
+of a wave with the period of the elastic waves, Eq.~\eqref{eq:transmission}, and the
+return belt downstream of it stays below \qty{\NumHarrisonStillSpeed}{\metre\per\second}
+until the front arrives the other way round the loop, after \qty{\NumHarrisonTransit}{\second},
+the loop transit. With the first speed plateau of the record (about
+\qty{1.6}{\metre\per\second}, reached in about \qty{4}{\second}, in our reading of the
+same figure) the carriage has travelled \qty{\NumHarrisonCarriageModel}{\metre} at that
+time, against about \qty{\NumHarrisonCarriageMeas}{\metre} in the record of
+\citet[Fig.~5e]{harrison1983}. The model stores at most \qty{\NumHarrisonStoredMax}{\metre}
+of belt in the loop, whereas \citet{harrison1985b} reports that the loop released
+\qty{\NumHarrisonStoredMeas}{\metre}, so the agreement on the stored belt is in order of
+magnitude only. In the modified design the take-up bore on a hydraulic buffer, and the
+carry and return belts then moved away together \citep[Fig.~3b]{harrison1985b}; the
+start torque was also reduced. This is consistent with the take-up impedance:
+replacing the inertia $\ii\Mtu_{\mathrm{eq}}\omega$ in~\eqref{eq:transmission} by any
+belt-side impedance $z_t$ of the take-up gives
+\begin{equation}\label{eq:transmission_z}
+  \chi=\frac{z_t}{z_t+2Z_r},
+\end{equation}
+so a buffer, or any device that resists the motion of the carriage, transmits part of
+every front at once, and a stiff one transmits most of it. Equation~\eqref{eq:transmission_z}
+is checked against a time-domain chain model of a massless take-up held by a dashpot.
+% tests: test_harrison.py::test_dashpot_takeup_transmits_a_fixed_fraction_of_a_front,
+%        ::test_transmission_impedance_reduces_to_mass
+
+\paragraph{The slow take-up period.} After the start, the take-up of the original
+design oscillated with a period of \qty{25}{\second} \citep{harrison1983}; our read-out
+of the measured trace, his Fig.~5e, after removing the elastic ripple with a moving
+average, gives \qty{\NumHarrisonSlowMeas}{\second}. The model gives
+\qty{\NumHarrisonSlowModel}{\second} (\NumHarrisonSlowModelMin--\qty{\NumHarrisonSlowModelMax}{\second}
+over the measured range of $\gamma$), \qty{\NumHarrisonSlowExcess}{\percent} longer. This
+period is the quarter-wave period of strand~B with the take-up as a free end
+(Section~\ref{sec:freeend}) and is almost independent of the take-up mass. An
+embedded-mass model of the same conveyor gives at most \qty{\NumHarrisonEmbeddedMax}{\second}
+for any take-up position up to $\xi=0.2$, so the record is compatible only with a
+take-up that acts as a nearly free end. The remaining difference, and the elastic
+ripple that the record shows after the start, \qty{\NumHarrisonWaveMeas}{\second} in
+our read-out of \citet[Fig.~5c]{harrison1983},
+which the model with prescribed velocity does not have (its second period is
+\NumHarrisonSecondMin--\qty{\NumHarrisonSecondMax}{\second}), point to the drive, which
+was not speed-controlled. Equation~\eqref{eq:chareq_torque} tests this with the reduced
+drive mass $m_d$ and the slip dashpot $\hat c$ of Section~\ref{sec:torque}, neither of
+which is published:
+\begin{itemize}
+  \item A free drive ($m_d\to0$, $\hat c=0$) gives periods of
+  \qty{\NumHarrisonFreeDriveSlow}{\second} and \qty{\NumHarrisonFreeDriveSecond}{\second}:
+  with the take-up next to the drive the loop vibrates as a free--free string of length
+  $2L$, and its second period is the loop transit, close to the measured ripple.
+  \item Drive inertia alone reaches the measured slow period with
+  $m_d=\NumHarrisonDriveMassMeas$, a reduced drive mass \NumHarrisonDriveMassBeltRatio\
+  times that of the whole belt, and then gives \qty{\NumHarrisonDriveMassSecond}{\second}
+  for the second period.
+  \item A linearised slip characteristic, $c_d=F/(sV)$ with the running force
+  $F=\qty{\NumHarrisonRunForce}{\kilo\newton}$ (\qty{900}{\kilo\watt} at
+  \qty{3.7}{\metre\per\second}), gives $\hat c\approx\NumHarrisonDashpotNatural$ for a
+  slip of \qty{\NumHarrisonSlipNatural}{\percent}, typical of a motor with the rotor
+  short-circuited. The slow period then changes by less than
+  \qty{\NumHarrisonDashpotNaturalChange}{\percent} for
+  $\NumHarrisonDriveMassMin\le m_d\le\NumHarrisonDriveMassMax$: the drive acts as a
+  prescribed velocity. With rotor resistance in circuit, slips of
+  \NumHarrisonSlipSoftMin--\qty{\NumHarrisonSlipSoftMax}{\percent} give
+  $\hat c\approx\NumHarrisonDashpotSoftMin$--$\NumHarrisonDashpotSoftMax$, and with
+  $m_d=1$--$3$ the slow period falls to
+  \NumHarrisonSoftSlowMin--\qty{\NumHarrisonSoftSlowMax}{\second}, with damping ratios
+  of \NumHarrisonSoftZetaMin--\NumHarrisonSoftZetaMax\ and a second period of
+  \NumHarrisonSoftSecondMin--\qty{\NumHarrisonSoftSecondMax}{\second}.
+\end{itemize}
+No single linear drive reproduces both features: the ripple requires a nearly free
+drive, and the slow period a soft slip characteristic or a heavy drive. A drive whose
+characteristic changes during the start would produce both, and the wound-rotor motors
+of this conveyor had their rotor resistance switched out in steps as the speed rose
+\citep[Sect.~3]{harrison1985b}. Without the motor data the drive cannot be fitted, and
+the comparison remains a consistency check: the record confirms the take-up as a free
+end, locates the remaining differences in the drive, and does not test the value of
+$\beta$.
+% notes 4.10, 4.13 and 4.31; validation/harrison_case.py (summary, drive_check)
 
 \subsection{Cross-comparison with other models}\label{sec:crosscheck}
-% lodewijks1996 ch. 8 (peaks agree, dynamics do not; notes 4.11) and
-% song2012 (notes 4.12).
-\TODO{Cross-comparison.}
+
+\paragraph{Lodewijks (1996).} \Citet[Ch.~8]{lodewijks1996} simulated five
+speed-controlled starts of \qty{30}{\second} of a loaded, horizontal
+\qty{1}{\kilo\metre} conveyor with a finite-element model that includes non-linear
+sag, speed-dependent resistances and the inertia of the pulleys; the take-up is on the
+return strand just downstream of the head drive \citep[Fig.~8.1]{lodewijks1996}. The
+present model is set up from his belt, idler and material data and his take-up force,
+and it reproduces his running tension at the drive entry. The peak belt strains of his
+Table~8.7 are reproduced by the undamped model with differences between
+\qty{\NumLodewijksPeakDevMin}{\percent} and \qty{\NumLodewijksPeakDevMax}{\percent}. In both models the two
+smooth profiles give the largest peaks and the linear ramp with a rest the smallest;
+the plain and offset linear ramps differ by \qty{\NumLodewijksLinearGap}{\percent} in
+the model and \qty{\NumLodewijksLinearGapHis}{\percent} in his results, in reverse order.
+The dynamics after the start do not agree: his oscillation has a period of
+\qty{\NumLodewijksPeriodMeas}{\second}, ours \qty{\NumLodewijksPeriodModel}{\second}.
+Within the present model, a period near his would need an empty carry strand
+(\qty{\NumLodewijksPeriodEmpty}{\second}) or a drive without speed control
+(\qty{\NumLodewijksPeriodOwnDrive}{\second} with his own drive inertia,
+$m_d=\NumLodewijksOwnDriveMass$), both at odds with his loaded belt and his speed
+control. His sweep over the start duration does not agree with ours either; there his
+take-up travel for a \qty{50}{\second} start, \qty{\NumLodewijksTravelSweepHis}{\metre}
+\citep[Fig.~8.46]{lodewijks1996}, is smaller than the mean travel after his
+\qty{30}{\second} start, \qty{\NumLodewijksTravelMeanHis}{\metre} (our fit of his
+Fig.~8.42), whereas the running belt should reach the same travel after any start
+(\qty{\NumLodewijksTravelMeanModel}{\metre} in our model). Finally, his finite-element
+model merges the drive and the take-up into a single moving pulley
+\citep[Eq.~7.55]{lodewijks1996}, a different system from the conveyor of his
+Fig.~8.1. The agreement of the peaks is therefore a cross-check between models of
+different scope, not a validation of either.
+% notes 4.11; validation/lodewijks_case.py, data/lodewijks_case.json
+
+\paragraph{Song et al.\ (2012).} The two-strand continuum of \citet{song2012} is the
+limit $\beta\to0$ of the present model with the take-up moved to the tail, where
+Eq.~\eqref{eq:chareq} splits into the quarter-wave families $\cos\Omega=0$ of the return
+strand and $\cos\gamma\Omega=0$ of the carry strand (Section~\ref{sec:freeend}). With
+their data the present model gives their carry wave speed,
+\qty{\NumSongCcModel}{\metre\per\second}, and a return wave speed of
+\qty{\NumSongCrModel}{\metre\per\second} against the \qty{\NumSongCrPub}{\metre\per\second}
+they print; their resistance law gives a running drive force of
+\qty{\NumSongFRunModel}{\kilo\newton}, within \qty{\NumSongFRunDiff}{\percent} of their
+\qty{\NumSongFRunPub}{\kilo\newton}. Their example is not used quantitatively beyond
+this point, because it is not internally consistent: the take-up tension of
+\qty{\NumSongTtPub}{\kilo\newton} that both of their methods give cannot be held by
+their \qty{4500}{\kilo\gram} counterweight (\qty{\NumSongTtMass}{\kilo\newton} on two
+strands), and their own running tensions imply a take-up travel of
+\qty{\NumSongTravelTensions}{\metre}, not the \qty{\NumSongTravelPub}{\metre} they report.
+Their geometry is used in Section~\ref{sec:frequencies}, with the take-up returned to the
+head drive of their Fig.~1.
+% notes 4.12; validation/song_case.py; tests/test_song.py
+
+In summary, the closed-form solution is verified against an independent numerical
+model to the round-off of that model. The field records confirm the two-speed
+kinematics of the loop and the take-up as a free end; the only start record with a
+measured take-up was made with a drive that was not speed-controlled, and its remaining
+differences are traced to that drive. None of the records tests the take-up mass,
+which in long conveyors has almost no effect (Section~\ref{sec:betaregime}).

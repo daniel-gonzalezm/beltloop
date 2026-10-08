@@ -84,3 +84,44 @@ def test_harrison_phase37_double_loop_regression():
         cr = L * (1 + g) / ttr
         Om = natural_frequencies(Loop.from_positions(0.0, 0.005, g), 4 * M / (n ** 2 * mur * L), 1)[0]
         assert 2 * np.pi * L / (cr * Om) == pytest.approx(T, abs=0.01)
+
+
+# ------------------------------------------------------------------ step 6.4
+from beltloop import takeup_transmission_impedance  # noqa: E402
+
+
+@pytest.mark.parametrize("beta,Om", [(0.05, np.pi), (0.1, 0.8), (2.0, 5.0)])
+def test_transmission_impedance_reduces_to_mass(beta, Om):
+    """chi = z/(z + 2) with the impedance of the take-up mass, z = i beta Om, is the
+    coefficient obtained from J (Eq. transmission of the manuscript)."""
+    assert takeup_transmission_impedance(1j * beta * Om) == pytest.approx(takeup_transmission(beta, Om))
+
+
+@pytest.mark.parametrize("z", [0.5, 1.0, 4.0])
+def test_dashpot_takeup_transmits_a_fixed_fraction_of_a_front(z):
+    """Independent time-domain check of chi = z/(z + 2) for a massless take-up held by a
+    dashpot (Harrison 1985b, modified design): a chain of lumped masses (uniform belt, Z = 1)
+    with the 2:1 take-up element between two nodes; a velocity step enters at the left end.
+    The belt speed behind the take-up, once the front has passed, is chi times the incident
+    speed, with no delay: the dashpot transmits part of the front at once."""
+    from scipy.integrate import solve_ivp
+    h, n1, n2 = 0.005, 200, 200                 # element length; nodes left / right of the pulley
+    N = n1 + n2                                  # free nodes: 1..n1 (left), n1+1..N (right)
+    k, m = 1.0 / h, h                            # EA = mu = c = 1
+
+    def rhs(t, s):
+        u, v, y = s[:N], s[N:2 * N], s[2 * N]
+        uu = np.r_[t, u, 0.0]                    # left end moves at unit speed; far end fixed
+        el = np.diff(uu)                         # element elongations
+        el[n1] += 2 * y                          # take-up element: u_R - u_L + 2y
+        T = k * el
+        acc = (T[1:] - T[:-1]) / m
+        ydot = -2 * T[n1] / z                    # massless pulley: c_h ydot = -2 T (Z = 1)
+        return np.r_[v, acc, ydot]
+
+    t_end = n1 * h + 0.4
+    sol = solve_ivp(rhs, (0, t_end), np.zeros(2 * N + 1), method="LSODA", rtol=1e-8, atol=1e-10,
+                    t_eval=np.linspace(t_end - 0.1, t_end, 41), max_step=h / 2)
+    j = n1 + 40                                  # 0.2 behind the pulley: the front passed at ~0.2
+    v_behind = sol.y[N + j - 1].mean()
+    assert v_behind == pytest.approx(z / (z + 2), abs=0.01)
