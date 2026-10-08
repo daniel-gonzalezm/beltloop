@@ -1,41 +1,151 @@
 % =====================================================================
 % Section 1 -- Introduction. Written in step 6.7 (after the results).
-% Inputs: claims of section 3 of the notes; notes 4.9 points 8 and 12;
-% reading of Pang et al. (2015) in step 6.2.
+% Inputs: claims of section 3 of the state; notes 4.9 points 8, 12 and 13;
+% reading of Pang et al. (2015) in step 6.2. Quotations and statements
+% re-checked in the PDFs in step 6.7: harrison1983 (p. 6, take-up at the
+% tail), harrison1985b (Sect. 3: return belt still until the stress has
+% gone round the belt; take-up at the tail or at the lowest tension),
+% nordell1997zisco (Sect. 3.4: take-up after the tail drive, near the
+% horizontal curve), cornet2002 (p. 2), lodewijks2013 (p. 2).
+% cdi2002 and kruse2019overland as read in phases 1 and 4.2 (notes).
 % Tone (phase 4.3): not "we show for the first time that position
 % matters" but "we quantify in closed, dimensionless form an effect that
 % practice knows from isolated cases".
+% [HB1989] marks the sentences to revisit when Harrison and Barfoot (1989),
+% "Modelling the effect of take-up location on conveyor belt performance",
+% arrives (NLA Copies Direct, ordered 2026-10-09; not cited until read).
 % =====================================================================
 \section{Introduction}\label{sec:intro}
 
-% (1) Problem and practice. Start-up and stop transients in long belts;
-% the gravity take-up keeps the slack-side tension; its location is a
-% design choice made from topography and "belt dynamic behaviour".
-% Cite: harrison1983, cornet2002, nordell1997zisco, lodewijks2013
-% (take-up next to the drive keeps the exit tension constant), cdi2002.
-\TODO{Problem and practice.}
+Long belt conveyors are elastic systems. When the drive starts or stops a conveyor, the
+change of speed travels along the belt as a stress wave, at \qtyrange{1.5}{2}{\kilo\metre\per\second} on an empty steel-cord belt and much more slowly on a
+loaded carry strand, so that in a conveyor several kilometres long the belt far from the
+drive starts moving seconds after the belt at the drive
+\citep{harrison1983,nordell1984,lodewijks2002}. The transient tensions that result govern
+the belt rating, the travel of the take-up and the grip of the belt on the drive pulleys,
+and dynamic analysis has become part of the design of long overland conveyors
+\citep{lodewijks2002,nordell1997zisco}. Most of these conveyors are tensioned by a gravity
+take-up: a counterweight that hangs from a carriage whose pulley is wrapped by the return
+belt. It holds the slack-side tension in running and stores the belt that the loop releases
+or takes up as its stretch changes.
 
-% (2) Literature. Two wave speeds (nordell1984, lodewijks2002, cdi1998);
-% take-up as an embedded mass (harrison1983 Fig. 2, sakharwade2019);
-% song2012 (2:1 written, mass neglected, take-up moved to the tail);
-% pang2015 and li2018 (single span, end mass that shares the rigid-body
-% acceleration of the belt; li2018 applies it to a tail take-up);
-% gao2026 (mass and pre-tension confused); discrete models with 2:1
-% kinematics (lodewijks1996, kulinowski2014, song2003).
-\TODO{Literature.}
+Where to place the take-up is a design decision, and practice takes it partly on dynamic
+grounds. The usual position, right after a head drive, keeps the tension of the belt leaving
+the drive constant and minimises the chance of slip \citep{lodewijks2013}. On a
+\qty{5.1}{\kilo\metre} conveyor, \citet{harrison1983} found the slow oscillation of the belt
+speed after a start to be synchronous with the motion of the take-up and expected it to be
+weaker with the take-up at the tail; he later listed a take-up at the tail, or at the point
+of lowest tension, among the remedies for the surge of the return belt during start-up
+\citep{harrison1985b}. On the \qty{15.6}{\kilo\metre} ZISCO conveyor the take-up was placed
+after the tail drive, close to a horizontal curve, because a take-up at the head station
+would have produced much larger tension fluctuations in the curve \citep{nordell1997zisco};
+a \qty{21}{\kilo\metre} conveyor with head and tail drives has its gravity take-up at the
+tail \citep{kruse2019overland}; and a simulated drift stop of a \qty{1}{\kilo\metre}
+incline left a minimum tension of \qty{3.5}{\kilo\newton} with the take-up at the head
+against \qty{20.4}{\kilo\newton} at the tail \citep{cdi2002}. In the words of
+\citet{cornet2002}, the location of the take-up is dictated by the terrain and ``by the belt
+dynamic behavior''. In each of these cases the effect of the position is established for
+one conveyor, by simulation or by experience; a general, quantitative description of how
+the take-up position shapes the longitudinal dynamics is not available.
+% [HB1989] The last sentence depends on Harrison and Barfoot (1989).
+\NOTE{Harrison and Barfoot (1989), on the effect of take-up location, ordered on
+2026-10-09: read it and revise this paragraph and the gap paragraph before submission.}
 
-% (3) Gap: no closed-form treatment of the loop with the take-up as a
-% 2:1 pulley at an arbitrary position; the literature does not use the
-% free end, and the result explains three loose observations
-% (Harrison's period independent of the mass; spectrum change when the
-% take-up is moved to the tail; return strand at rest for one wave
-% transit).
-\TODO{Gap.}
+The ingredients of such a description are known separately. The two wave speeds of the
+return and carry strands, and their dependence on how firmly the bulk material is coupled
+to the belt, are well established \citep{nordell1984,lodewijks2002,cdi1998}. The take-up
+is represented in three ways. Discrete and finite-element models of the whole loop include
+the kinematics of the take-up pulley, which stores twice its own travel of belt
+\citep{lodewijks1996,kulinowski2014,song2003}; they answer the question for a given layout,
+one simulation at a time, and in \citet{lodewijks1996} the take-up is merged with the drive
+into a single moving pulley. Equivalent models replace the take-up by a mass embedded in
+the belt \citep[Fig.~2]{harrison1983} or shared between the belt elements next to it
+\citep{sakharwade2019}, which gives the wrong limits for a light and for a heavy take-up
+(Section~\ref{sec:interfaces}). Continuum models, which could give the dependence in closed
+form, have so far set the take-up aside. \Citet{song2012} wrote the two-strand continuum
+with the take-up condition, but neglected the take-up inertia and moved the take-up from the
+head drive, where their conveyor has it, to the tail, where the two strands separate into
+two quarter-wave problems. \Citet{pang2015} solved a single viscoelastic span clamped at one end
+and carrying a concentrated mass at the other, a mass that shares the rigid-body
+acceleration of the belt; \citet{li2018} applied the same formulation to a tail take-up,
+with half of the take-up mass at the end of each strand. \Citet{ellis1987} replaced the
+counterweight by a constant tension at the tail of the carry strand and left out the return
+strand, and \citet{pihnastyi2020} prescribe the tensions at both ends of the carry strand.
+In a recent discrete study the counterweight mass was varied together with the static
+tension it produces \citep{gao2026}, so that the inertia of the take-up and the pre-tension
+of the belt changed at once.
 
-% (4) "Long conveyor" in the dynamic sense: take-up tension small against
-% the weight of the return strand (notes 4.9 point 12; 4.26).
-% Cite suchorab2025longdistance (no strict definition in the literature).
-\TODO{Long conveyor in the dynamic sense.}
+The common element is elementary in wave mechanics, and it is the starting point of this
+paper: a gravity take-up whose inertial impedance is small compared with that of the belt
+is a free end. It holds a constant force, so a stretching front that reaches it is
+reflected as at a free end and almost nothing is transmitted to the belt beyond it. The
+loop then splits at the take-up into two strands, each fixed at the drive and free at the
+take-up, whose lengths are set by the take-up position. \Citet{harrison1985b} described
+the consequence in his records, in which the return belt beyond the take-up did not move
+until the stress had travelled round the whole belt, but none of the models above uses it:
+they move the take-up to the tail, embed it, merge it with the drive or attach its mass to
+the belt. Built into a closed-form characteristic equation of the loop, the free end
+accounts for three observations that have so far been unrelated. It explains why the slow
+take-up oscillation that Harrison measured, which he attributed to the mass of the
+counterweight oscillating on the stiffness of the belt, hardly depends on that mass; why moving the
+take-up from the head to the tail is not a neutral simplification, since it changes the
+fundamental period of the conveyor of \citet{song2012} from
+\qty{\NumSongPeriodHeadLight}{\second} to \qty{\NumSongPeriodTailLight}{\second}; and why
+the return belt downstream of the take-up stays at rest for one wave transit. The aim is
+therefore not to show that the take-up position matters, which practice knows, but to
+quantify its effect in closed, dimensionless form.
+% [HB1989] The aim sentence fixes the tone of claim 2 (phase 4.3); revisit with
+% Harrison and Barfoot (1989).
 
-% (5) Contributions and outline.
-\TODO{Contributions and outline of the paper.}
+The free end belongs to long conveyors, and the analysis gives the term a definition.
+``Long-distance conveyor'' has no strict definition in the technical literature
+\citep{suchorab2025longdistance}. A gravity take-up holds its tension with its own weight,
+so its mass is tied to the tension it provides, and the ratio of the take-up mass to the
+mass of the return strand equals, up to a factor set by the rigging, the ratio of the take-up
+tension to the weight of the return strand. Since the take-up tension is sized by requirements that grow
+with the length, this ratio does not fall as the conveyor gets longer. We call a conveyor
+long, for its longitudinal dynamics, when the take-up tension is small against the weight
+of the return strand, so that the take-up acts as a free end and its mass enters only as a
+correction (Section~\ref{sec:betaregime}).
+
+The contributions of the paper are the following.
+\begin{enumerate}
+  \item A closed-form characteristic equation for the full loop, with two wave speeds, a
+  gravity take-up anywhere on the return strand modelled as a pulley with mass and the drive
+  anywhere on the loop (Section~\ref{sec:solution}). Its natural frequencies interlace with
+  those of the two strands with the take-up free, and in the limit of a light take-up the
+  loop splits into these two fixed--free strands, for free and forced vibration alike.
+  \item A closed-form correction for the take-up mass, which acts as a tip mass of one
+  quarter of its value on each strand, and an explicit threshold beyond which the mass
+  matters (Sections~\ref{sec:masscorrection} and~\ref{sec:betaregime}). With the mass ratio
+  written in terms of the take-up tension, the take-up mass lengthens the fundamental period
+  of every conveyor longer than \qty{1}{\kilo\metre} in the literature by at most
+  \qty{\NumLongShiftMax}{\percent}, and by at most \qty{\NumLongShiftMaxLow}{\percent} over
+  the coupling range of each material. For a counterweight hung directly near the drive and a
+  carry strand at least 1.4 times slower than the return strand, the effect stays below
+  \qty{5}{\percent} as long as the take-up tension is below a quarter of the weight of the
+  return strand.
+  \item The fundamental mode belongs to the strand that contains the carry strand, with
+  closed-form bounds on its period (Section~\ref{sec:frequencies}). Moving the take-up from
+  the head to the tail shortens the fundamental period by a factor of up to
+  \NumHeadTailRatioGammaOne\ for equal wave speeds and \NumHeadTailRatioGammaTwo\ for a
+  carry strand twice as slow, and a drive on the return strand lengthens it by up to
+  \qty{\NumIntermediateOverMax}{\percent} beyond four transits of that strand for wave-speed
+  ratios up to 3.
+  \item A universal start-up curve of the fixed--free strand, from which the peak tensions at
+  both faces of the drive and the take-up travel follow in closed form, a start-time rule
+  in units of the fundamental period, and explicit conditions on slack, take-up motion and
+  drive grip (Sections~\ref{sec:startup} and~\ref{sec:validity}).
+  \item Verification against an independent lumped-mass model, consistency checks against
+  the field records that bear on the take-up, and an application to three conveyors from the
+  literature (Sections~\ref{sec:validation} and~\ref{sec:application}), in which the
+  take-up position turns out to act mainly through the static tensions, and the grip of a
+  single drive pulley, rather than the dynamic amplification, fixes the start time.
+\end{enumerate}
+
+Section~\ref{sec:model} states the model and Section~\ref{sec:solution} its closed-form
+solution. Section~\ref{sec:validation} verifies and checks it, Section~\ref{sec:results}
+gives the results for natural frequencies, take-up mass, start-up and validity, and
+Section~\ref{sec:application} applies them to three conveyors.
+Section~\ref{sec:discussion} discusses the relation to practice and the limitations, and
+Section~\ref{sec:conclusions} concludes.

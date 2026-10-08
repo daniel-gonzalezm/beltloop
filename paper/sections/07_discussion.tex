@@ -1,26 +1,146 @@
 % =====================================================================
-% Section 7 -- Discussion. Step 6.7.
-% Inputs: 4.9 points 6, 8, 13 and 15; notes 4.27.
+% Section 7 -- Discussion. Written in step 6.7.
+% Inputs: 4.9 points 6, 8, 10, 13 and 15; notes 4.27, 4.31 (correction:
+% the take-up records that damp out in one or two cycles are those of
+% kulinowski2013, Fig. 9, not harrison1983, whose Fig. 5e shows several
+% slow cycles), 4.33 (remissions to Sections 5.3 and 6).
+% Statements re-checked in the PDFs in step 6.7: nordell1984 (retarder of
+% 6000 lb, 2720 kgf, in both directions), kulinowski2013 (slip on drum AB in
+% all recorded starts; Fig. 9), kulinowski2021 (29-37 kN), kung2005henderson
+% (counterweight pulled against the mechanical stops; low-tension wave from
+% the take-up in stops without power; counterweight about 10 % over design),
+% zamorano1991 (counterweight travel larger than the available travel
+% damaged the tower), harrison1985b (buffer; take-up mass hit the
+% structure when stopping). poe2000sheave, surtees1995runback and song2003
+% as read in phases 3.7 and 4.4 (notes by source).
+% [HB1989] marks what to revisit with Harrison and Barfoot (1989).
 % =====================================================================
 \section{Discussion}\label{sec:discussion}
 
 \subsection{Relation to practice and to previous models}\label{sec:relation}
-% Li and Pang (2018) with care (4.9 point 13): with a uniform loop and a
-% tail take-up, the start excites only the pi/2 mode that leaves the
-% take-up at rest; their root does not participate. Not an error of
-% theirs: in pang2015/li2018 the end mass shares the rigid acceleration of
-% the belt. gao2026 as mass/pre-tension confusion. harrison1983 and
-% Harrison and Barfoot (1989) if obtained before this step.
-\TODO{Relation to practice and to earlier models.}
+
+\paragraph{The practice of take-up placement.} The results give a mechanical content to
+the reasons of Section~\ref{sec:intro}. A take-up right after the drive keeps the tension
+of the belt leaving the drive constant \citep{lodewijks2013} because strand~A, the only
+belt between the drive exit and the free end, is then short: its dynamic tension during a
+start is $D(t_a/\tper{A1})\,m_Aa_m$, with $m_A=\mu_r\xi L$, and vanishes as the take-up
+approaches the drive (Eq.~\eqref{eq:startup_formulas}). Harrison's remedy of a take-up at
+the tail \citep{harrison1985b} is consistent with the strand picture: the whole return
+strand then becomes strand~A and is set in motion by the drive exit from the start, instead
+of being reached by the stretching front only after it has gone round the carry strand and
+the tail. The fundamental period also falls when the take-up moves to the tail, by up to
+a factor \NumHeadTailRatioGammaOne\ for equal wave speeds; in the conveyors of
+Section~\ref{sec:application}, whose carry strands are two to three times slower than their
+return strands, it falls by \NumLoPeriodChange\ and \qty{\NumSMPeriodChange}{\percent}
+between the real position and the tail. In all three conveyors, however, the take-up position
+acted mainly through the statics, through the resistance of the return run between the drive
+and the take-up and through the weight of the return strand on a slope, and in two of the
+three the real position was at or near the best one. Moving the
+take-up is therefore a lever on the start time, which scales with $\tper{1}$, more than on
+the peak tensions, which the start time controls (Section~\ref{sec:startup}). The other
+reasons quoted in Section~\ref{sec:intro} lie outside the model: the horizontal curve of
+ZISCO \citep{nordell1997zisco}, the second drive of \citet{kruse2019overland} and the drift
+stop of \citet{cdi2002}, in which the drive is not speed-controlled.
+% [HB1989] Add the relation to Harrison and Barfoot (1989) here once read.
+
+\paragraph{Previous continuum models.} The decoupling that \citet{song2012} obtained by
+moving the take-up to the tail is the free end at one particular position; it holds at any
+position, but the two strands are then the ones that the take-up position defines, and with
+the take-up at the head, where their conveyor has it, the fundamental period is
+\qty{\NumSongPeriodHeadLight}{\second} rather than \qty{\NumSongPeriodTailLight}{\second}.
+The single-span formulation of \citet{pang2015} and \citet{li2018} is a different physical
+model rather than a less accurate one. Their end mass moves with the belt and therefore
+shares the rigid-body acceleration of the start, as a cage at the end of a hoisting rope
+would; a take-up pulley is not moved by a uniform translation of the belt along its path
+(Section~\ref{sec:increment}). The two models share the characteristic equation of a tail
+take-up on a uniform loop, but not the response: with a pulley, the start does not excite
+the family $\Omega\tan\Omega=2/\beta$ at all, and the response to the drive acceleration
+does not depend on the take-up mass (Section~\ref{sec:frequencies}). For a gravity take-up
+the mass ratio is tied to the take-up tension by Eq.~\eqref{eq:beta_tension}, so a change of
+counterweight at fixed rigging, as in the study of \citet{gao2026}, changes the pre-tension
+as well. In their conveyor the inertia alone would change the fundamental period by
+\qty{\NumShiftG}{\percent}; the effects they report most likely come from the change of
+static tension.
+
+\paragraph{Drive grip.} The grip condition of Section~\ref{sec:validity} is not new; what
+the universal curve adds is the start-up factor, which follows from the start time relative
+to the fundamental period instead of being fixed in advance. It matters most with a single
+drive pulley. Lodewijks' speed-controlled starts of \qty{30}{\second} would have needed the
+belt to grip with a tension ratio of \NumLoGripRatioMin\ to \NumLoGripRatioMax\ against a limit of
+\NumLoGripFactor, a slip that his model, built without slip at the drive pulleys, could not
+show (Section~\ref{sec:application}). Slip at the drive is observed in the field:
+\citet{kulinowski2013} report it on one drive drum during all the recorded starts of a mine
+conveyor with fluid couplings, and \citet{kulinowski2021} during a start with a non-typical
+sequence of motors. Checking grip through the start, and not only in steady running, is
+therefore part of choosing the start time.
+
+\paragraph{Devices that resist the carriage.} Equation~\eqref{eq:transmission_z} extends the
+free end to any take-up whose belt-side impedance $z_t$ is known: a front is transmitted with
+the fraction $z_t/(z_t+2Z_r)$. A hydraulic buffer under the carriage, as in the modified
+design of \citet{harrison1985b}, transmits part of every front at once; a rigid end stop
+($z_t\to\infty$) turns the take-up into a fixed pulley around which the belt runs, with the
+spectrum $(\mat B\mat A)_{12}=0$ of Section~\ref{sec:eigen}; and a motion retarder, such as
+the friction drag of 2720~kgf on the take-up of \citet{nordell1984}, keeps the carriage
+locked, and the take-up transparent, until the drag is exceeded. The free-end results of this
+paper therefore hold while the carriage moves freely; each of these devices moves the
+take-up towards the fixed pulley, and the impedance formula gives the size of the change for
+the linear ones.
 
 \subsection{Limitations}\label{sec:limitations}
-% Take-up friction and inertia of weights (kulinowski2021, poe2000sheave,
-% surtees1995runback, kung2005henderson); measured take-up records damp
-% in one or two cycles (kulinowski2013; NOT harrison1983: step 6.4 checked
-% his Fig. 5e, which shows several slow cycles, notes 4.31); drive not
-% prescribed in Harrison's stepped starts is already in Section 4.2; sag non-linearity
-% (ellis1987); tension-dependent modulus (zarzycki2023); drive not
-% prescribed (stepped starts); resistances appearing everywhere at once;
-% shortest start without belt resistance and motor torque; take-up travel
-% limits and damage (zamorano1991, song2003).
-\TODO{Limitations.}
+
+\paragraph{Take-up.} The take-up is assumed to move without friction, with the inertia of
+its pulley, ropes and sheaves neglected (A7). Measured carriage forces are less ideal. Sheave
+friction raised the force on a take-up carriage by up to \qty{26}{\percent} above the
+counterweight, with hysteresis between stretch and recovery \citep{poe2000sheave}, and the
+take-up force of a mine conveyor fluctuated between \num{29} and \qty{37}{\kilo\newton}
+because of the inertia of the weights and the efficiency of the tensioning system
+\citep{kulinowski2021}. Measured carriage displacements also die out within one or two cycles
+after a start \citep[Fig.~9]{kulinowski2013}, faster than the Kelvin--Voigt damping of the
+belt alone would allow, although the take-up record of \citet[Fig.~5e]{harrison1983} shows
+several slow cycles. Friction of this kind makes the take-up partly transparent while the
+carriage sticks (Section~\ref{sec:relation}) and damps the slow modes. It changes neither
+the peak tensions of a speed-controlled start, which depend little on damping
+(Section~\ref{sec:startup}), nor the free-end limit while the carriage slides, but it
+affects the oscillations after the start, for which the undamped rebound of
+Section~\ref{sec:validity} is an upper bound. The carriage travel is also limited. Field
+reports describe a counterweight jammed in its tower, which left an incline without
+slack-side tension and let it run back \citep{surtees1995runback},
+counterweights pulled against their end stops \citep{kung2005henderson,song2003} and a tower
+damaged during a full-load start because the counterweight travel exceeded the travel
+available \citep{zamorano1991}. The take-up travel formula of Eq.~\eqref{eq:startup_formulas}
+and the velocity bounds of Section~\ref{sec:validity} size the travel and speed that the
+tower must allow; contact with a stop lies outside the linear model.
+
+\paragraph{Belt.} The belt is linear and Kelvin--Voigt. At low tension the sag between
+idlers stiffens the belt and slows the waves \citep{ellis1987}; the slack condition of
+Section~\ref{sec:validity} marks where the total tension approaches zero and this assumption
+fails. The modulus of textile belts also depends on tension and temperature: it falls by
+\qtyrange{13}{30}{\percent} at low load and by \qtyrange{8}{18}{\percent} at
+\qty{50}{\degreeCelsius} \citep{zarzycki2023}, which changes the wave speeds and,
+through them, every period in seconds, but not the dimensionless results. Damping
+proportional to stiffness is a modelling convenience that keeps the modes uncoupled, not a
+measured law.
+
+\paragraph{Resistances and drive.} The motion resistances are a load that appears along the
+whole loop at once, with an onset that follows the drive speed. In a real start they appear
+behind the stretching front and depend on the local belt speed, so the step onset of
+Section~\ref{sec:startup} is an upper bound. The drive imposes the belt velocity, which
+represents speed-controlled drives (Section~\ref{sec:torque}). Drives without speed control,
+such as fluid couplings or wound-rotor motors started in steps, change the spectrum, as the
+case of Harrison's conveyor shows (Section~\ref{sec:fieldchecks}); stops without power,
+in which the drive is free and the take-up itself can launch a low-tension wave
+\citep{kung2005henderson}, are not analysed. The shortest admissible starts of
+Section~\ref{sec:application} do not check belt strength or motor torque.
+
+\paragraph{Layout.} The model has one drive station, homogeneous strands, a straight path in
+plan and the take-up on the return strand. Distributed drives, horizontal curves, loading
+over part of the carry strand and a take-up on the carry strand are outside it, although the
+transfer-matrix formulation extends to more segments and the code accepts a take-up at any
+point of the loop.
+
+\paragraph{Validation.} The verification is complete within the idealisation, but the field
+checks are partial (Section~\ref{sec:validation}). A start record that combines a free
+gravity take-up, a speed-controlled drive, a time history of the take-up and published
+conveyor parameters would test the model directly. Modern overland conveyors already record
+the take-up position in operation \citep{kruse2019overland}; publishing such a record with
+the conveyor data would close this gap.

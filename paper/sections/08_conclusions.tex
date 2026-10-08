@@ -1,6 +1,48 @@
 % =====================================================================
-% Section 8 -- Conclusions. Step 6.7.
+% Section 8 -- Conclusions. Written in step 6.7. One paragraph per
+% contribution, with the numbers that support it (macros only).
 % =====================================================================
 \section{Conclusions}\label{sec:conclusions}
-\TODO{Conclusions: one paragraph per contribution, with the numbers that
-support it (macros from paper\_numbers.tex).}
+
+The longitudinal dynamics of a belt conveyor loop with two wave speeds, a gravity take-up
+modelled as a pulley with mass at any point of the return strand and a drive anywhere on the
+loop reduce to a closed-form characteristic equation. Its natural frequencies interlace with
+those of the two strands into which the take-up divides the loop, each fixed at the drive and
+free at the take-up. In the limit of a light take-up the loop splits into these two strands,
+for free and forced vibration alike, and a stretching front is reflected at the take-up as
+at a free end.
+
+The take-up mass enters as a tip mass of one quarter of its value, with a closed-form
+correction and an explicit threshold. Because a gravity take-up holds its tension with its
+weight, the mass ratio follows from the take-up tension and does not decrease with the
+length of the conveyor. For the conveyors longer than \qty{1}{\kilo\metre} in the
+literature the take-up mass lengthens the fundamental period by at most
+\qty{\NumLongShiftMax}{\percent} (\qty{\NumLongShiftMaxLow}{\percent} over the coupling
+range of each material), and with a directly hung counterweight near the drive it stays
+below \qty{5}{\percent} while $\Tt\lesssim\Wr/4$. This defines a long conveyor in the
+dynamic sense; in shorter conveyors the full equation keeps the mass.
+
+The fundamental mode belongs to the strand that contains the carry strand, and its period
+lies between $4\gamma$ and four transits of that strand, in units of $L/c_r$, for a head
+drive. The take-up position sets the strand lengths: from the head to the tail the
+fundamental period falls by a factor of up to \NumHeadTailRatioGammaOne\ for equal wave
+speeds and \NumHeadTailRatioGammaTwo\ for a wave-speed ratio of two, and moving the take-up
+to the tail, as in earlier continuum models, is not a neutral simplification. A drive on the
+return strand lengthens the period beyond four transits, by up to
+\qty{\NumIntermediateOverMax}{\percent}.
+
+The start-up of each strand follows a universal curve of the fixed--free string in the ratio
+of start time to its fundamental period, with a maximum amplification of
+\NumStartPeakMax\ for the sine profile, so that the peak tensions at both faces of the drive
+and the take-up travel follow in closed form. Starts of two to three fundamental periods
+keep the inertial amplification at \NumStartDThree--\NumStartDTwo; the required start time
+scales with the fundamental period, and the drive grip, written with the same curve, becomes
+an explicit condition on the start.
+
+The solution agrees with an independent lumped-mass model to its round-off. Harrison's
+records are consistent with the take-up acting as a free end, and the remaining differences
+are traced to a drive without speed control. On three conveyors from the literature the
+take-up position acts mainly through the static tensions, and with a single drive pulley the
+grip, not the dynamic amplification, fixes the shortest start: \qty{\NumLoShortest}{\second},
+\NumLoShortestOverPeriod\ fundamental periods, for the conveyor of \citet{lodewijks1996},
+whose \qty{30}{\second} starts would have slipped.
