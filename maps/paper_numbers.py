@@ -167,6 +167,15 @@ def claims(N: Numbers):
     N.add("SuRatioLow", out[1][0], 2, "the same at alpha = 0.8")
     N.add("SuShift", out[0][1], 1, "lengthening of t_1 (%)")
     N.add("SuShiftLow", out[1][1], 1, "the same at alpha = 0.8 (%)")
+    # Step 6.5: the shortest conveyors of the Wheatley and Rubel plant (their Table 1; n = 2 and the
+    # take-up position of WR assumed), from maps/beta_min.py (phase 5.4)
+    import beta_min as bm
+    reg = {row[0]: row for row in bm.regime()}
+    for tag, name in (("WR-B", "WRB"), ("WR-C", "WRC")):
+        _, L, beta, _, ratio = reg[tag]
+        N.add(f"{name}Length", L, 0, f"Wheatley and Rubel, conveyor {tag[-1]}: length (m)")
+        N.add(f"{name}Beta", beta, 2)
+        N.add(f"{name}Ratio", ratio, 2, "beta / beta_5(B1)")
 
 
 def modal(N: Numbers):
@@ -184,6 +193,12 @@ def modal(N: Numbers):
     N.add("ModalParticipationMax", d["F1"].max(), 2)
     N.add("ModalHatched", 100 * np.mean(np.abs(d["dF1"]) > 0.05), 0,
           "share of the (xi, gamma) plane where beta = 0.1 changes it by > 5 % (%)")
+    N.add("ModalHatchedMedian", 100 * np.median(np.abs(d["dF1"])), 1,
+          "median change of the fundamental's participation with beta = 0.1 (%) (step 6.5)")
+    X, G = np.meshgrid(d["xis"], d["gams"])
+    F1f = (8 / np.pi ** 2) * (1 - X + G ** 2) / (1 + G ** 2)
+    N.add("ModalParticipationFormulaErr", 100 * (F1f / d["F1"] - 1).max(), 1,
+          "largest overestimate of F_1 ~ (8/pi^2)(1 - xi + gamma^2)/(1 + gamma^2) over the map (%) (step 6.5)")
     for g, name in ((1.0, "One"), (2.0, "Two")):
         T = [2 * np.pi / natural_frequencies(Loop.from_positions(0.0, x, g), 0.0, 1)[0]
              for x in (1e-6, 1 - 1e-6)]
@@ -197,6 +212,10 @@ def modal(N: Numbers):
     N.add("NCPeriod", nc[2], 1, "Nordell and Ciozda: t_1 (s), beta -> 0")
     N.add("NCPeriodHead", nc[3], 1, "the same strands with a head drive (s)")
     N.add("NCIncrease", 100 * (nc[2] / nc[3] - 1), 0, "(%)")
+    import intermediate_drive as idr
+    ncr = idr.nordell_ciozda()             # (label, t_1, 4 t_B, ratio, F_1, t_2) for both drives
+    N.add("NCFourTransit", ncr[0][2], 1, "Nordell and Ciozda: four transits of strand B (s) (step 6.5)")
+    N.add("NCRatioHead", ncr[1][3], 2, "the same strands with a head drive: tau_1/(4 tau_B)")
     su = d["sasol"]
     N.add("SuFourTransit", su[1], 3, "Surtees: tau_1/(4 tau_B), beta -> 0")
     N.add("SuFourTransitLow", su[2], 3, "the same at alpha = 0.8")
@@ -209,6 +228,11 @@ def modal(N: Numbers):
             Loop.from_positions(0.0, x, s.gamma()), beta, 1)[0]) for x in s.xis]
         N.add(f"SongPeriodHead{suffix}", T[0], 1, f"t_1 (s), {note}")
         N.add(f"SongPeriodTail{suffix}", T[1], 1)
+    four = 4 * s.L.value * (1 / s.c_r + 1 / (s.c_r / s.gamma()))
+    T0 = 2 * np.pi * s.L.value / (s.c_r * natural_frequencies(
+        Loop.from_positions(0.0, s.xis[0], s.gamma()), 0.0, 1)[0])
+    N.add("SongFourTransit", four, 1, "four transits of strand B, take-up at the head (s) (step 6.5)")
+    N.add("SongFourTransitRatio", T0 / four, 3, "t_1 / four transits, take-up at the head, beta -> 0")
 
 
 def beta_regime(N: Numbers):
@@ -234,6 +258,22 @@ def beta_regime(N: Numbers):
     tol = 0.05
     N.add("SinglePoleCoefficient", 4 * ((1 + tol) ** 2 - 1), 2, "beta_5 ~ 0.41 m~ (one pole)")
     N.add("BetaFiveAOneSlope", 2 * ((1 + tol) ** 2 - 1), 3, "beta_5(A1) ~ 0.205 xi (uniform strand)")
+
+    # Step 6.5: scope of A1 (fig_beta (c)): the case at the tail, and how slowly the published
+    # starts drive A1 even with the take-up at the tail (tau_A1 = 4 xi <= 4).
+    from cases import BY_TAG, CASES_FULL
+    from beltloop import Loop, natural_frequencies, poles
+    s = BY_TAG["S"]
+    lp = Loop.from_positions(0.0, s.xis[1], s.gamma())
+    pA = np.pi / (2 * s.xis[1])
+    k = int(np.argmin(abs(poles(lp, 8) - pA)))
+    N.add("StAOneShift", 100 * (pA / natural_frequencies(lp, s.beta, k + 1)[k] - 1), 1,
+          "St (take-up at the tail): lengthening of A1 by the take-up mass (%), as in fig_beta (c)")
+    ratios = [(c.tag, c.c_r * c.t_a.value / c.L.value / 4) for c in CASES_FULL
+              if c.t_a is not None and c.c_r is not None]
+    tag, r = min(ratios, key=lambda p: p[1])
+    N.add("AOneStartRatioMin", r, 1,
+          f"smallest tau_a / tau_A1 of the published starts with the take-up at the tail ({tag})")
 
 
 def startup(N: Numbers):

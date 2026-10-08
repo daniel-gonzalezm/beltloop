@@ -96,6 +96,16 @@ PINNED = {
     "SongTtMass": "22", "SongTravelTensions": "1.8", "LodewijksLinearGap": "1",
     "LodewijksLinearGapHis": "3", "LodewijksTravelMeanHis": "3.6", "LodewijksTravelMeanModel": "2.6",
     "LodewijksPeriodEmpty": "18.9", "LodewijksPeriodOwnDrive": "16.4", "SplitErr": "2e-5",
+    # Sections 5.1-5.2 (step 6.5): four transits of Song (head take-up) and of Nordell and
+    # Ciozda, participation formula (4.15), scope of A1 (4.25), shortest Wheatley-Rubel
+    # conveyors (4.26); claim 1 confirmed against an independent root of Eq. (chareq_head)
+    "SongFourTransit": "45.8", "SongFourTransitRatio": "0.873", "NCFourTransit": "23.4",
+    "NCRatioHead": "0.84", "NCRatio": "1.17", "ModalParticipationFormulaErr": "3.1",
+    "ModalParticipationMin": "0.41", "ModalParticipationMax": "0.81", "ModalHatched": "7",
+    "ModalHatchedMedian": "1.5", "HeadTailRatioGammaTwo": "1.28", "StAOneShift": "3.2",
+    "AOneStartRatioMin": "3.3", "WRCLength": "91", "WRCBeta": "2.13", "WRCRatio": "1.38",
+    "WRBRatio": "0.84", "BetaFiveMinGammaOneFour": "0.33", "BetaFiveBOneMedian": "0.76",
+    "LongBetaMax": "0.205", "WRRatioLowMax": "1.02", "SuRatio": "0.42",
 }
 
 

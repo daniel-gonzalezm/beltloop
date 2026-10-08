@@ -4,6 +4,8 @@ Notation (step 6.2): periods are t (s) and tau (units of L/c_r), as t_a and tau_
 tensions; the drive factor is e^{mu theta} (E is Young's modulus). See paper/sections/notation.tex.
 The numbers below are also written as LaTeX macros by maps/paper_numbers.py (paper/paper_numbers.tex);
 when a caption moves into the manuscript (steps 6.5-6.6) its numbers are taken from those macros.
+**Step 6.5:** the captions of fig_modal and fig_beta now live in paper/sections/05_results.tex
+(with macros); the drafts below are kept for reference only and are no longer the source.
 
 Figures are produced by `python maps/paper_figures.py`; the numbers below are the ones it prints
 and are pinned by `tests/test_figures.py` (and the phase 4-5 tests) where marked †.

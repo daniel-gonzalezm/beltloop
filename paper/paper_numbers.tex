@@ -58,6 +58,12 @@
 \newcommand{\NumSuRatioLow}{0.66}  % the same at alpha = 0.8
 \newcommand{\NumSuShift}{2.1}  % lengthening of t_1 (%)
 \newcommand{\NumSuShiftLow}{3.3}  % the same at alpha = 0.8 (%)
+\newcommand{\NumWRBLength}{247}  % Wheatley and Rubel, conveyor B: length (m)
+\newcommand{\NumWRBBeta}{1.30}
+\newcommand{\NumWRBRatio}{0.84}  % beta / beta_5(B1)
+\newcommand{\NumWRCLength}{91}  % Wheatley and Rubel, conveyor C: length (m)
+\newcommand{\NumWRCBeta}{2.13}
+\newcommand{\NumWRCRatio}{1.38}  % beta / beta_5(B1)
 
 % ---- Frequencies and participation (fig_modal; head drive, beta -> 0)
 \newcommand{\NumModalTauMin}{4.01}  % tau_1 = t_1 c_r / L over the map
@@ -67,6 +73,8 @@
 \newcommand{\NumModalParticipationMin}{0.41}  % effective-mass fraction of the fundamental
 \newcommand{\NumModalParticipationMax}{0.81}
 \newcommand{\NumModalHatched}{7}  % share of the (xi, gamma) plane where beta = 0.1 changes it by > 5 % (%)
+\newcommand{\NumModalHatchedMedian}{1.5}  % median change of the fundamental's participation with beta = 0.1 (%) (step 6.5)
+\newcommand{\NumModalParticipationFormulaErr}{3.1}  % largest overestimate of F_1 ~ (8/pi^2)(1 - xi + gamma^2)/(1 + gamma^2) over the map (%) (step 6.5)
 \newcommand{\NumHeadTailRatioGammaOne}{2.00}  % t_1 with the take-up at the head over t_1 at the tail, gamma = 1
 \newcommand{\NumHeadTailRatioGammaTwo}{1.28}  % t_1 with the take-up at the head over t_1 at the tail, gamma = 2
 \newcommand{\NumIntermediateRatioMax}{1.38}  % tau_1/(4 tau_B) with an intermediate drive, gamma <= 3
@@ -75,6 +83,8 @@
 \newcommand{\NumNCPeriod}{27.5}  % Nordell and Ciozda: t_1 (s), beta -> 0
 \newcommand{\NumNCPeriodHead}{19.8}  % the same strands with a head drive (s)
 \newcommand{\NumNCIncrease}{39}  % (%)
+\newcommand{\NumNCFourTransit}{23.4}  % Nordell and Ciozda: four transits of strand B (s) (step 6.5)
+\newcommand{\NumNCRatioHead}{0.84}  % the same strands with a head drive: tau_1/(4 tau_B)
 \newcommand{\NumSuFourTransit}{0.952}  % Surtees: tau_1/(4 tau_B), beta -> 0
 \newcommand{\NumSuFourTransitLow}{0.939}  % the same at alpha = 0.8
 
@@ -83,6 +93,8 @@
 \newcommand{\NumSongPeriodTail}{29.0}
 \newcommand{\NumSongPeriodHeadLight}{40.0}  % t_1 (s), beta -> 0, as Song et al. modelled it; quoted in the text (step 6.2)
 \newcommand{\NumSongPeriodTailLight}{28.6}
+\newcommand{\NumSongFourTransit}{45.8}  % four transits of strand B, take-up at the head (s) (step 6.5)
+\newcommand{\NumSongFourTransitRatio}{0.873}  % t_1 / four transits, take-up at the head, beta -> 0
 
 % ---- Take-up mass threshold (fig_beta)
 \newcommand{\NumBetaFiveBOneMin}{0.11}  % beta_5 of the fundamental (B1) over the map
@@ -94,6 +106,8 @@
 \newcommand{\NumRuleGammaAnyPosition}{1.7}  % gamma above which beta_5(B1) >= 0.5 for every take-up position (grid 0.025)
 \newcommand{\NumSinglePoleCoefficient}{0.41}  % beta_5 ~ 0.41 m~ (one pole)
 \newcommand{\NumBetaFiveAOneSlope}{0.205}  % beta_5(A1) ~ 0.205 xi (uniform strand)
+\newcommand{\NumStAOneShift}{3.2}  % St (take-up at the tail): lengthening of A1 by the take-up mass (%), as in fig_beta (c)
+\newcommand{\NumAOneStartRatioMin}{3.3}  % smallest tau_a / tau_A1 of the published starts with the take-up at the tail (Lo)
 
 % ---- Universal start-up curve (fig_startup; sine profile unless stated)
 \newcommand{\NumStartPeakMax}{1.590}  % largest amplification D

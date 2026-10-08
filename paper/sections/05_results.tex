@@ -1,5 +1,5 @@
 % =====================================================================
-% Section 5 -- Results. Steps 6.5 (5.1-5.2) and 6.6 (5.3-5.4).
+% Section 5 -- Results. Steps 6.5 (5.1-5.2, written) and 6.6 (5.3-5.4).
 % Inputs: notes 4.15-4.19 and 4.26; 4.9 points 13, 14, 16-18;
 % captions.md (draft captions, to be moved into the .tex in 6.5-6.6).
 % Mechanics first (JSV emphasis); engineering material condensed.
@@ -7,37 +7,282 @@
 \section{Results}\label{sec:results}
 
 \subsection{Natural frequencies and modal participation}\label{sec:frequencies}
-\begin{figure}[t]
+% Step 6.5, from notes 4.15 (modes by strand, bounds, participation), 4.19 (intermediate
+% drive), 4.12 (Song, take-up at the head), 4.30 (tail family without participation) and
+% 4.9 points 13 and 17. Numbers: paper_numbers.py, sections "Frequencies and participation"
+% and "Song et al. (2012)". Tests: test_participation.py, test_intermediate.py, test_song.py.
+\begin{figure}[tbp]
   \centering
   \includegraphics[width=\linewidth]{fig_modal}
-  \caption{\TODO{fig\_modal caption (captions.md).}}
+  \caption{Natural frequencies and modal participation with the take-up as a free end
+  ($\beta\to0$). (a--c) Head drive. (a) Fundamental period $\tauper{1}=\tper{1}c_r/L$,
+  from \NumModalTauMin\ to \NumModalTauMax. (b) $\tauper{1}$ over four transits of
+  strand~B, $\tauB=1-\xi+\gamma$: between \NumModalFourTransitMin\ and~1, and equal to 1 for
+  $\gamma=1$ or a take-up at the tail. (c) Fraction of the belt inertia excited in the
+  fundamental, $\Gamma_1^2m_1/(1+\gamma^2)$, from \NumModalParticipationMin\ to
+  \NumModalParticipationMax; hatched, a take-up mass $\beta=0.1$ changes it by more than
+  \qty{5}{\percent} (\qty{\NumModalHatched}{\percent} of the plane). (d) Drive on the return
+  strand at $\ell_1=\sigma_d/L$ from the head, take-up right after it ($\xi=0.01$): the return
+  run between the head and the drive lengthens the period beyond four transits, by up to
+  \qty{\NumIntermediateOverMax}{\percent} for $\gamma=3$. Cases of \cref{tab:cases}, at their
+  own $\gamma$ and with their own geometry: circles at full material coupling ($\alpha=1$), bars
+  down to the weakest coupling of the material \citep{lodewijks2002}; H is drawn at $\gamma=1$
+  (\NumHarrisonGammaMeas\ measured on the empty belt). Cases with the take-up within
+  $\xi\le0.02$ of the drive are spread over $\xi\le0.05$ so that their bars do not overlap, and
+  St is drawn at $\xi=0.985$. NC, \citet{nordell1984}: $\tper{1}=\qty{\NumNCPeriod}{\second}$
+  against \qty{\NumNCPeriodHead}{\second} with a head drive and the same strands; Su,
+  \citet{surtees1995runback}: $\tauper{1}/(4\tauB)=\NumSuFourTransit$ (\NumSuFourTransitLow\ at
+  the weakest coupling).}
   \label{fig:modal}
 \end{figure}
-% Modes followed by strand; the fundamental belongs to strand B (Rayleigh)
-% with bounds 4 gamma < tau_1 <= 4 tau_B; formula for F_1; intermediate drive.
-\TODO{Frequencies and participation by strand; intermediate drive.}
+
+In the free-end limit the spectrum of the loop is the union of the spectra of strands A
+and~B (Section~\ref{sec:freeend}), and a finite take-up mass shifts each strand frequency
+by the correction of Section~\ref{sec:masscorrection}. The modes are therefore followed by
+strand rather than in the order of the loop: B1, B2,~\dots\ are the modes born at the
+fixed--free frequencies of strand~B, and A1, A2,~\dots\ those born at the frequencies of
+strand~A. In the order of the loop the second mode changes strand where A1 overtakes B2
+($\xi=1/2$ for $\gamma=1$, closer to the tail for larger $\gamma$), and its frequency and
+participation jump there; followed by strand, they vary smoothly and most results are in
+closed form. \Cref{fig:modal} maps the fundamental in the plane $(\xi,\gamma)$, the two
+parameters left when $\beta\to0$, with the conveyors of \cref{tab:cases} marked on it.
+
+\paragraph{The fundamental belongs to strand B.} With a head drive, strand~B is the
+return belt between the take-up and the tail followed by the whole carry strand, which
+ends at the fixed face of the drive. For $\gamma\ge1$ it holds the fundamental for every
+take-up position. In Eq.~\eqref{eq:strandB} both tangents grow from zero on
+$0<\Omega<\pi/(2\gamma)$, the first pole of $\tan\gamma\Omega$, so for $\xi<1$ the product
+crosses $\gamma$ once in that interval; strand~A, a uniform piece of return belt of length
+$\xi\le1$, starts at $\pi/(2\xi)\ge\pi/(2\gamma)$. At $\Omega=\pi/(2\tauB)$, where
+$\tauB=1-\xi+\gamma$ is the transit time of strand~B, the two arguments add up to $\pi/2$
+and the product equals $1\le\gamma$, so the root lies above this frequency. Hence
+\begin{equation}\label{eq:bounds_head}
+  4\gamma<\tauper{1}\le4\tauB ,
+\end{equation}
+with equality on the right for $\gamma=1$, where strand~B is a uniform string, and in the
+limit $\xi\to1$, where it is the carry strand alone. Over $1\le\gamma\le3$ the ratio
+$\tauper{1}/(4\tauB)$ stays above \NumModalFourTransitMin\ (\cref{fig:modal}b): the
+rule of four transits overestimates the fundamental period by up to
+\qty{\NumModalFourTransitOver}{\percent}, most with the take-up next to the drive and a
+large wave-speed ratio. The light return belt at the free end of strand~B raises its
+frequency above that of a uniform string with the same transit time; the effect is one of
+impedance, and vanishes for $\gamma=1$.
+
+Moving the take-up changes the strand that holds the fundamental, and with it the period
+(\cref{fig:modal}a). From the head to the tail the fundamental period falls by a factor
+\NumHeadTailRatioGammaOne\ for $\gamma=1$ (from $8L/c_r$ to $4L/c_r$) and
+\NumHeadTailRatioGammaTwo\ for $\gamma=2$; the larger $\gamma$, the more the carry strand
+dominates strand~B wherever the take-up is. For the conveyor of \citet{song2012}, modelled
+there with the take-up at the tail, the fundamental period is
+\qty{\NumSongPeriodTailLight}{\second}; with the take-up next to the head drive, where
+their Fig.~1 places it, it is \qty{\NumSongPeriodHeadLight}{\second}, and four transits of
+strand~B would give \qty{\NumSongFourTransit}{\second}
+($\tauper{1}/(4\tauB)=\NumSongFourTransitRatio$). Relocating the take-up is not a neutral
+simplification of the model.
+
+\paragraph{Modal participation.} By Eq.~\eqref{eq:parseval}, $\Gamma_k^2m_k/(1+\gamma^2)$ is
+the fraction of the belt inertia that the start-up excites in mode~$k$. A uniform
+fixed--free string has $8/\pi^2$ of its mass in its fundamental. Applied to strand~B,
+whose mass is $m_B=\mu_rL\,(1-\xi+\gamma^2)$, this gives
+\begin{equation}\label{eq:F1}
+  \frac{\Gamma_1^2m_1}{1+\gamma^2}\simeq\frac{8}{\pi^2}\,\frac{1-\xi+\gamma^2}{1+\gamma^2},
+\end{equation}
+exact for $\gamma=1$ and at most \qty{\NumModalParticipationFormulaErr}{\percent} too high
+otherwise. The fraction ranges from \NumModalParticipationMin\ to
+\NumModalParticipationMax\ (\cref{fig:modal}c) and falls as the take-up moves towards the
+tail, because strand~A takes a growing share; since strand~A is uniform, A1 carries exactly
+$(8/\pi^2)\,\xi/(1+\gamma^2)$. The take-up mass redistributes participation as it shifts
+frequencies: written as a $2\times2$ eigenproblem, the two-pole model~\eqref{eq:twopole}
+gives effective masses as well. For $\beta=0.1$ the participation of the fundamental changes
+by more than \qty{5}{\percent} only in the hatched corner of \cref{fig:modal}c, at low
+$\gamma$ with the take-up towards the tail, where B1 and A1 are close and the mass transfers
+participation from one to the other while the pair keeps its sum; the median change over the
+plane is \qty{\NumModalHatchedMedian}{\percent}.
+
+\paragraph{Take-up at the tail of a uniform loop.} For $\gamma=1$ and $\xi=1$ the two
+strands are identical, and the inertial load of the start lengthens strand~B as much as it
+shortens strand~A: the quasi-static take-up travel,
+$\tfrac12(\tfrac32-2\xi+\tfrac12\gamma^2)\hat a$, vanishes. The load therefore does no work
+on the family $\Omega\tan\Omega=2/\beta$ of Section~\ref{sec:properties}, in whose modes
+both strands lengthen together and the take-up moves: their participation factors are zero,
+the start excites only the family $\cos\Omega=0$, which leaves the take-up at rest, and the
+response to the drive acceleration does not depend on~$\beta$. The lowest root of the loop
+is then a mode that the start does not excite. In the single-span formulation of
+\citet{pang2015}, applied to a tail take-up by \citet{li2018}, the end mass shares the
+rigid-body acceleration of the belt, so the inertial load does act on it and excites that
+family; a take-up pulley, around which the belt runs, is not moved by the rigid motion~$U$
+(Section~\ref{sec:increment}). The two results differ in their physical assumption about
+the mass, not in their solution.
+% test_participation.py (tail, gamma = 1: Gamma = 0 on the Li-Pang family, Y = 0 on cos = 0)
+
+\paragraph{Drive on the return strand.} With the drive at $\sigma_d$ on the return strand
+and the take-up downstream of it, strand~B runs from the take-up through a return run
+$\ell_2$ to the tail, the whole carry strand, and a return run $\ell_1=\sigma_d/L$ from the
+head to the drive; strand~A is the uniform return run between the drive and the take-up.
+Its frequencies follow from
+\begin{equation}\label{eq:strandB3}
+  \gamma\tan\Omega\ell_1\,\tan\gamma\Omega+\tan\Omega\ell_1\,\tan\Omega\ell_2
+  +\frac{1}{\gamma}\tan\Omega\ell_2\,\tan\gamma\Omega=1,
+\end{equation}
+which reduces to Eq.~\eqref{eq:strandB} for $\ell_1=0$, to $\tan\Omega\ell_1\tan\gamma\Omega=1/\gamma$
+for a take-up at the tail ($\ell_2=0$), and, for $\gamma=1$, to $\Omega(\ell_1+1+\ell_2)=\pi/2$
+by the tangent addition formula. Strand~B again holds the fundamental for $\gamma\ge1$ and
+any position of the drive and take-up on the return strand: by Rayleigh's principle,
+adding belt at either end of the carry strand lowers its frequency, so
+$\Omega_{B1}\le\pi/(2\gamma)\le\pi/2<\Omega_{A1}$. A take-up upstream of the drive, on its
+tight side, gives the same family with the roles of $\ell_1$ and $\ell_2$ exchanged, since
+reversing the direction of travel leaves the spectrum unchanged; that position is
+impractical for other reasons (Section~\ref{sec:validity}). The period bounds become
+\begin{equation}\label{eq:bounds_intermediate}
+  4\gamma<\tauper{1}\le4\tauB+4(\gamma-1)\,\ell_1,\qquad \tauB=\gamma+\ell_1+\ell_2,
+\end{equation}
+where the upper bound follows from giving the run $\ell_1$ the density of the carry strand,
+which can only lengthen the period, and applying~\eqref{eq:bounds_head}. The run $\ell_1$
+sits at the fixed end of the heavy strand and acts as a soft spring: the period now exceeds
+four transits, by up to \qty{\NumIntermediateOverMax}{\percent} for $\gamma=3$
+(\cref{fig:modal}d), and the rule of four transits errs in opposite directions with a head
+and with an intermediate drive. For $\gamma=1$ only the total length of the strand matters.
+On the geometry of \citet{nordell1984}, with the drive \qty{5150}{ft} from the head and the
+take-up \qty{300}{ft} downstream of it, the fundamental period is
+\qty{\NumNCPeriod}{\second} against four transits of \qty{\NumNCFourTransit}{\second}
+($\tauper{1}/(4\tauB)=\NumNCRatio$); with a head drive and the same strand lengths it would be
+\qty{\NumNCPeriodHead}{\second} ($\NumNCRatioHead$), so the position of the drive alone
+lengthens the period by \qty{\NumNCIncrease}{\percent}. Since the modes of a strand share out
+its mass, the effective mass of the fundamental never exceeds $m_B$. Moving the drive away
+from the head thus lengthens $\tper{1}$ and calls for slower starts at the same dynamic
+amplification (Section~\ref{sec:startup}).
+% test_intermediate.py (three-segment equation vs an independent implementation, both sides,
+% bounds, reversal of travel); numbers: NC* and Intermediate* macros.
 
 \subsection{When the take-up mass matters}\label{sec:betaregime}
-\begin{figure}[t]
+% Step 6.5, from notes 4.14 (threshold), 4.20 and 4.25 (exact threshold by strand, scope of
+% A1), 4.26 (beta from the take-up tension, floors, rule T_t <~ W_r/4) and 4.29 (scope of the
+% rule); 4.9 points 12 and 18. Claim 1 figures confirmed in step 6.5 against an independent root
+% of Eq. (chareq_head). Tests: test_figures.py, test_beta_min.py, test_tables.py.
+\begin{figure}[tbp]
   \centering
   \includegraphics[width=\linewidth]{fig_beta}
-  \caption{\TODO{fig\_beta caption (captions.md).}}
+  \caption{Take-up mass ratio $\betafive$ at which a natural period becomes \qty{5}{\percent}
+  longer than with $\beta\to0$, head drive, each mode followed by its strand; exact, from
+  Eq.~\eqref{eq:beta5}. (a) B1, the fundamental: from \NumBetaFiveBOneMin, with the take-up at
+  the tail and $\gamma=1$, where B1 and A1 coincide, to \NumBetaFiveBOneMax. The conveyors of
+  \qty{1}{\kilo\metre} or longer stay at least \NumLongMarginMin\ times below their own
+  threshold (\NumLongMarginMinLow\ times at the weakest coupling of their material). (b) B2,
+  median \NumBetaFiveBTwoMedian; dark grey, B2 and A1 within \qty{5}{\percent} of each other,
+  where the shift is not a property of one strand; light grey, the \qty{5}{\percent} shift is
+  not reached even for $\beta\to\infty$; dashed, the position where A1 overtakes B2. (c) A1
+  for $\gamma=2$: single-pole estimate $\betafive=\NumSinglePoleCoefficient\,\tilde m
+  =\NumBetaFiveAOneSlope\,\xi$ (dotted) and exact threshold (solid), which leaves the estimate
+  and rises to infinity before each crossing of A1 with a mode of strand~B; grey bands, the
+  threshold of A1 alone is undefined. Circle: St, the only case with the take-up at the tail,
+  where A1 is the second mode, with its own threshold (tick) and the exact lengthening of A1.
+  Case markers as in \cref{fig:modal}.}
   \label{fig:beta}
 \end{figure}
 \input{../maps/figures/paper/table_cases}
-% Threshold beta_5; identity beta = (4/n) lambda T_t/W_r = K psi tau; the
-% floors that set T_t (DIN 22101 eqs. 47-52); rule T_t <~ W_r/4; claim 1
-% figure ("about 1 %, at most 1.2 %...") to be confirmed in step 6.5.
-\TODO{Take-up mass regime.}
+
+\paragraph{The threshold.} Let $\Omega_p$ be a fixed--free frequency of one strand and
+$\Omega_t=\Omega_p/1.05$ the frequency of the same mode with a period \qty{5}{\percent}
+longer. Since the characteristic equation in the form~\eqref{eq:receptance} is linear in
+$1/\beta$, the take-up mass that places a root at $\Omega_t$ is explicit,
+\begin{equation}\label{eq:beta5}
+  \betafive=\frac{4}{\Omega_t^2\,\bigl[H_A(\Omega_t)+H_B(\Omega_t)\bigr]},
+\end{equation}
+and by interlacing that root is the one born at $\Omega_p$, provided no frequency of either
+strand lies in $[\Omega_t,\Omega_p)$. Where one does, the modes of the two strands veer and
+the shift is not a property of one strand; where $H_A+H_B\le0$ at $\Omega_t$, the
+\qty{5}{\percent} shift is not reached even for $\beta\to\infty$, the limit of a fixed
+take-up pulley. For an isolated pole the one-pole formula~\eqref{eq:onepole} gives
+$\betafive\simeq4\tilde m(1.05^2-1)=\NumSinglePoleCoefficient\,\tilde m$.
+
+For the fundamental (\cref{fig:beta}a), $\betafive$ ranges from \NumBetaFiveBOneMin\ to
+\NumBetaFiveBOneMax\ (median \NumBetaFiveBOneMedian) and depends mainly on $\gamma$: the
+heavier the carry strand, the larger the mass that strand~B can carry at its free end. The
+minimum lies at the tail with $\gamma=1$, where B1 and A1 coincide and the take-up mass
+acts on both. For $\gamma\ge1.4$ and the take-up within $\xi\le0.1$ of the drive,
+$\betafive\ge\NumBetaFiveMinNearDrive$; for every take-up position, $\betafive\ge0.5$ needs
+$\gamma\ge\NumRuleGammaAnyPosition$, and at the tail with $\gamma=1.4$ the threshold falls
+to \NumBetaFiveMinGammaOneFour. The second mode of strand~B is more sensitive (median
+\NumBetaFiveBTwoMedian, \cref{fig:beta}b).
+
+Strand~A is uniform, so the single-pole estimate with $\tilde m=\xi/2$ gives
+$\betafive(\mathrm{A1})\simeq\NumBetaFiveAOneSlope\,\xi$ (\cref{fig:beta}c): a small
+threshold, but for a mode that matters little. A1 carries a fraction $(8/\pi^2)\,\xi/(1+\gamma^2)$
+of the belt inertia; its damping ratio under the Kelvin--Voigt law,
+$\zeta_{A1}=\zeta_1\tauper{1}/(4\xi)$, grows as the take-up approaches the drive; and its
+period, $4\xi L/c_r$, is short against every published start: even with the take-up at the
+tail, the starts of the cases in \cref{tab:cases} last at least \NumAOneStartRatioMin\ periods
+of A1 (Lo), so they drive it quasi-statically. A1 matters only with the take-up near the
+tail and a fast start. In the one case with the take-up at the tail, St, the take-up mass
+lengthens A1 by \qty{\NumStAOneShift}{\percent}.
+
+\paragraph{Where the conveyors lie.} By Eq.~\eqref{eq:beta_tension}, the mass ratio follows
+from the take-up tension, $\beta=(4/\nstr)\lambda\,\Tt/\Wr$ with $\Wr=g\mu_rL$, and can be
+factorised as
+\begin{equation}\label{eq:beta_factors}
+  \beta=\frac{4\lambda}{\nstr}\,\frac{F_U}{\Wr}\,\frac{\Tt}{F_U},
+\end{equation}
+where $F_U$ is the running peripheral force at the drive. For a given slope, load and
+resistance coefficients, neither $F_U/\Wr$ nor $\Tt/F_U$ depends on the length: the take-up
+tension is sized by requirements that grow in proportion to the length, chiefly the grip at
+the drive during running and start-up \citep[Eqs.~47--50]{din22101} and the weight of the
+return strand on a slope, with the sag limits \citep[Eqs.~51--52]{din22101} as a further
+floor, or by other criteria such as holdback or braking. The last column of
+\cref{tab:cases} gives the criterion stated or implied by each source. The mass ratio of a
+gravity take-up therefore does not decrease with the length of the conveyor. The values of
+$\beta$ in \cref{tab:cases} are computed from the design take-up tension of each source,
+which can be checked against its static balance, rather than from a published counterweight
+mass.
+
+For the conveyors of \qty{1}{\kilo\metre} or longer in \cref{tab:cases}, $\Tt/\Wr$ is
+\NumLongTtWrMin\ to \NumLongTtWrMax, $\beta\le\NumLongBetaMax$ and $\beta/\betafive$ of the
+fundamental is \NumLongBetaRatioMin\ to \NumLongBetaRatioMax: they lie at least
+\NumLongMarginMin\ times below their threshold, \NumLongMarginMinLow\ times at the weakest
+coupling of their material. The take-up mass lengthens their fundamental period by at most
+\qty{\NumLongShiftMax}{\percent}, and by at most \qty{\NumLongShiftMaxLow}{\percent} over the
+coupling range of each material. With a counterweight hung directly on two strands,
+$\beta=2\Tt/\Wr$; for a take-up near the drive and $\gamma\ge1.4$ the threshold of the
+fundamental is at least \NumBetaFiveMinNearDrive, so the take-up mass changes the
+fundamental by less than \qty{5}{\percent} as long as
+\begin{equation}\label{eq:rule}
+  \Tt\lesssim\frac{\Wr}{4}.
+\end{equation}
+This gives a dynamic meaning to the long conveyor, a term without a strict definition in
+the technical literature \citep{suchorab2025longdistance}: a conveyor is long, for its
+longitudinal dynamics, when the take-up tension is small against the weight of the return
+strand, $\beta\ll\betafive$, so that the take-up acts as a free end and its mass enters only
+through the correction of Section~\ref{sec:masscorrection}. Multiple reeving moves a take-up
+further into this regime, since $\beta$ scales as $1/\nstr$ at the same tension
+(Section~\ref{sec:nstrands}).
+
+In short conveyors the floors that do not scale with the length, sag and holdback, set the
+take-up tension, and $\beta$ grows as $1/L$. The conveyor of \citet{wheatley2021}
+(\qty{275}{\metre}, $\beta=\NumWRBeta$, take-up position not published) lies at
+\NumWRRatioMin--\NumWRRatioMax\ of its threshold for any take-up position, and at
+\NumWRRatioLowMin--\NumWRRatioLowMax\ at the weakest coupling of its material, where the
+take-up mass lengthens its fundamental by \qtyrange{\NumWRShiftLowMin}{\NumWRShiftLowMax}{\percent}.
+Surtees' conveyor (\qty{805}{\metre}, drive on the return strand, $\beta=\NumSuBeta$) lies
+at \NumSuRatio\ of its threshold (\NumSuRatioLow\ at the weakest coupling), with a
+lengthening of \qty{\NumSuShift}{\percent} (\qty{\NumSuShiftLow}{\percent}). The two shorter
+conveyors of the plant of \citet{wheatley2021}, of \qty{\NumWRBLength}{\metre} and
+\qty{\NumWRCLength}{\metre}, have published counterweights of \num{10} and \qty{6}{\tonne}; with two
+strands and a take-up near the drive assumed, $\beta=\NumWRBBeta$ and \NumWRCBeta\ and
+$\beta/\betafive=\NumWRBRatio$ and \NumWRCRatio: the shortest is the only conveyor of the set
+beyond the threshold. In these conveyors the exact characteristic
+equation~\eqref{eq:chareq} keeps the take-up mass; in long conveyors the free-end spectra of
+Section~\ref{sec:frequencies}, with the closed-form correction, suffice, which is also why
+none of the field records of Section~\ref{sec:validation} can test the take-up mass.
+% numbers: Long*, Shift*, BetaRatio*, WR*, Su* macros (claims section of paper_numbers.py);
+% WRB/WRC from maps/beta_min.regime(); tests: test_beta_min.py, test_tables.py, test_figures.py
 
 \subsection{Start-up: the universal curve of a fixed--free strand}\label{sec:startup}
-\begin{figure}[t]
+\begin{figure}[tbp]
   \centering
   \includegraphics[width=\linewidth]{fig_startup}
   \caption{\TODO{fig\_startup caption (captions.md).}}
   \label{fig:startup}
 \end{figure}
-\begin{figure}[t]
+\begin{figure}[tbp]
   \centering
   \includegraphics[width=\linewidth]{fig_crawl}
   \caption{\TODO{fig\_crawl caption (captions.md).}}
@@ -50,7 +295,7 @@
 \TODO{Universal start-up curve.}
 
 \subsection{Validity: slack, take-up and drive grip}\label{sec:validity}
-\begin{figure}[t]
+\begin{figure}[tbp]
   \centering
   \includegraphics[width=\linewidth]{fig_validity}
   \caption{\TODO{fig\_validity caption (captions.md).}}
