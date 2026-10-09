@@ -87,8 +87,8 @@ the empty belt in \qty{\NumMujaTime}{\second} during an emergency stop,
 \qty{\NumMujaSpeedMeas}{\metre\per\second}, against \qty{\NumMujaSpeedCalc}{\metre\per\second}
 computed from the belt modulus and density. Both comparisons were made by the authors
 themselves; they are recalled because they support wave speeds computed from the belt
-data, which (A2) uses, and the two-speed kinematics of the loop. They do not test the
-take-up model, and both records are stops, outside the start-up analysis.
+data, which (A2) uses, and the two-speed kinematics of the loop. Both records are stops,
+outside the start-up analysis; the first also bears on the take-up, as shown below.
 
 \paragraph{The take-up as a free end.} \Citet{harrison1983,harrison1985b} recorded the
 starts of an empty \qty{5.1}{\kilo\metre} steel-cord conveyor with a
@@ -131,6 +131,22 @@ every front at once, and a stiff one transmits most of it. Equation~\eqref{eq:tr
 is checked against a time-domain chain model of a massless take-up held by a dashpot.
 % tests: test_harrison.py::test_dashpot_takeup_transmits_a_fixed_fraction_of_a_front,
 %        ::test_transmission_impedance_reduces_to_mass
+
+The stop recorded by \citet{nordell1984} shows the same free end on a second conveyor,
+from the other side of the take-up. The drives of that conveyor sit on the return strand
+and the take-up, fitted with a hydraulic retarder, just downstream of them, so a front
+that leaves the drives towards the tail has to cross the take-up. Through the take-up and
+the tail it would reach the carry strand above the drives after
+\qty{\NumNCArrivalBShort}{\second}; the belt there kept its speed, to within about
+\qty{2}{\percent} in our reading of the legible copy of the records
+\citep[Figs.~6--8]{nordell1987}, until the front that went round the head arrived at
+\qty{\NumNCArrivalBMeas}{\second}, and \citet{nordell1984} note that little of the initial
+disturbance moved past the take-up in the direction of belt travel. The belt just beyond
+the take-up slowed by about \qty{7}{\percent} during the first second, while the drives
+were decelerating, and then recovered, as expected from a retarder that holds the carriage
+until its drag is exceeded (Section~\ref{sec:relation}).
+% step 6.7b: nordell1987 (Beltcon 4), Figs. 5-9, the same event as nordell1984 case 1 in a
+% legible copy; NumNCArrivalBShort = (L - x_d)(1/c_r + 1/c_c) in maps/paper_numbers.py.
 
 \paragraph{The slow take-up period.} After the start, the take-up of the original
 design oscillated with a period of \qty{25}{\second} \citep{harrison1983}; our read-out

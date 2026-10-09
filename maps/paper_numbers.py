@@ -497,6 +497,9 @@ def validation(N: Numbers):
     tC = xd / cr + L / cc + (1 - nc["sigma_t"]) * L / cr
     N.add("NCArrivalB", tB, 2, "wave from the drive to point B (s); measured 3.72")
     N.add("NCArrivalC", tC, 2, "wave from the drive to the take-up, point C (s); measured 5.86")
+    tBs = (L - xd) / cr + (L - xd) / cc
+    N.add("NCArrivalBShort", tBs, 2, "front from the drive to point B through the take-up and the "
+          "tail (s); absent in the record (Nordell 1987, Fig. 7; step 6.7b)")
     N.add("NCArrivalBMeas", 3.72, 2, "measured (their Fig. 10)")
     N.add("NCArrivalCMeas", 5.86, 2, "measured (their Fig. 11)")
     N.add("NCSpeedReturn", nc["c_r"], 0, "their wave speed on the empty return strand (m/s)")

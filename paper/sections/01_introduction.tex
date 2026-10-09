@@ -8,6 +8,9 @@
 % nordell1997zisco (Sect. 3.4: take-up after the tail drive, near the
 % horizontal curve), cornet2002 (p. 2), lodewijks2013 (p. 2).
 % cdi2002 and kruse2019overland as read in phases 1 and 4.2 (notes).
+% Step 6.7b (Beltcon review): morrison1987 (p. 10, reflection at a moving
+% counterweight), nordell1987 (pp. 15 and 22: take-ups replaced or moved; the
+% return-strand wave of a stop absorbed by the take-up), checked in the scans.
 % Tone (phase 4.3): not "we show for the first time that position
 % matters" but "we quantify in closed, dimensionless form an effect that
 % practice knows from isolated cases".
@@ -42,7 +45,9 @@ would have produced much larger tension fluctuations in the curve \citep{nordell
 a \qty{21}{\kilo\metre} conveyor with head and tail drives has its gravity take-up at the
 tail \citep{kruse2019overland}; and a simulated drift stop of a \qty{1}{\kilo\metre}
 incline left a minimum tension of \qty{3.5}{\kilo\newton} with the take-up at the head
-against \qty{20.4}{\kilo\newton} at the tail \citep{cdi2002}. In the words of
+against \qty{20.4}{\kilo\newton} at the tail \citep{cdi2002}. Owners have also replaced
+gravity take-ups by fixed ones, or moved them ``in the hope of reducing observed hazards''
+\citep{nordell1987}. In the words of
 \citet{cornet2002}, the location of the take-up is dictated by the terrain and ``by the belt
 dynamic behavior''. In each of these cases the effect of the position is established for
 one conveyor, by simulation or by experience; a general, quantitative description of how
@@ -80,11 +85,15 @@ paper: a gravity take-up whose inertial impedance is small compared with that of
 is a free end. It holds a constant force, so a stretching front that reaches it is
 reflected as at a free end and almost nothing is transmitted to the belt beyond it. The
 loop then splits at the take-up into two strands, each fixed at the drive and free at the
-take-up, whose lengths are set by the take-up position. \Citet{harrison1985b} described
-the consequence in his records, in which the return belt beyond the take-up did not move
-until the stress had travelled round the whole belt, but none of the models above uses it:
-they move the take-up to the tail, embed it, merge it with the drive or attach its mass to
-the belt. Built into a closed-form characteristic equation of the loop, the free end
+take-up, whose lengths are set by the take-up position. Finite-element simulations of
+the 1980s showed the reflection: once the counterweight moves, disturbances that reach it
+are ``primarily reflected'' \citep{morrison1987}, and the tensile wave of the return strand
+in a stop is ``absorbed by the take-up'' \citep{nordell1987}. \Citet{harrison1985b}
+described the consequence in his records, in which the return belt beyond the take-up did
+not move until the stress had travelled round the whole belt. Discrete models reproduce the
+effect case by case, but none of the models above builds it into its structure: they move
+the take-up to the tail, embed it, merge it with the drive or attach its mass to the
+belt. Built into a closed-form characteristic equation of the loop, the free end
 accounts for three observations that have so far been unrelated. It explains why the slow
 take-up oscillation that Harrison measured, which he attributed to the mass of the
 counterweight oscillating on the stiffness of the belt, hardly depends on that mass; why moving the

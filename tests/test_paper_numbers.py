@@ -72,7 +72,7 @@ PINNED = {
     "HarrisonSlowMeas": "24.9", "HarrisonSlowModel": "28.4", "HarrisonSlowExcess": "14",
     "HarrisonEmbeddedMax": "14.1", "HarrisonStillMeas": "7.6", "HarrisonCarriageModel": "2.0",
     "HarrisonTransmissionMin": "0.02", "HarrisonTransmissionMax": "0.04",
-    "NCArrivalB": "3.74", "NCArrivalC": "5.86",
+    "NCArrivalB": "3.74", "NCArrivalC": "5.86", "NCArrivalBShort": "2.18",
     "LodewijksPeakDevMin": "-18", "LodewijksPeakDevMax": "0", "LodewijksPeriodMeas": "18.3",
     "LodewijksPeriodModel": "28.5", "LumpedOrder": "2.0",
     # applications (4.27)

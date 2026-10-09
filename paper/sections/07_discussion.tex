@@ -13,6 +13,9 @@
 % damaged the tower), harrison1985b (buffer; take-up mass hit the
 % structure when stopping). poe2000sheave, surtees1995runback and song2003
 % as read in phases 3.7 and 4.4 (notes by source).
+% Step 6.7b (Beltcon review): nordell1987 (p. 9: hydraulic retarder, damping
+% towards a fixed take-up), morrison1987 (pp. 10-11: friction, inertia, fluid
+% coupling), barfoot1997 (pp. 2-3), hou2008 (Sect. 3.1), checked in the PDFs.
 % [HB1989] marks what to revisit with Harrison and Barfoot (1989).
 % =====================================================================
 \section{Discussion}\label{sec:discussion}
@@ -28,7 +31,11 @@ approaches the drive (Eq.~\eqref{eq:startup_formulas}). Harrison's remedy of a t
 the tail \citep{harrison1985b} is consistent with the strand picture: the whole return
 strand then becomes strand~A and is set in motion by the drive exit from the start, instead
 of being reached by the stretching front only after it has gone round the carry strand and
-the tail. The fundamental period also falls when the take-up moves to the tail, by up to
+the tail. The same picture accounts for the opposite concern of designers: with the take-up
+at the tail of a long, low-lift conveyor, strand~A is the whole return strand, which the
+take-up ``has to move \ldots\ in order to pull belt out of the drive area'', so the start
+must be very long or the take-up tension high if the drive is not to slip
+\citep{barfoot1997}. The fundamental period also falls when the take-up moves to the tail, by up to
 a factor \NumHeadTailRatioGammaOne\ for equal wave speeds; in the conveyors of
 Section~\ref{sec:application}, whose carry strands are two to three times slower than their
 return strands, it falls by \NumLoPeriodChange\ and \qty{\NumSMPeriodChange}{\percent}
@@ -40,7 +47,7 @@ take-up is therefore a lever on the start time, which scales with $\tper{1}$, mo
 the peak tensions, which the start time controls (Section~\ref{sec:startup}). The other
 reasons quoted in Section~\ref{sec:intro} lie outside the model: the horizontal curve of
 ZISCO \citep{nordell1997zisco}, the second drive of \citet{kruse2019overland} and the drift
-stop of \citet{cdi2002}, in which the drive is not speed-controlled.
+stop simulated by \citet{cdi2002}, in which the drive is not speed-controlled.
 % [HB1989] Add the relation to Harrison and Barfoot (1989) here once read.
 
 \paragraph{Previous continuum models.} The decoupling that \citet{song2012} obtained by
@@ -80,8 +87,15 @@ the fraction $z_t/(z_t+2Z_r)$. A hydraulic buffer under the carriage, as in the 
 design of \citet{harrison1985b}, transmits part of every front at once; a rigid end stop
 ($z_t\to\infty$) turns the take-up into a fixed pulley around which the belt runs, with the
 spectrum $(\mat B\mat A)_{12}=0$ of Section~\ref{sec:eigen}; and a motion retarder, such as
-the friction drag of 2720~kgf on the take-up of \citet{nordell1984}, keeps the carriage
-locked, and the take-up transparent, until the drag is exceeded. The free-end results of this
+the hydraulic retarder of \citet{nordell1984}, represented in their model by a drag of
+2720~kgf in both directions, keeps the carriage locked, and the take-up transparent, until
+the drag is exceeded; the belt beyond their take-up followed the drives for about a second
+and then came free (Section~\ref{sec:fieldchecks}). Nordell observed that adding damping to
+that retarder raised the shock force ``toward the characteristics of a fixed take-up''
+\citep{nordell1987}, and \citet{morrison1987} found both effects in finite-element
+simulations: a front passed the take-up while friction held the counterweight, was almost
+totally reflected once it moved, and was still transmitted in small part through the inertia
+of the counterweight. The free-end results of this
 paper therefore hold while the carriage moves freely; each of these devices moves the
 take-up towards the fixed pulley, and the impedance formula gives the size of the change for
 the linear ones.
@@ -116,7 +130,9 @@ idlers stiffens the belt and slows the waves \citep{ellis1987}; the slack condit
 Section~\ref{sec:validity} marks where the total tension approaches zero and this assumption
 fails. The modulus of textile belts also depends on tension and temperature: it falls by
 \qtyrange{13}{30}{\percent} at low load and by \qtyrange{8}{18}{\percent} at
-\qty{50}{\degreeCelsius} \citep{zarzycki2023}, which changes the wave speeds and,
+\qty{50}{\degreeCelsius} \citep{zarzycki2023}, and the wave speed measured on samples of a
+fabric and a steel-cord belt rises with tension, steeply at low tension \citep{hou2008},
+which changes the wave speeds and,
 through them, every period in seconds, but not the dimensionless results. Damping
 proportional to stiffness is a modelling convenience that keeps the modes uncoupled, not a
 measured law.
@@ -127,7 +143,9 @@ behind the stretching front and depend on the local belt speed, so the step onse
 Section~\ref{sec:startup} is an upper bound. The drive imposes the belt velocity, which
 represents speed-controlled drives (Section~\ref{sec:torque}). Drives without speed control,
 such as fluid couplings or wound-rotor motors started in steps, change the spectrum, as the
-case of Harrison's conveyor shows (Section~\ref{sec:fieldchecks}); stops without power,
+case of Harrison's conveyor shows (Section~\ref{sec:fieldchecks}), and need not reflect the
+waves that reach them: in simulations, a drive on a fluid coupling at low fill let most of a
+returning front pass \citep{morrison1987}. Stops without power,
 in which the drive is free and the take-up itself can launch a low-tension wave
 \citep{kung2005henderson}, are not analysed. The shortest admissible starts of
 Section~\ref{sec:application} do not check belt strength or motor torque.
