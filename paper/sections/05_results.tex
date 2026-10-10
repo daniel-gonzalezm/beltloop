@@ -156,7 +156,8 @@ amplification (Section~\ref{sec:startup}).
 
 \subsection{When the take-up mass matters}\label{sec:betaregime}
 % Step 6.5, from notes 4.14 (threshold), 4.20 and 4.25 (exact threshold by strand, scope of
-% A1), 4.26 (beta from the take-up tension, floors, rule T_t <~ W_r/4) and 4.29 (scope of the
+% A1; panel (c) of fig_beta removed in step 6.8, decision of the author), 4.26 (beta from the
+% take-up tension, floors, rule T_t <~ W_r/4) and 4.29 (scope of the
 % rule); 4.9 points 12 and 18. Claim 1 figures confirmed in step 6.5 against an independent root
 % of Eq. (chareq_head). Tests: test_figures.py, test_beta_min.py, test_tables.py.
 \begin{figure}[tbp]
@@ -170,13 +171,8 @@ amplification (Section~\ref{sec:startup}).
   threshold (\NumLongMarginMinLow\ times at the weakest coupling of their material). (b) B2,
   median \NumBetaFiveBTwoMedian; dark grey, B2 and A1 within \qty{5}{\percent} of each other,
   where the shift is not a property of one strand; light grey, the \qty{5}{\percent} shift is
-  not reached even for $\beta\to\infty$; dashed, the position where A1 overtakes B2. (c) A1
-  for $\gamma=2$: single-pole estimate $\betafive=\NumSinglePoleCoefficient\,\tilde m
-  =\NumBetaFiveAOneSlope\,\xi$ (dotted) and exact threshold (solid), which leaves the estimate
-  and rises to infinity before each crossing of A1 with a mode of strand~B; grey bands, the
-  threshold of A1 alone is undefined. Circle: St, the only case with the take-up at the tail,
-  where A1 is the second mode, with its own threshold (tick) and the exact lengthening of A1.
-  Case markers as in \cref{fig:modal}.}
+  not reached even for $\beta\to\infty$; dashed, the position where A1 overtakes B2. Case
+  markers as in \cref{fig:modal}.}
   \label{fig:beta}
 \end{figure}
 \input{../maps/figures/paper/table_cases}
@@ -206,8 +202,9 @@ to \NumBetaFiveMinGammaOneFour. The second mode of strand~B is more sensitive (m
 \NumBetaFiveBTwoMedian, \cref{fig:beta}b).
 
 Strand~A is uniform, so the single-pole estimate with $\tilde m=\xi/2$ gives
-$\betafive(\mathrm{A1})\simeq\NumBetaFiveAOneSlope\,\xi$ (\cref{fig:beta}c): a small
-threshold, but for a mode that matters little. A1 carries a fraction $(8/\pi^2)\,\xi/(1+\gamma^2)$
+$\betafive(\mathrm{A1})\simeq\NumBetaFiveAOneSlope\,\xi$, from which the exact threshold
+departs only near the crossings of A1 with modes of strand~B: a small threshold, but for a
+mode that matters little. A1 carries a fraction $(8/\pi^2)\,\xi/(1+\gamma^2)$
 of the belt inertia; its damping ratio under the Kelvin--Voigt law,
 $\zeta_{A1}=\zeta_1\tauper{1}/(4\xi)$, grows as the take-up approaches the drive; and its
 period, $4\xi L/c_r$, is short against every published start: even with the take-up at the
@@ -277,7 +274,8 @@ none of the field records of Section~\ref{sec:validation} can test the take-up m
 
 \subsection{Start-up: the universal curve of a fixed--free strand}\label{sec:startup}
 % Step 6.6, from notes 4.16 (universal curve, collapse, three formulas, profiles, damping,
-% resistances, practice), 4.17 (initial crawl), 4.19 (intermediate drive) and 4.9 point 14
+% resistances, practice), 4.17 (initial crawl; fig_crawl removed in step 6.8, decision of the
+% author, its numbers kept in the text), 4.19 (intermediate drive) and 4.9 point 14
 % (wave law: love1906, Art. 284, read in step 6.6). Numbers: paper_numbers.py, sections
 % "Universal start-up curve" and "Initial crawl". Tests: test_metrics.py,
 % test_intermediate.py::test_startup_collapse_intermediate, test_figures.py.
@@ -302,19 +300,6 @@ none of the field records of Section~\ref{sec:validation} can test the take-up m
   of the free end (take-up travel) over its quasi-static value, and peak tension due to
   resistances that build up with the belt speed ($\varphi=V/V_\infty$).}
   \label{fig:startup}
-\end{figure}
-\begin{figure}[tbp]
-  \centering
-  \includegraphics[width=\linewidth]{fig_crawl}
-  \caption{Initial crawl at \qty{5}{\percent} of the final speed before a parabolic
-  acceleration of $3\tauper{1}$ (uniform fixed--free strand; resistances, Coulomb-like,
-  appear in full once the belt moves). $\rho$: running resistance over the inertial force
-  $m_sa_m$; $\zeta_1$: damping ratio of the fundamental. Peak at the fixed end over
-  $R+m_sa_m$, with $R$ the running resistance of the strand. (a) Duration $\tau_r$ of the
-  ramp to crawl speed, without hold: a ramp of one period removes the overshoot of the
-  resistances. (b) Duration $\tau_p$ of a hold after a short ramp ($\tau_r=0.05\,\tauper{1}$):
-  with light damping the hold only shifts the phase of the remaining oscillation.}
-  \label{fig:crawl}
 \end{figure}
 
 With the take-up as a free end, the drive-entry tension depends only on strand~B and the
@@ -395,9 +380,8 @@ take-up towards it, lengthens the required start in the same proportion. Publish
 times span the whole curve (\cref{fig:startup}a): the speed-controlled \qty{30}{\second}
 starts of \citet{lodewijks1996} last \NumPracticeLo\ periods and fall in the overshoot,
 whereas the starts with fluid couplings of \citet{surtees1995runback} and
-\citet{sinaga2008kpc} last \NumPracticeSu\ and \NumPracticeSi\ periods; since these lines mix
-drive types, they show where real start times sit relative to $\tper{1}$, not that those
-drives follow the sine profile. A criterion on the overshoot of belt speed (below
+\citet{sinaga2008kpc} last \NumPracticeSu\ and \NumPracticeSi\ periods; these lines mix drive
+types and show only where real start times sit relative to $\tper{1}$. A criterion on the overshoot of belt speed (below
 \qty{1}{\percent}) led \citet{lodewijks2002} to starts longer than five axial wave periods in
 his examples; the criterion here is the tension amplification.
 % numbers: Practice* (paper_figures.PRACTICE, exact t_1 of each case)
@@ -406,24 +390,23 @@ his examples; the criterion here is the tension amplification.
 \qty{4}{\percent} of the speed in \qty{20}{\second} held for \qty{60}{\second} at ZISCO
 \citep{nordell1997zisco}, and a plateau of \qty{60}{\second} at \qty{10}{\percent} added at
 Henderson so that the take-up could keep pace with the belt stretch
-\citep{kung2005henderson}. The model separates the two parts of such a start
-(\cref{fig:crawl}), with resistances of Coulomb type that appear in full once the belt moves.
-The effective part is the ramp to crawl speed: an abrupt onset gives peaks of
-\NumCrawlAbruptMin--\NumCrawlAbruptMax\ times the running-plus-inertial force, a ramp of half
-a period \NumCrawlRampHalfMin--\NumCrawlRampHalfMax, and a ramp of one period
-\NumCrawlRampOneMin--\NumCrawlRampOneMax. A ramp of one period $\tper{s}$ lasts an odd number
-of periods of every mode of a uniform fixed--free strand, so the resistance load leaves no
-residual oscillation; the take-up travel drops in the same way, from
+\citep{kung2005henderson}. For a uniform strand with resistances of Coulomb type, which appear
+in full once the belt moves ($\rho=1$ and 5, $\zeta_1=0.01$ and $0.1$), and a crawl at
+\qty{5}{\percent} of the final speed before a parabolic acceleration of three periods, the
+effective part is the ramp to crawl speed. The peak at the fixed end, over the
+running-plus-inertial force, is \NumCrawlAbruptMin--\NumCrawlAbruptMax\ with an abrupt
+onset, \NumCrawlRampHalfMin--\NumCrawlRampHalfMax\ with a ramp of half a period and
+\NumCrawlRampOneMin--\NumCrawlRampOneMax\ with a ramp of one period $\tper{s}$, which lasts an
+odd number of periods of every mode of the strand and so leaves the resistance load without
+residual oscillation; the take-up travel falls from
 \NumCrawlTravelAbruptMin--\NumCrawlTravelAbruptMax\ times its quasi-static value to at most
-\NumCrawlTravelRampOneMax. The hold alone barely helps: with light damping the first
-overshoot of the resistances occurs during the hold, and the hold only changes the phase
-with which the remaining oscillation meets the main acceleration. With heavier damping
-($\zeta_1=0.1$) a hold lets the transient decay, from \NumCrawlHoldDampedZero\ to
-\NumCrawlHoldDampedOne\ and \NumCrawlHoldDampedTwo\ after one and two periods. A hold is
-thus useful when the drive cannot ramp smoothly at low speed and the real damping is high;
-with speed control, a ramp to crawl speed of at least one period does the work. Because the
-resistances appear along the whole loop at once in the model, while in a real start they
-follow the stretch front, the abrupt onset is an upper bound.
+\NumCrawlTravelRampOneMax. A hold at crawl speed barely helps with light damping, because the
+first overshoot of the resistances occurs during the hold; with $\zeta_1=0.1$ it lets the
+transient decay, from \NumCrawlHoldDampedZero\ to \NumCrawlHoldDampedOne\ and
+\NumCrawlHoldDampedTwo\ after one and two periods. With speed control, a ramp to crawl speed
+of at least one period does the work. Since the resistances appear along the whole loop at
+once in the model, while in a real start they follow the stretch front, the abrupt onset is
+an upper bound.
 % numbers: Crawl* macros; tests: test_metrics.py (crawl: ramp of one period removes the
 % resistance overshoot)
 

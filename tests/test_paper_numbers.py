@@ -42,7 +42,8 @@ def test_macro_names_and_values(nums, text):
 
 def test_every_macro_used_in_the_paper_is_defined(nums):
     used = set()
-    for f in [ROOT / "paper" / "main.tex", *sorted((ROOT / "paper" / "sections").glob("*.tex")),
+    for f in [ROOT / "paper" / "main.tex", ROOT / "paper" / "highlights.tex",
+              *sorted((ROOT / "paper" / "sections").glob("*.tex")),
               *sorted((ROOT / "maps" / "figures" / "paper").glob("table_*.tex"))]:
         used |= set(re.findall(r"\\Num([A-Za-z]+)", f.read_text()))
     assert used <= set(nums), sorted(used - set(nums))
@@ -124,6 +125,8 @@ PINNED = {
     "SMTtReqMax": "83", "SuTtReqBest": "18.1", "AppAccelMarginMin": "38", "SuTtReq": "19.8",
     "SuExitTight": "-114", "LoPeriodChange": "12", "SMPeriodChange": "20", "SMTt": "140",
     "SMReferenceStart": "40.8", "LoGripFactor": "3.0",
+    # step 6.8: drive factors and drive position that were typed in Section 6 (notes 4.22)
+    "SMGripFactor": "16.4", "SuGripFactor": "11.5", "SuDrivePos": "0.197",
 }
 
 

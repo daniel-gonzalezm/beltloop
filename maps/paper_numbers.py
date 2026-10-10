@@ -288,7 +288,7 @@ def beta_regime(N: Numbers):
     pA = np.pi / (2 * s.xis[1])
     k = int(np.argmin(abs(poles(lp, 8) - pA)))
     N.add("StAOneShift", 100 * (pA / natural_frequencies(lp, s.beta, k + 1)[k] - 1), 1,
-          "St (take-up at the tail): lengthening of A1 by the take-up mass (%), as in fig_beta (c)")
+          "St (take-up at the tail): lengthening of A1 by the take-up mass (%); panel (c) of fig_beta until step 6.8")
     ratios = [(c.tag, c.c_r * c.t_a.value / c.L.value / 4) for c in CASES_FULL
               if c.t_a is not None and c.c_r is not None]
     tag, r = min(ratios, key=lambda p: p[1])
@@ -431,6 +431,10 @@ def applications(N: Numbers, slow: dict):
           "Su: smallest required T_t along the return, slack side (kN)")
     N.add("AppAccelMarginMin", min(d[f"{t}_accel_margin"].min() for t in ("Lo", "SM", "Su")), 0,
           "condition 2 (take-up follows the belt): smallest margin in the application runs")
+    # Step 6.8: drive factors and drive position of the cases, until then typed in the text.
+    N.add("SMGripFactor", BY_TAG["SM"].E.value, 1, "SM: e^{mu theta} of the tandem drive")
+    N.add("SuGripFactor", BY_TAG["Su"].E.value, 1, "Su: e^{mu theta} of the drive")
+    N.add("SuDrivePos", BY_TAG["Su"].sigma_d.value, 3, "Su: drive position sigma_d/L from the head")
 
 
 def validation(N: Numbers):

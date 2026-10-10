@@ -36,7 +36,7 @@ Symbol & Meaning\\
 $L$ & path length of each strand (carry and return)\\
 $\sigma$ & geometric coordinate from the head pulley in the direction of travel; return strand $0\le\sigma<L$\\
 $\sigma_d$, $\sigma_t$ & positions of the drive and take-up pulleys\\
-$s$, $x=s/L$ & loop coordinate from the drive exit; $s=0$ and $s=2L$ are the faces of the drive pulley\\
+$s$, $x=s/L$ & loop coordinate from the drive exit; $s=0$ and $s=2L$ are the two faces of the drive\\
 $s_t$, $\xi=s_t/L$ & take-up position from the drive exit\\
 $\ell_1$, $\ell_2$ & return belt between head and drive, and between take-up and tail (units of $L$)\\
 $\delta$ & local inclination of the belt path ($\delta>0$ uphill)\\
@@ -45,11 +45,11 @@ $\delta$ & local inclination of the belt path ($\delta>0$ uphill)\\
 $EA$ & axial stiffness of the belt ($E$, Young's modulus)\\
 $\mu_r$, $\mu_c$ & inertial line densities (belt, reduced idler mass, coupled material)\\
 $\mw_r$, $\mw_c$ & line densities that contribute to weight (belt and material)\\
-$c_r$, $c_c$ & wave speeds, $c_j=\sqrt{EA/\mu_j}$; $Z_r=\mu_rc_r$, impedance of the return strand\\
+$c_r$, $c_c$ & wave speeds, $c_j=\sqrt{EA/\mu_j}$; $Z=\mu c$, impedance of a strand ($Z_r=\mu_rc_r$ on the return strand)\\
 $\alpha$ & material coupling factor \citep{lodewijks2002}\\
 $t_v$ & Kelvin--Voigt retardation time\\
 $\Mtu$; $M_w$, $M_c$ & take-up mass referred to the carriage; counterweight and carriage masses\\
-$\nstr$ & belt strands that carry the take-up pulley\\
+$\nstr$; $\Mtu_\mathrm{eq}$ & belt strands that carry the take-up pulley; equivalent two-strand mass, $4\Mtu/\nstr^2$\\
 $\lambda$ & rigging ratio (counterweight travel per unit carriage travel; $\lambda=1$ when hung directly)\\
 $\delta_c$ & inclination of the take-up carriage\\
 $\Tt$ & static belt tension at the take-up\\
@@ -61,27 +61,27 @@ $m_d$, $\hat c$ & reduced drive mass over $\mu_rL$ and slip damping over $\mu_rc
 \midrule
 \multicolumn{2}{@{}l}{\emph{Response}}\\
 $w$, $U$ & elastic displacement of the belt; rigid motion imposed by the drive\\
-$y$, $y_c$ & take-up displacement (two-strand equivalent, positive when the loop lengthens); carriage displacement\\
+$y$, $y_c$ & two-strand take-up displacement ($y>0$ lengthens the loop); carriage displacement\\
 $T_0$, $T_d$ & static and dynamic belt tension; $\hat T=T_d/(\mu_rLa_m)$\\
 $V$, $a$, $a_m$ & drive velocity, acceleration and peak acceleration\\
 $t_a$, $\tau_a$ & start (acceleration) time; $\tau_a=c_rt_a/L$\\
 $r$, $\varphi$; $\rho$ & motion resistance per unit length; its onset function; $r/(\mu a_m)$\\
+$\chi$; $z_t$ & transmission coefficient through the take-up; belt-side impedance of the take-up\\
 \midrule
 \multicolumn{2}{@{}l}{\emph{Dimensionless parameters and modal quantities}}\\
 $\gamma=c_r/c_c$ & wave-speed ratio, $\gamma^2=\mu_c/\mu_r$\\
 $\beta$ & take-up mass ratio, $4\Mtu/(\nstr^2\mu_rL)=(4/\nstr)\lambda\,\Tt/\Wr$ (carriage mass neglected)\\
 $\hat\zeta$ & damping parameter, $c_rt_v/(2L)$; modal damping $\zeta_k=\hat\zeta\Omega_k$\\
-$\tau$ & dimensionless time, $c_rt/L$\\
-$\Omega=\omega L/c_r$ & dimensionless circular frequency\\
+$\tau$; $\Omega$ & dimensionless time, $c_rt/L$; dimensionless circular frequency, $\omega L/c_r$\\
 $\kappa_r$, $\kappa_c$ & dimensionless wavenumbers, $\Omega$ and $\gamma\Omega$\\
 $W_k$, $Y_k$, $m_k$, $\Gamma_k$ & mode shape, take-up amplitude, modal mass and participation factor of mode $k$\\
-$H_A$, $H_B$; $\tilde m$ & receptances of strands A and B at the take-up; modal mass of a strand mode seen from its free end\\
+$H_A$, $H_B$; $\tilde m$ & receptances of strands A and B at the take-up; modal mass seen from there\\
 $\tper{1}$, $\tauper{1}$ & fundamental period of the loop; $\tauper{1}=c_r\tper{1}/L$\\
 $\tper{s}$, $\tauper{s}$ & fundamental period of a fixed--free strand\\
 $\tauB$ & transit time of strand B, $1-\xi+\gamma$ (head drive) or $\gamma+\ell_1+\ell_2$\\
 $m_A$, $m_B$, $m_\mathrm{belt}$ & masses of strands A, B and of the loop; $m_\mathrm{belt}=\mu_rL(1+\gamma^2)$\\
 $D$, $D_y$; $C_\mathrm{max,min}$ & start-up curves of a strand of mass $m_s$: peak end tension over $m_sa_m$, peak travel over quasi-static; extremes with resistances\\
-A1, B1, \dots & modes followed by strand: the $j$th mode born at a fixed--free frequency of strand A or B\\
+A1, B1, \dots & modes followed by strand, born at the fixed--free frequencies of strand A or B\\
 $\betafive$ & take-up mass ratio at which a natural period lengthens by 5\,\%\\
 \bottomrule
 \end{tabular}

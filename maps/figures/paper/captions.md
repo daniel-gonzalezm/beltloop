@@ -9,6 +9,9 @@ when a caption moves into the manuscript (steps 6.5-6.6) its numbers are taken f
 **Step 6.6:** the captions of fig_startup, fig_crawl and fig_validity now live in
 paper/sections/05_results.tex and that of fig_applications in paper/sections/06_application.tex,
 all with macros. Every figure caption is now in the manuscript; this file is reference only.
+**Step 6.8 (decision of the author):** fig_crawl and panel (c) of fig_beta leave the paper.
+fig_crawl is still produced by `paper_figures.py` and its numbers stay in the text of Section
+5.3; fig_beta has two panels (`BETA_A1_PANEL = False`; True restores the A1 panel).
 
 Figures are produced by `python maps/paper_figures.py`; the numbers below are the ones it prints
 and are pinned by `tests/test_figures.py` (and the phase 4-5 tests) where marked †.

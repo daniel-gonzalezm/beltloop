@@ -304,14 +304,20 @@ def b2_region_edges(gamma, tol=TOL5):
     return x1, x2, x3
 
 
+# Step 6.8 (decision of the author): the A1 panel (c) leaves the paper; its scope stays in the
+# text of Section 5.2 and its numbers in paper_numbers.py. True restores the three-panel figure.
+BETA_A1_PANEL = False
+
+
 def fig_beta(d):
     import matplotlib.pyplot as plt
     from matplotlib.colors import LogNorm
     from matplotlib.patches import Patch
     xis, gams = d["xis"], d["gams"]
+    npan = 3 if BETA_A1_PANEL else 2
     fig = plt.figure(figsize=(style.DOUBLE, 64 * style.MM), constrained_layout=True)
-    gs = fig.add_gridspec(1, 3, width_ratios=[1, 1, 1.05])
-    axs = [fig.add_subplot(gs[0, k]) for k in range(3)]
+    gs = fig.add_gridspec(1, npan, width_ratios=[1, 1, 1.05][:npan])
+    axs = [fig.add_subplot(gs[0, k]) for k in range(npan)]
     levels = [0.05, 0.07, 0.1, 0.15, 0.2, 0.3, 0.5, 0.7, 1.0, 1.5, 2.0]
     lab_levels = [0.1, 0.2, 0.3, 0.5, 1.0, 1.5]
     for ax, key, lab in ((axs[0], "B1", "(a) B1 (fundamental)"), (axs[1], "B2", "(b) B2")):
@@ -346,7 +352,25 @@ def fig_beta(d):
     cb = fig.colorbar(cs, ax=axs[:2], pad=0.01, aspect=30)
     cb.set_label(r"$\beta_5$ (5 % longer period)")
     cb.ax.tick_params(labelsize=6)
-    ax = axs[2]
+    if BETA_A1_PANEL:
+        fig_beta_a1(axs[2], d)
+    style.save(fig, "fig_beta")
+    for key in ("B1", "B2"):
+        Z = d[key]; f = Z[np.isfinite(Z)]
+        print(f"  {key}: beta_5 {f.min():.3f}-{f.max():.2f}, median {np.median(f):.2f}; veering "
+              f"{np.isnan(Z).mean():.1%}, not reached {np.isinf(Z).mean():.1%} of the plane")
+    for row in case_margins():
+        print("  {:3s} L = {:5.0f} m, beta = {:.3f}: beta/beta_5(B1) {:.2f} ({:.2f} at the lowest "
+              "coupling); fundamental +{:.2f} % (+{:.2f} %)".format(*row))
+    for g, y in zip(d["g_line"], d["A1"]):
+        ok = np.isfinite(y)
+        dev = y[ok] / (0.205 * d["xl"][ok]) - 1
+        print(f"  A1, gamma {g:g}: exact / (0.205 xi) - 1 from {dev.min():+.1%} to {dev.max():+.1%}; "
+              f"defined at {ok.mean():.0%} of xi")
+
+
+def fig_beta_a1(ax, d):
+    """Panel (c) of fig_beta up to step 6.8: threshold of A1 for gamma = 2 and the tail case."""
     a1 = cached("beta_a1", data_a1, "--recompute" in sys.argv)
     extra = draw_a1(ax, a1, A1_MODE)
     ax.plot(d["xl"], 4 * d["xl"] / 2 * (1.05 ** 2 - 1), "k:", lw=0.9,
@@ -371,19 +395,6 @@ def fig_beta(d):
     ax.legend(handles=h + extra, loc="lower right", fontsize=6)
     ax.grid(alpha=0.25, lw=0.4, which="both")
     style.panel_label(ax, "(c) A1")
-    style.save(fig, "fig_beta")
-    for key in ("B1", "B2"):
-        Z = d[key]; f = Z[np.isfinite(Z)]
-        print(f"  {key}: beta_5 {f.min():.3f}-{f.max():.2f}, median {np.median(f):.2f}; veering "
-              f"{np.isnan(Z).mean():.1%}, not reached {np.isinf(Z).mean():.1%} of the plane")
-    for row in case_margins():
-        print("  {:3s} L = {:5.0f} m, beta = {:.3f}: beta/beta_5(B1) {:.2f} ({:.2f} at the lowest "
-              "coupling); fundamental +{:.2f} % (+{:.2f} %)".format(*row))
-    for g, y in zip(d["g_line"], d["A1"]):
-        ok = np.isfinite(y)
-        dev = y[ok] / (0.205 * d["xl"][ok]) - 1
-        print(f"  A1, gamma {g:g}: exact / (0.205 xi) - 1 from {dev.min():+.1%} to {dev.max():+.1%}; "
-              f"defined at {ok.mean():.0%} of xi")
 
 
 def case_margins():

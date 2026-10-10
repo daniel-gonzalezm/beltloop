@@ -45,7 +45,7 @@
 \title{Closed-form longitudinal modal analysis of belt conveyors with a
        gravity take-up at an arbitrary position}
 % Title decided by the author on 2026-10-07 (the free-end framing moves to the
-% abstract and the contributions); wording reviewed in step 6.8 with the rest.
+% abstract and the contributions); wording reviewed in step 6.8 and kept.
 % Author (step 6.2). Name form decided by the author: "Daniel González-Monsalve", with the
 % hyphen, so that the indexes (Scopus, Web of Science) file both family names; use the same
 % form in ORCID, Scopus Author ID and the submission system. Postal address of the
@@ -62,17 +62,36 @@
 \maketitle
 
 \begin{abstract}
-\TODO{Abstract (step 6.8), at most 250 words: problem; model (two-strand
-continuum, 2:1 take-up at any point of the return strand, drive anywhere,
-Kelvin--Voigt); closed-form characteristic equation and the free-end
-structure (interlacing); closed-form take-up mass correction and the
-dynamic definition of a long conveyor; universal start-up curve of the
-fixed--free strand; validation; application.}
+% Step 6.8. At most 250 words (Elsevier); numbers are macros, so the submission
+% form takes the text from the compiled PDF. The free end is presented as built
+% into the closed form, not as a new observation (step 6.7b, notes 4.35).
+% [HB1989] "settled conveyor by conveyor" depends on Harrison and Barfoot (1989).
+The position of the gravity take-up of a long belt conveyor is a dynamic design
+decision, settled conveyor by conveyor. The loop is modelled as a one-dimensional
+Kelvin--Voigt continuum with two wave speeds, a speed-controlled drive anywhere on
+the loop and a gravity take-up anywhere on the return strand, represented as a
+pulley with mass. Transfer matrices give a closed-form characteristic equation that
+builds in a behaviour known from simulations and records: a light take-up acts as a
+free end. It splits the loop into two strands, fixed at the drive and free at the
+take-up, whose modes interlace with the loop modes. The take-up mass acts as a tip
+mass of a quarter of its value, with a closed-form correction; since the mass
+follows from the take-up tension, it lengthens the fundamental period of the
+published conveyors longer than \qty{1}{\kilo\metre} by at most
+\qty{\NumLongShiftMax}{\percent}. The fundamental belongs to the strand that
+contains the carry strand, and moving the take-up from head to tail shortens it by
+up to a factor of \NumHeadTailRatioGammaOne. Each strand starts up along a
+universal curve of the fixed--free string, giving the drive tensions, take-up
+travel and grip condition in closed form, and a start time of two to three
+fundamental periods. The solution is verified against an independent lumped-mass
+model and is consistent with take-up records of a \qty{5.1}{\kilo\metre} conveyor;
+applied to a published \qty{1}{\kilo\metre} conveyor, it shows that its
+\qty{30}{\second} speed-controlled starts would have slipped on its single drive
+pulley.
 \end{abstract}
 
 \noindent\textbf{Keywords:} belt conveyor; longitudinal vibration;
 gravity take-up; transfer matrix; modal analysis; start-up
-\TODO{check the keyword limit of the target journal}
+% Six keywords; check the limit of the chosen journal in phase 7.
 
 \input{sections/01_introduction}
 \input{sections/02_model}
@@ -90,6 +109,6 @@ gravity take-up; transfer matrix; modal analysis; start-up
 \appendix
 \input{sections/appendix_a_transfer}
 \input{sections/appendix_b_numerics}
-\input{sections/appendix_c_cases}
+% \input{sections/appendix_c_cases}  % step 6.8: empty; the case notes stay in Table 2 (decide in phase 7 if the table must shrink)
 
 \end{document}

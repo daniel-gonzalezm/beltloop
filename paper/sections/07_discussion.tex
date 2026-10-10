@@ -36,14 +36,10 @@ at the tail of a long, low-lift conveyor, strand~A is the whole return strand, w
 take-up ``has to move \ldots\ in order to pull belt out of the drive area'', so the start
 must be very long or the take-up tension high if the drive is not to slip
 \citep{barfoot1997}. The fundamental period also falls when the take-up moves to the tail, by up to
-a factor \NumHeadTailRatioGammaOne\ for equal wave speeds; in the conveyors of
-Section~\ref{sec:application}, whose carry strands are two to three times slower than their
-return strands, it falls by \NumLoPeriodChange\ and \qty{\NumSMPeriodChange}{\percent}
-between the real position and the tail. In all three conveyors, however, the take-up position
-acted mainly through the statics, through the resistance of the return run between the drive
-and the take-up and through the weight of the return strand on a slope, and in two of the
-three the real position was at or near the best one. Moving the
-take-up is therefore a lever on the start time, which scales with $\tper{1}$, more than on
+a factor \NumHeadTailRatioGammaOne\ for equal wave speeds but only by \NumLoPeriodChange\ and
+\qty{\NumSMPeriodChange}{\percent} in the conveyors of Section~\ref{sec:application}, whose
+carry strands are slower; there the position acted mainly through the statics, and in two of
+the three the real position was at or near the best one. Moving the take-up is therefore a lever on the start time, which scales with $\tper{1}$, more than on
 the peak tensions, which the start time controls (Section~\ref{sec:startup}). The other
 reasons quoted in Section~\ref{sec:intro} lie outside the model: the horizontal curve of
 ZISCO \citep{nordell1997zisco}, the second drive of \citet{kruse2019overland} and the drift
@@ -52,17 +48,13 @@ stop simulated by \citet{cdi2002}, in which the drive is not speed-controlled.
 
 \paragraph{Previous continuum models.} The decoupling that \citet{song2012} obtained by
 moving the take-up to the tail is the free end at one particular position; it holds at any
-position, but the two strands are then the ones that the take-up position defines, and with
-the take-up at the head, where their conveyor has it, the fundamental period is
-\qty{\NumSongPeriodHeadLight}{\second} rather than \qty{\NumSongPeriodTailLight}{\second}.
+position, with the two strands that the take-up position defines
+(Section~\ref{sec:frequencies}).
 The single-span formulation of \citet{pang2015} and \citet{li2018} is a different physical
-model rather than a less accurate one. Their end mass moves with the belt and therefore
-shares the rigid-body acceleration of the start, as a cage at the end of a hoisting rope
-would; a take-up pulley is not moved by a uniform translation of the belt along its path
-(Section~\ref{sec:increment}). The two models share the characteristic equation of a tail
-take-up on a uniform loop, but not the response: with a pulley, the start does not excite
-the family $\Omega\tan\Omega=2/\beta$ at all, and the response to the drive acceleration
-does not depend on the take-up mass (Section~\ref{sec:frequencies}). For a gravity take-up
+model rather than a less accurate one: their end mass shares the rigid-body acceleration of
+the start, as a cage at the end of a hoisting rope would, whereas a take-up pulley is not
+moved by a uniform translation of the belt, so that the two models share the characteristic
+equation of a tail take-up but not the response (Section~\ref{sec:frequencies}). For a gravity take-up
 the mass ratio is tied to the take-up tension by Eq.~\eqref{eq:beta_tension}, so a change of
 counterweight at fixed rigging, as in the study of \citet{gao2026}, changes the pre-tension
 as well. In their conveyor the inertia alone would change the fundamental period by
@@ -72,10 +64,8 @@ static tension.
 \paragraph{Drive grip.} The grip condition of Section~\ref{sec:validity} is not new; what
 the universal curve adds is the start-up factor, which follows from the start time relative
 to the fundamental period instead of being fixed in advance. It matters most with a single
-drive pulley. Lodewijks' speed-controlled starts of \qty{30}{\second} would have needed the
-belt to grip with a tension ratio of \NumLoGripRatioMin\ to \NumLoGripRatioMax\ against a limit of
-\NumLoGripFactor, a slip that his model, built without slip at the drive pulleys, could not
-show (Section~\ref{sec:application}). Slip at the drive is observed in the field:
+drive pulley, as Lodewijks' \qty{30}{\second} starts show (Section~\ref{sec:application}).
+Slip at the drive is observed in the field:
 \citet{kulinowski2013} report it on one drive drum during all the recorded starts of a mine
 conveyor with fluid couplings, and \citet{kulinowski2021} during a start with a non-typical
 sequence of motors. Checking grip through the start, and not only in steady running, is
@@ -92,10 +82,9 @@ the hydraulic retarder of \citet{nordell1984}, represented in their model by a d
 the drag is exceeded; the belt beyond their take-up followed the drives for about a second
 and then came free (Section~\ref{sec:fieldchecks}). Nordell observed that adding damping to
 that retarder raised the shock force ``toward the characteristics of a fixed take-up''
-\citep{nordell1987}, and \citet{morrison1987} found both effects in finite-element
-simulations: a front passed the take-up while friction held the counterweight, was almost
-totally reflected once it moved, and was still transmitted in small part through the inertia
-of the counterweight. The free-end results of this
+\citep{nordell1987}, and in the finite-element simulations of \citet{morrison1987} a front
+passed the take-up while friction held the counterweight and was almost totally reflected
+once it moved. The free-end results of this
 paper therefore hold while the carriage moves freely; each of these devices moves the
 take-up towards the fixed pulley, and the impedance formula gives the size of the change for
 the linear ones.
@@ -157,8 +146,7 @@ transfer-matrix formulation extends to more segments and the code accepts a take
 point of the loop.
 
 \paragraph{Validation.} The verification is complete within the idealisation, but the field
-checks are partial (Section~\ref{sec:validation}). A start record that combines a free
-gravity take-up, a speed-controlled drive, a time history of the take-up and published
-conveyor parameters would test the model directly. Modern overland conveyors already record
+checks are partial: a start record with the four elements listed in
+Section~\ref{sec:validation} would test the model directly. Modern overland conveyors already record
 the take-up position in operation \citep{kruse2019overland}; publishing such a record with
 the conveyor data would close this gap.

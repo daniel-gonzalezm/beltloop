@@ -45,10 +45,9 @@ would have produced much larger tension fluctuations in the curve \citep{nordell
 a \qty{21}{\kilo\metre} conveyor with head and tail drives has its gravity take-up at the
 tail \citep{kruse2019overland}; and a simulated drift stop of a \qty{1}{\kilo\metre}
 incline left a minimum tension of \qty{3.5}{\kilo\newton} with the take-up at the head
-against \qty{20.4}{\kilo\newton} at the tail \citep{cdi2002}. Owners have also replaced
-gravity take-ups by fixed ones, or moved them ``in the hope of reducing observed hazards''
-\citep{nordell1987}. In the words of
-\citet{cornet2002}, the location of the take-up is dictated by the terrain and ``by the belt
+against \qty{20.4}{\kilo\newton} at the tail \citep{cdi2002}. Owners have replaced gravity
+take-ups by fixed ones, or moved them ``in the hope of reducing observed hazards''
+\citep{nordell1987}, and in the words of \citet{cornet2002} the location of the take-up is dictated by the terrain and ``by the belt
 dynamic behavior''. In each of these cases the effect of the position is established for
 one conveyor, by simulation or by experience; a general, quantitative description of how
 the take-up position shapes the longitudinal dynamics is not available.
@@ -73,9 +72,9 @@ head drive, where their conveyor has it, to the tail, where the two strands sepa
 two quarter-wave problems. \Citet{pang2015} solved a single viscoelastic span clamped at one end
 and carrying a concentrated mass at the other, a mass that shares the rigid-body
 acceleration of the belt; \citet{li2018} applied the same formulation to a tail take-up,
-with half of the take-up mass at the end of each strand. \Citet{ellis1987} replaced the
-counterweight by a constant tension at the tail of the carry strand and left out the return
-strand, and \citet{pihnastyi2020} prescribe the tensions at both ends of the carry strand.
+with half of the take-up mass at the end of each strand. Other continuum models leave out
+the return strand, with a constant tension at the tail \citep{ellis1987} or prescribed
+tensions at both ends of the carry strand \citep{pihnastyi2020}.
 In a recent discrete study the counterweight mass was varied together with the static
 tension it produces \citep{gao2026}, so that the inertia of the take-up and the pre-tension
 of the belt changed at once.
@@ -86,9 +85,9 @@ is a free end. It holds a constant force, so a stretching front that reaches it 
 reflected as at a free end and almost nothing is transmitted to the belt beyond it. The
 loop then splits at the take-up into two strands, each fixed at the drive and free at the
 take-up, whose lengths are set by the take-up position. Finite-element simulations of
-the 1980s showed the reflection: once the counterweight moves, disturbances that reach it
-are ``primarily reflected'' \citep{morrison1987}, and the tensile wave of the return strand
-in a stop is ``absorbed by the take-up'' \citep{nordell1987}. \Citet{harrison1985b}
+the 1980s showed the reflection: once the counterweight moves, disturbances are ``primarily
+reflected'' \citep{morrison1987}, and the return-strand wave of a stop is ``absorbed by the
+take-up'' \citep{nordell1987}. \Citet{harrison1985b}
 described the consequence in his records, in which the return belt beyond the take-up did
 not move until the stress had travelled round the whole belt. Discrete models reproduce the
 effect case by case, but none of the models above builds it into its structure: they move
@@ -130,10 +129,10 @@ The contributions of the paper are the following.
   written in terms of the take-up tension, the take-up mass lengthens the fundamental period
   of every conveyor longer than \qty{1}{\kilo\metre} in the literature by at most
   \qty{\NumLongShiftMax}{\percent}, and by at most \qty{\NumLongShiftMaxLow}{\percent} over
-  the coupling range of each material. For a counterweight hung directly near the drive and a
-  carry strand at least 1.4 times slower than the return strand, the effect stays below
-  \qty{5}{\percent} as long as the take-up tension is below a quarter of the weight of the
-  return strand.
+  the coupling range of each material. For a counterweight hung directly on two strands, a
+  take-up near the drive and a carry strand at least 1.4 times slower than the return strand,
+  the effect stays below \qty{5}{\percent} as long as the take-up tension is below a quarter
+  of the weight of the return strand.
   \item The fundamental mode belongs to the strand that contains the carry strand, with
   closed-form bounds on its period (Section~\ref{sec:frequencies}). Moving the take-up from
   the head to the tail shortens the fundamental period by a factor of up to

@@ -23,9 +23,9 @@
   Columns: Lo \citep{lodewijks1996}, \qty{1}{\kilo\metre}, one drive pulley
   ($\egrip=\NumLoGripFactor$), published \qty{30}{\second} start; SM
   \citep{suchorab2025longdistance}, \qty{3}{\kilo\metre} incline, tandem drive
-  ($\egrip=16.4$), reference start $3\tper{1}=\qty{\NumSMReferenceStart}{\second}$ (assumed);
+  ($\egrip=\NumSMGripFactor$), reference start $3\tper{1}=\qty{\NumSMReferenceStart}{\second}$ (assumed);
   Su \citep{surtees1995runback}, \qty{805}{\metre}, drive on the return strand at
-  $\sigma_d=0.197$ ($\egrip=11.5$), published \qty{25}{\second} start. (a--c) Take-up tension
+  $\sigma_d=\NumSuDrivePos$ ($\egrip=\NumSuGripFactor$), published \qty{25}{\second} start. (a--c) Take-up tension
   required by each condition (positive tension along the loop during and after the start;
   grip; running sag below \qty{2}{\percent}), with the case's $\Tt$. (d--f) Shortest sine
   start that the case's $\Tt$ admits, with $3\tper{1}$ and the reference start; grey, no start
@@ -85,7 +85,7 @@ tension no longer holds grip even in steady running (\cref{fig:applications}a,~d
 position, next to the drive, is the best one.
 
 \paragraph{Tandem drive on an incline: the statics decide.} The incline of
-\citet{suchorab2025longdistance} has a tandem drive ($\egrip=16.4$) and a take-up tension of
+\citet{suchorab2025longdistance} has a tandem drive ($\egrip=\NumSMGripFactor$) and a take-up tension of
 \qty{\NumSMTt}{\kilo\newton}. Its take-up sits at $\xi=0.1$, near the high end, where at rest
 it must hold the weight of the return strand down the slope: this alone requires
 \qty{\NumSMTtReq}{\kilo\newton}, against \qty{\NumSMTtReqTail}{\kilo\newton} with the take-up
@@ -98,7 +98,7 @@ tension by less than one per cent (\cref{tab:applications}): with a large wave-s
 the carry strand dominates strand~B wherever the take-up is.
 
 \paragraph{Drive on the return strand: the tight side.} Surtees' conveyor has its drive at
-$\sigma_d=0.197$ from the head and the take-up right after it, on the slack side. There the
+$\sigma_d=\NumSuDrivePos$ from the head and the take-up right after it, on the slack side. There the
 running sag governs and requires \qty{\NumSuTtReq}{\kilo\newton}, close to the lowest value
 along the slack side (\qty{\NumSuTtReqBest}{\kilo\newton}); the installed
 \qty{100}{\kilo\newton} admits starts from \qty{\NumSuShortest}{\second}, about
@@ -113,10 +113,6 @@ take-up position acts mainly through the statics: through the resistance of the 
 between the drive and the take-up, and through the weight of the return strand on a slope.
 Its dynamic effect, a fundamental period that changes by \NumLoPeriodChange\ to
 \qty{\NumSMPeriodChange}{\percent} between the real position and the tail, enters through the
-start time, which scales with $\tper{1}$. With one drive pulley the grip fixes the start time;
-with a tandem drive or a generous take-up tension the three conditions admit starts of about
-one fundamental period, and the limits then come from the belt strength and the motor, which
-this analysis does not evaluate. In Lodewijks' and Surtees' conveyors the designers placed
-the take-up at, or very near, its best position; in the incline the positions near the tail
-would be the best and the one next to the drive the worst, and the installed counterweight
-covers both.
+start time. With one drive pulley the grip fixes the start time; with a tandem drive or a
+generous take-up tension the limits come from the belt strength and the motor, which this
+analysis does not evaluate.

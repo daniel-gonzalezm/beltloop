@@ -85,10 +85,9 @@ against \qty{\NumNCArrivalBMeas}{\second} and \qty{\NumNCArrivalCMeas}{\second} 
 On the \qty{\NumMujaLength}{\kilo\metre} Muja conveyor \citep{cdi1998}, a front crossed
 the empty belt in \qty{\NumMujaTime}{\second} during an emergency stop,
 \qty{\NumMujaSpeedMeas}{\metre\per\second}, against \qty{\NumMujaSpeedCalc}{\metre\per\second}
-computed from the belt modulus and density. Both comparisons were made by the authors
-themselves; they are recalled because they support wave speeds computed from the belt
-data, which (A2) uses, and the two-speed kinematics of the loop. Both records are stops,
-outside the start-up analysis; the first also bears on the take-up, as shown below.
+computed from the belt modulus and density. Both comparisons, made by the authors
+themselves on stops, support the wave speeds that (A2) computes from the belt data and the
+two-speed kinematics of the loop; the first also bears on the take-up, as shown below.
 
 \paragraph{The take-up as a free end.} \Citet{harrison1983,harrison1985b} recorded the
 starts of an empty \qty{5.1}{\kilo\metre} steel-cord conveyor with a
@@ -205,31 +204,30 @@ $\beta$.
 \paragraph{Lodewijks (1996).} \Citet[Ch.~8]{lodewijks1996} simulated five
 speed-controlled starts of \qty{30}{\second} of a loaded, horizontal
 \qty{1}{\kilo\metre} conveyor with a finite-element model that includes non-linear
-sag, speed-dependent resistances and the inertia of the pulleys; the take-up is on the
-return strand just downstream of the head drive \citep[Fig.~8.1]{lodewijks1996}. The
-present model is set up from his belt, idler and material data and his take-up force,
-and it reproduces his running tension at the drive entry. The peak belt strains of his
-Table~8.7 are reproduced by the undamped model with differences between
-\qty{\NumLodewijksPeakDevMin}{\percent} and \qty{\NumLodewijksPeakDevMax}{\percent}. In both models the two
-smooth profiles give the largest peaks and the linear ramp with a rest the smallest;
-the plain and offset linear ramps differ by \qty{\NumLodewijksLinearGap}{\percent} in
-the model and \qty{\NumLodewijksLinearGapHis}{\percent} in his results, in reverse order.
+sag, speed-dependent resistances and the inertia of the pulleys, with the take-up just
+downstream of the head drive \citep[Fig.~8.1]{lodewijks1996}. Set up from his belt, idler,
+material and take-up data, the present model reproduces his running tension at the drive
+entry and, without damping, the peak belt strains of his Table~8.7 within
+\qty{\NumLodewijksPeakDevMin}{\percent} to \qty{\NumLodewijksPeakDevMax}{\percent}. In both
+models the two smooth profiles give the largest peaks and the linear ramp with a rest the
+smallest; the plain and offset linear ramps differ by \qty{\NumLodewijksLinearGap}{\percent}
+in the model and \qty{\NumLodewijksLinearGapHis}{\percent} in his results, in reverse order.
 The dynamics after the start do not agree: his oscillation has a period of
-\qty{\NumLodewijksPeriodMeas}{\second}, ours \qty{\NumLodewijksPeriodModel}{\second}.
-Within the present model, a period near his would need an empty carry strand
+\qty{\NumLodewijksPeriodMeas}{\second}, ours \qty{\NumLodewijksPeriodModel}{\second}, and
+within the present model a period near his would need an empty carry strand
 (\qty{\NumLodewijksPeriodEmpty}{\second}) or a drive without speed control
 (\qty{\NumLodewijksPeriodOwnDrive}{\second} with his own drive inertia,
-$m_d=\NumLodewijksOwnDriveMass$), both at odds with his loaded belt and his speed
-control. His sweep over the start duration does not agree with ours either; there his
-take-up travel for a \qty{50}{\second} start, \qty{\NumLodewijksTravelSweepHis}{\metre}
+$m_d=\NumLodewijksOwnDriveMass$), both at odds with his loaded belt and his speed control. His
+sweep over the start duration is not consistent in itself: the take-up travel for a
+\qty{50}{\second} start, \qty{\NumLodewijksTravelSweepHis}{\metre}
 \citep[Fig.~8.46]{lodewijks1996}, is smaller than the mean travel after his
 \qty{30}{\second} start, \qty{\NumLodewijksTravelMeanHis}{\metre} (our fit of his
 Fig.~8.42), whereas the running belt should reach the same travel after any start
-(\qty{\NumLodewijksTravelMeanModel}{\metre} in our model). Finally, his finite-element
-model merges the drive and the take-up into a single moving pulley
-\citep[Eq.~7.55]{lodewijks1996}, a different system from the conveyor of his
-Fig.~8.1. The agreement of the peaks is therefore a cross-check between models of
-different scope, not a validation of either.
+(\qty{\NumLodewijksTravelMeanModel}{\metre} in our model). Since his finite-element model
+also merges the drive and the take-up into a single moving pulley
+\citep[Eq.~7.55]{lodewijks1996}, a different system from the conveyor of his Fig.~8.1, the
+agreement of the peaks is a cross-check between models of different scope, not a validation
+of either.
 % notes 4.11; validation/lodewijks_case.py, data/lodewijks_case.json
 
 \paragraph{Song et al.\ (2012).} The two-strand continuum of \citet{song2012} is the
@@ -251,9 +249,7 @@ Their geometry is used in Section~\ref{sec:frequencies}, with the take-up return
 head drive of their Fig.~1.
 % notes 4.12; validation/song_case.py; tests/test_song.py
 
-In summary, the closed-form solution is verified against an independent numerical
-model to the round-off of that model. The field records confirm the two-speed
-kinematics of the loop and the take-up as a free end; the only start record with a
-measured take-up was made with a drive that was not speed-controlled, and its remaining
-differences are traced to that drive. None of the records tests the take-up mass,
-which in long conveyors has almost no effect (Section~\ref{sec:betaregime}).
+In summary, the solution is verified to the round-off of the lumped-mass model; the field
+records confirm the two-speed kinematics and the take-up as a free end, with the remaining
+differences of the only start record traced to its drive; and none of the records tests the
+take-up mass, which in long conveyors has almost no effect (Section~\ref{sec:betaregime}).

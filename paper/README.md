@@ -16,6 +16,8 @@ pdflatex main && bibtex main && pdflatex main && pdflatex main
   text is a macro defined there. Do not type computed numbers in the text.
 - `figures/`: figures drawn for the paper only (`fig_loop.pdf`, by `maps/fig_loop.py`).
 - `references.bib`: the only bibliography of the paper (merged and checked in step 6.2).
+- `highlights.tex`: the highlights for the submission (step 6.8), with the same number macros;
+  build with `pdflatex highlights`.
 
 Figures and tables are read directly from the code outputs
 (`../maps/figures/paper/`, `../validation/figures/`, `figures/`), so regenerating them with

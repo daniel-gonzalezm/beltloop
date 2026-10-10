@@ -1,0 +1,28 @@
+% =====================================================================
+% highlights.tex -- highlights for the submission (step 6.8).
+% Elsevier asks for 3 to 5 bullet points of at most 85 characters each,
+% spaces included, in a separate file; check against the guide of the
+% chosen journal in phase 7. Numbers are macros of paper_numbers.tex, so
+% the text stays in step with the code; the submission file is the text of
+% the compiled PDF. Build: pdflatex highlights
+% Lengths checked in step 6.8 with the macros expanded (83, 76, 84, 82 and
+% 82 characters).
+% =====================================================================
+\documentclass[a4paper,11pt]{article}
+\usepackage[margin=25mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{siunitx}
+\input{paper_numbers}
+\pagestyle{empty}
+\begin{document}
+\noindent\textbf{Highlights}
+\begin{itemize}
+  \item Closed-form characteristic equation for a belt conveyor loop with a gravity take-up
+  \item The loop splits at a light take-up into two fixed--free strands, in closed form
+  \item Take-up mass follows from its tension; it changes long-belt periods by at most
+        \qty{\NumLongShiftMax}{\percent}
+  \item Moving the take-up from head to tail shortens the fundamental period up to twofold
+  \item A universal start-up curve gives drive tensions, take-up travel and the grip limit
+\end{itemize}
+\end{document}
