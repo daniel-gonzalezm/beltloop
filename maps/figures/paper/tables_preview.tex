@@ -6,6 +6,8 @@
 \usepackage[margin=18mm]{geometry}
 \usepackage{amsmath,array,booktabs,threeparttable}
 \usepackage[numbers,sort&compress]{natbib}
+% The tables open a widetable float (step 7.1); here it is a plain full-width float.
+\newenvironment{widetable}[1][t]{\begin{table*}[#1]}{\end{table*}}
 \begin{document}
 \input{table_cases}
 \input{table_applications}

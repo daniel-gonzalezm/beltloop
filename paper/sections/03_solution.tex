@@ -232,7 +232,7 @@ start-up in mode $k$. The dynamic tension and the take-up displacement are
   \hat y(\tau)=\sum_kp_k\,Y_k .
 \end{equation}
 
-\paragraph{Quasi-static limit.} When the loads vary slowly compared with the
+\paragraph{Quasi-static limit} When the loads vary slowly compared with the
 fundamental period, $p_k\simeq-(\Gamma_k\hat a+R_k\varphi)/\Omega_k^2$ and the series
 sums to
 \begin{equation}\label{eq:quasistatic}
@@ -251,7 +251,7 @@ $\hat y_{\mathrm{qs}}=\tfrac12\bigl(\tfrac32-2\xi+\tfrac12\gamma^2\bigr)\hat a$.
 Equation~\eqref{eq:quasistatic} is the reference for the dynamic amplification
 factors of Section~\ref{sec:startup}.
 
-\paragraph{Start-up profiles.} The base case is the sinusoidal acceleration
+\paragraph{Start-up profiles} The base case is the sinusoidal acceleration
 \begin{equation}\label{eq:profile}
   a(t)=a_m\sin\frac{\pi t}{t_a}\quad(0\le t\le t_a),\qquad a_m=\frac{\pi V_\infty}{2t_a},
 \end{equation}
@@ -270,7 +270,7 @@ tension $P_k|W_k'(x)|$. This is the classical residual spectrum of a half-sine p
 it vanishes when $t_a=(j+\tfrac12)\,t_k$, $j=1,2,\dots$, where $t_k=2\pi/\omega_k$ is the
 modal period, and decays as $\Omega_k^{-3}$ for $\Omega_k\gg\varpi$.
 
-\paragraph{Motion resistances.} With a unit step $\varphi$, each mode overshoots its
+\paragraph{Motion resistances} With a unit step $\varphi$, each mode overshoots its
 quasi-static response by a factor of two, but the tension field is not bounded by
 that factor: with $\gamma=2$, $\beta=0.1$ and $\xi=0.05$, the undamped peak at the
 drive entry reaches \NumStepOvershootEntry\ times the quasi-static value. The factor
@@ -278,7 +278,7 @@ is two only for a uniform loop with a light take-up. A smooth onset,
 $\varphi=V/V_\infty$, removes most of the overshoot (Section~\ref{sec:startup}).
 % tests: test_response.py::test_step_overshoot_can_exceed_two (2.18, confirmed with FE)
 
-\paragraph{Admissibility.} The linear solution holds while three conditions are met
+\paragraph{Admissibility} The linear solution holds while three conditions are met
 (Section~\ref{sec:validity}). (i)~The total tension, static tension at rest plus
 dynamic tension with the resistances included, stays positive along the loop; in
 steady running this sum is the running tension. (ii)~The take-up follows the belt:

@@ -1,7 +1,7 @@
 % Appendix A -- transfer matrices and orthogonality (model.tex, step 6.3).
 \section{Transfer matrices and orthogonality}\label{app:transfer}
 
-\paragraph{Matrices of the two strands.} With $\mat S_r(\ell)=\mat S(\ell,\Omega)$ and
+\paragraph{Matrices of the two strands} With $\mat S_r(\ell)=\mat S(\ell,\Omega)$ and
 $\mat S_c(\ell)=\mat S(\ell,\gamma\Omega)$, and positions in units of $L$, the products
 of~\eqref{eq:chareq} are those of \cref{tab:AB}; the factors are written from right
 to left in the order in which the belt meets the segments. A take-up on the tight side
@@ -15,7 +15,7 @@ the direction of travel exchanges the two.
   strand.}
   \label{tab:AB}
   \small
-  \begin{tabular}{@{}lll@{}}
+  \begin{tabular}{@{}>{\raggedright\arraybackslash}p{36mm}ll@{}}
     \toprule
     Drive position & $\mat A$ & $\mat B$\\
     \midrule
@@ -29,7 +29,7 @@ the direction of travel exchanges the two.
   \end{tabular}
 \end{table}
 
-\paragraph{Direction of travel.} Let $\mat Q=\operatorname{diag}(1,-1)$. Each factor
+\paragraph{Direction of travel} Let $\mat Q=\operatorname{diag}(1,-1)$. Each factor
 $\mat E\in\{\mat S,\mat J\}$ satisfies $\mat Q\mat E\mat Q=\mat E^{-1}$, so the product
 $\mat P=\mat E_m\cdots\mat E_1$ of a chain and the product $\mat P^{\mathrm R}=\mat E_1\cdots\mat E_m$
 of the reversed chain are related by $\mat P^{\mathrm R}=\mat Q\mat P^{-1}\mat Q$. Since
@@ -38,7 +38,7 @@ $P_{12}=0$, and with it the spectrum, does not depend on the direction of travel
 same relation gives $\operatorname{tr}\mat P^{\mathrm R}=\operatorname{tr}\mat P$, so the
 torque-controlled equation~\eqref{eq:chareq_torque} is also invariant.
 
-\paragraph{Orthogonality.} For two modes $(W_i,Y_i)$ and $(W_j,Y_j)$, multiplying
+\paragraph{Orthogonality} For two modes $(W_i,Y_i)$ and $(W_j,Y_j)$, multiplying
 \eqref{eq:eigen} for mode $i$ by $W_j$, integrating over the segments and integrating by
 parts gives
 \begin{equation}\label{eq:orth_derivation}

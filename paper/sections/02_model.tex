@@ -145,13 +145,13 @@ positive when the loop lengthens.
 
 \subsection{Interface and boundary conditions}\label{sec:interfaces}
 
-\paragraph{Drive pulley.} Without slip and with prescribed velocity, both faces of
+\paragraph{Drive pulley} Without slip and with prescribed velocity, both faces of
 the drive pulley follow $U(t)$; by~\eqref{eq:decomposition},
 \begin{equation}\label{eq:bc_drive}
   w(0,t)=w(2L,t)=0.
 \end{equation}
 
-\paragraph{Head and tail pulleys.} By (A5) these pulleys transmit displacement and
+\paragraph{Head and tail pulleys} By (A5) these pulleys transmit displacement and
 tension unchanged,
 \begin{equation}\label{eq:bc_ht}
   \jump{w}=0,\qquad \jump{T_d}=0,
@@ -159,7 +159,7 @@ tension unchanged,
 where $\jump{f}=f(s^+)-f(s^-)$. The same conditions hold at any other point where the
 line density changes, such as the loading point.
 
-\paragraph{Take-up pulley.} Consider first a pulley hung on the two belt branches
+\paragraph{Take-up pulley} Consider first a pulley hung on the two belt branches
 that wrap it by $180^\circ$ ($\nstr=2$). Because the pulley is free to rotate (A7),
 the tension is the same on both sides,
 \begin{equation}\label{eq:bc_tu_tension}
@@ -190,9 +190,11 @@ variation with respect to $y$ gives~\eqref{eq:bc_tu_dyn}. The static terms cance
 exactly, since the work of the static tension on the jump, $2\Tt y$, equals the work
 of the take-up weight. The energy balance is
 \begin{equation}\label{eq:energy}
-  \frac{\dd}{\dd t}\left[\frac12\int_0^{2L}\!\left(\mu w_t^2+EA\,w_s^2\right)\dd s
-  +\frac12\Mtu\dot y^2\right]
-  =-\int_0^{2L}\!EA\,t_v\,w_{st}^2\,\dd s-\int_0^{2L}\!(\mu a+r\varphi)\,w_t\,\dd s .
+\begin{split}
+  &\frac{\dd}{\dd t}\left[\frac12\int_0^{2L}\!\left(\mu w_t^2+EA\,w_s^2\right)\dd s
+  +\frac12\Mtu\dot y^2\right]\\
+  &\qquad=-\int_0^{2L}\!EA\,t_v\,w_{st}^2\,\dd s-\int_0^{2L}\!(\mu a+r\varphi)\,w_t\,\dd s .
+\end{split}
 \end{equation}
 
 Eliminating $y$ between~\eqref{eq:bc_tu_jump} and~\eqref{eq:bc_tu_dyn} gives
@@ -240,11 +242,11 @@ directly on the carriage) and $\delta_c$ the inclination of the carriage track
   \Mtu=M_c+\lambda^2M_w=\frac{\lambda\,\nstr\,\Tt}{g}+(1-\lambda\sin\delta_c)\,M_c .
 \end{equation}
 With the equivalent mass~\eqref{eq:nmap} and the weight of the return strand
-$\Wr=g\mu_rL$, the take-up mass ratio defined in Section~\ref{sec:dimensionless}
+$\Wret=g\mu_rL$, the take-up mass ratio defined in Section~\ref{sec:dimensionless}
 becomes
 \begin{equation}\label{eq:beta_tension}
   \beta=\frac{4\Mtu}{\nstr^2\mu_rL}
-  =\frac{4}{\nstr}\,\lambda\,\frac{\Tt}{\Wr}+\frac{4(1-\lambda\sin\delta_c)\,M_c}{\nstr^2\mu_rL}.
+  =\frac{4}{\nstr}\,\lambda\,\frac{\Tt}{\Wret}+\frac{4(1-\lambda\sin\delta_c)\,M_c}{\nstr^2\mu_rL}.
 \end{equation}
 The second term vanishes for a vertical take-up with a directly hung counterweight
 and is otherwise small, since the carriage weighs much less than the counterweight.
@@ -259,7 +261,7 @@ $\Tt=T_{2,\min}+r_r\,\xi L$, where $T_{2,\min}$ is the least admissible slack-si
 tension and $r_r$ the running resistance per unit length of the return strand.
 Section~\ref{sec:masscorrection} shows that the mass enters the dynamics only as a
 correction, which is why the results are given in terms of $\xi$ and $\gamma$ with
-$\beta$ as a correction; Section~\ref{sec:betaregime} evaluates $\Tt/\Wr$ for the
+$\beta$ as a correction; Section~\ref{sec:betaregime} evaluates $\Tt/\Wret$ for the
 conveyors in the literature.
 
 \subsection{Dimensionless formulation}\label{sec:dimensionless}
@@ -268,17 +270,19 @@ Lengths are scaled by $L$, times by the transit time of the return strand $L/c_r
 accelerations by the peak drive acceleration $a_m$, displacements by $a_mL^2/c_r^2$
 and tensions by the inertial force of the return strand $\mu_rLa_m$:
 \begin{equation}\label{eq:scales}
+\begin{gathered}
   x=\frac{s}{L},\quad \tau=\frac{c_rt}{L},\quad
-  \hat w=\frac{c_r^2}{a_mL^2}\,w,\quad \hat y=\frac{c_r^2}{a_mL^2}\,y,\quad
+  \hat w=\frac{c_r^2}{a_mL^2}\,w,\quad \hat y=\frac{c_r^2}{a_mL^2}\,y,\\
   \hat T=\frac{T_d}{\mu_rLa_m},\quad \hat a=\frac{a}{a_m},\quad
   \hat r=\frac{r}{\mu_ra_m}.
+\end{gathered}
 \end{equation}
 The dimensionless parameters are
 \begin{equation}\label{eq:params}
-  \gamma=\frac{c_r}{c_c}=\sqrt{\frac{\mu_c}{\mu_r}},\qquad
-  \beta=\frac{4\Mtu}{\nstr^2\mu_rL},\qquad
-  \xi=\frac{s_t}{L},\qquad
-  \hat\zeta=\frac{c_rt_v}{2L},\qquad
+  \gamma=\frac{c_r}{c_c}=\sqrt{\frac{\mu_c}{\mu_r}},\quad
+  \beta=\frac{4\Mtu}{\nstr^2\mu_rL},\quad
+  \xi=\frac{s_t}{L},\quad
+  \hat\zeta=\frac{c_rt_v}{2L},\quad
   \tau_a=\frac{c_rt_a}{L},
 \end{equation}
 together with the drive position $\sigma_d/L$ and the shape of the start-up profile,
@@ -289,7 +293,7 @@ becomes
 \begin{gather}
   \hat\mu\,\hat w_{\tau\tau}=\frac{\partial\hat T}{\partial x}-\hat\mu\,\hat a(\tau)
   -\hat r(x)\,\varphi(\tau),\qquad \hat T=\hat w_x+2\hat\zeta\,\hat w_{x\tau},\label{eq:pde_nd}\\
-  \hat w(0,\tau)=\hat w(2,\tau)=0,\qquad \jump{\hat w}_\xi=-2\hat y,\qquad
+  \hat w(0,\tau)=\hat w(2,\tau)=0,\qquad \jump{\hat w}_\xi=-2\hat y,\notag\\
   \jump{\hat T}_\xi=0,\qquad \beta\,\hat y_{\tau\tau}=-2\,\hat T(\xi,\tau),\label{eq:bc_nd}
 \end{gather}
 with $\hat w$ and $\hat T$ continuous at the head and tail pulleys. In the elastic case

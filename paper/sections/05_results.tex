@@ -47,7 +47,7 @@ participation jump there; followed by strand, they vary smoothly and most result
 closed form. \Cref{fig:modal} maps the fundamental in the plane $(\xi,\gamma)$, the two
 parameters left when $\beta\to0$, with the conveyors of \cref{tab:cases} marked on it.
 
-\paragraph{The fundamental belongs to strand B.} With a head drive, strand~B is the
+\paragraph{The fundamental belongs to strand B} With a head drive, strand~B is the
 return belt between the take-up and the tail followed by the whole carry strand, which
 ends at the fixed face of the drive. For $\gamma\ge1$ it holds the fundamental for every
 take-up position. In Eq.~\eqref{eq:strandB} both tangents grow from zero on
@@ -80,7 +80,7 @@ strand~B would give \qty{\NumSongFourTransit}{\second}
 ($\tauper{1}/(4\tauB)=\NumSongFourTransitRatio$). Relocating the take-up is not a neutral
 simplification of the model.
 
-\paragraph{Modal participation.} By Eq.~\eqref{eq:parseval}, $\Gamma_k^2m_k/(1+\gamma^2)$ is
+\paragraph{Modal participation} By Eq.~\eqref{eq:parseval}, $\Gamma_k^2m_k/(1+\gamma^2)$ is
 the fraction of the belt inertia that the start-up excites in mode~$k$. A uniform
 fixed--free string has $8/\pi^2$ of its mass in its fundamental. Applied to strand~B,
 whose mass is $m_B=\mu_rL\,(1-\xi+\gamma^2)$, this gives
@@ -99,7 +99,7 @@ $\gamma$ with the take-up towards the tail, where B1 and A1 are close and the ma
 participation from one to the other while the pair keeps its sum; the median change over the
 plane is \qty{\NumModalHatchedMedian}{\percent}.
 
-\paragraph{Take-up at the tail of a uniform loop.} For $\gamma=1$ and $\xi=1$ the two
+\paragraph{Take-up at the tail of a uniform loop} For $\gamma=1$ and $\xi=1$ the two
 strands are identical, and the inertial load of the start lengthens strand~B as much as it
 shortens strand~A: the quasi-static take-up travel,
 $\tfrac12(\tfrac32-2\xi+\tfrac12\gamma^2)\hat a$, vanishes. The load therefore does no work
@@ -115,7 +115,7 @@ family; a take-up pulley, around which the belt runs, is not moved by the rigid 
 the mass, not in their solution.
 % test_participation.py (tail, gamma = 1: Gamma = 0 on the Li-Pang family, Y = 0 on cos = 0)
 
-\paragraph{Drive on the return strand.} With the drive at $\sigma_d$ on the return strand
+\paragraph{Drive on the return strand} With the drive at $\sigma_d$ on the return strand
 and the take-up downstream of it, strand~B runs from the take-up through a return run
 $\ell_2$ to the tail, the whole carry strand, and a return run $\ell_1=\sigma_d/L$ from the
 head to the drive; strand~A is the uniform return run between the drive and the take-up.
@@ -177,7 +177,7 @@ amplification (Section~\ref{sec:startup}).
 \end{figure}
 \input{../maps/figures/paper/table_cases}
 
-\paragraph{The threshold.} Let $\Omega_p$ be a fixed--free frequency of one strand and
+\paragraph{The threshold} Let $\Omega_p$ be a fixed--free frequency of one strand and
 $\Omega_t=\Omega_p/1.05$ the frequency of the same mode with a period \qty{5}{\percent}
 longer. Since the characteristic equation in the form~\eqref{eq:receptance} is linear in
 $1/\beta$, the take-up mass that places a root at $\Omega_t$ is explicit,
@@ -213,14 +213,14 @@ of A1 (Lo), so they drive it quasi-statically. A1 matters only with the take-up 
 tail and a fast start. In the one case with the take-up at the tail, St, the take-up mass
 lengthens A1 by \qty{\NumStAOneShift}{\percent}.
 
-\paragraph{Where the conveyors lie.} By Eq.~\eqref{eq:beta_tension}, the mass ratio follows
-from the take-up tension, $\beta=(4/\nstr)\lambda\,\Tt/\Wr$ with $\Wr=g\mu_rL$, and can be
+\paragraph{Where the conveyors lie} By Eq.~\eqref{eq:beta_tension}, the mass ratio follows
+from the take-up tension, $\beta=(4/\nstr)\lambda\,\Tt/\Wret$ with $\Wret=g\mu_rL$, and can be
 factorised as
 \begin{equation}\label{eq:beta_factors}
-  \beta=\frac{4\lambda}{\nstr}\,\frac{F_U}{\Wr}\,\frac{\Tt}{F_U},
+  \beta=\frac{4\lambda}{\nstr}\,\frac{F_U}{\Wret}\,\frac{\Tt}{F_U},
 \end{equation}
 where $F_U$ is the running peripheral force at the drive. For a given slope, load and
-resistance coefficients, neither $F_U/\Wr$ nor $\Tt/F_U$ depends on the length: the take-up
+resistance coefficients, neither $F_U/\Wret$ nor $\Tt/F_U$ depends on the length: the take-up
 tension is sized by requirements that grow in proportion to the length, chiefly the grip at
 the drive during running and start-up \citep[Eqs.~47--50]{din22101} and the weight of the
 return strand on a slope, with the sag limits \citep[Eqs.~51--52]{din22101} as a further
@@ -231,18 +231,18 @@ $\beta$ in \cref{tab:cases} are computed from the design take-up tension of each
 which can be checked against its static balance, rather than from a published counterweight
 mass.
 
-For the conveyors of \qty{1}{\kilo\metre} or longer in \cref{tab:cases}, $\Tt/\Wr$ is
+For the conveyors of \qty{1}{\kilo\metre} or longer in \cref{tab:cases}, $\Tt/\Wret$ is
 \NumLongTtWrMin\ to \NumLongTtWrMax, $\beta\le\NumLongBetaMax$ and $\beta/\betafive$ of the
 fundamental is \NumLongBetaRatioMin\ to \NumLongBetaRatioMax: they lie at least
 \NumLongMarginMin\ times below their threshold, \NumLongMarginMinLow\ times at the weakest
 coupling of their material. The take-up mass lengthens their fundamental period by at most
 \qty{\NumLongShiftMax}{\percent}, and by at most \qty{\NumLongShiftMaxLow}{\percent} over the
 coupling range of each material. With a counterweight hung directly on two strands,
-$\beta=2\Tt/\Wr$; for a take-up near the drive and $\gamma\ge1.4$ the threshold of the
+$\beta=2\Tt/\Wret$; for a take-up near the drive and $\gamma\ge1.4$ the threshold of the
 fundamental is at least \NumBetaFiveMinNearDrive, so the take-up mass changes the
 fundamental by less than \qty{5}{\percent} as long as
 \begin{equation}\label{eq:rule}
-  \Tt\lesssim\frac{\Wr}{4}.
+  \Tt\lesssim\frac{\Wret}{4}.
 \end{equation}
 This gives a dynamic meaning to the long conveyor, a term without a strict definition in
 the technical literature \citep{suchorab2025longdistance}: a conveyor is long, for its
@@ -324,12 +324,14 @@ starts and ends with a jump in jerk: by Eq.~\eqref{eq:residual} the residual of 
 relative to its quasi-static response falls as $\varpi/\Omega_k$, not faster.
 % tests: test_metrics.py (wave law, exact for tau_a <= T_s/2; peak 1.590 at 0.87; D(1), D(2), D(5))
 
-\paragraph{Collapse of the loop.} Applied to the two strands, the curve gives the three
+\paragraph{Collapse of the loop} Applied to the two strands, the curve gives the three
 quantities that matter in a start, all in closed form:
 \begin{equation}\label{eq:startup_formulas}
+\begin{gathered}
   \frac{\Delta T_\mathrm{entry}}{m_Ba_m}\simeq D\!\left(\frac{t_a}{\tper{1}}\right),\qquad
-  \frac{\Delta T_\mathrm{exit}}{m_Aa_m}\simeq -D\!\left(\frac{t_a}{\tper{A1}}\right),\qquad
+  \frac{\Delta T_\mathrm{exit}}{m_Aa_m}\simeq -D\!\left(\frac{t_a}{\tper{A1}}\right),\\
   \frac{y_\mathrm{max}}{a_mL^2/c_r^2}\simeq\frac12\left[D_y\!\left(\frac{t_a}{\tper{1}}\right)S_B-S_A\right],
+\end{gathered}
 \end{equation}
 where $\Delta T$ is the extreme dynamic tension at each face of the drive, $m_A=\mu_r\xi L$ is
 the mass of strand~A and $\tper{A1}=4\xi L/c_r$ its period, $D_y$ is the curve of the
@@ -355,7 +357,7 @@ the drive within $0.2L$ of the head.
 % tests: test_metrics.py::test_travel_from_the_strands (rel 0.06);
 % test_intermediate.py::test_startup_collapse_intermediate (+4.5 %, +2.5 %)
 
-\paragraph{Profiles, damping and resistances.} By peak acceleration the triangular profile
+\paragraph{Profiles, damping and resistances} By peak acceleration the triangular profile
 seems the mildest (\cref{fig:startup}a, maximum \NumStartTriangularMax\ against
 \NumStartPeakMax\ for the sine and \NumStartParabolicMax\ for the parabolic profile), but
 the three profiles reach the same speed in the same time with different peaks. Compared at
@@ -370,7 +372,7 @@ peak exceeds the running value by a factor \NumStartResOne\ at one period, \NumS
 at two and \NumStartResFive\ at five, whereas a step onset doubles every modal response
 (Section~\ref{sec:modal}).
 
-\paragraph{Design rule.} Since the amplification depends on $t_a/\tper{1}$ only, the start
+\paragraph{Design rule} Since the amplification depends on $t_a/\tper{1}$ only, the start
 time needed for a given amplification is proportional to the fundamental period. A start of
 two to three periods keeps the inertial amplification at \NumStartDThree--\NumStartDTwo\ and
 that of the resistances below \NumStartResTwo; we therefore take $t_a\gtrsim2$--$3\,\tper{1}$
@@ -386,7 +388,7 @@ types and show only where real start times sit relative to $\tper{1}$. A criteri
 his examples; the criterion here is the tension amplification.
 % numbers: Practice* (paper_figures.PRACTICE, exact t_1 of each case)
 
-\paragraph{Initial crawl.} Practice often starts with a crawl at low speed: a ramp to
+\paragraph{Initial crawl} Practice often starts with a crawl at low speed: a ramp to
 \qty{4}{\percent} of the speed in \qty{20}{\second} held for \qty{60}{\second} at ZISCO
 \citep{nordell1997zisco}, and a plateau of \qty{60}{\second} at \qty{10}{\percent} added at
 Henderson so that the take-up could keep pace with the belt stretch
@@ -446,7 +448,7 @@ Let $C_\mathrm{max}$ and $C_\mathrm{min}$ be the extremes of the fixed-end tensi
 uniform strand under the combined load, per unit inertial force $m_sa_m$; for $\rho=0$,
 $C_\mathrm{max}=D$.
 
-\paragraph{(i) Slack.} With the take-up as a free end the strands share only $\Tt$, and the
+\paragraph{(i) Slack} With the take-up as a free end the strands share only $\Tt$, and the
 belt can lose tension in two places. During the start, the tension at the drive exit drops by the
 dynamic tension of strand~A, which requires $T_2\ge m_Aa_m\,[C_\mathrm{max}(t_a/\tper{A1})-\rho]$
 (\cref{fig:validity}a). This estimate is exact, since strand~A is uniform; for slow starts it
@@ -462,7 +464,7 @@ for $t_a=(j+\tfrac12)\,\tper{1}$, where the first mode is left at rest, and deca
 $0.8\,\tper{1}/t_a$. For $\rho\ge1$ it almost disappears, because the running resistances
 hold strand~B in tension.
 
-\paragraph{(ii) The take-up follows the belt.} The carriage moves with $2/\nstr$ of the
+\paragraph{(ii) The take-up follows the belt} The carriage moves with $2/\nstr$ of the
 belt-side acceleration and must not be asked to accelerate faster than $\nstr\Tt/\Mtu$ ($g$
 for a counterweight hung directly). For $1\le\gamma\le3$, any take-up position and any start
 time, the belt-side acceleration stays below \NumTakeupAccEnvelope\,$a_m$ (the exact bound
@@ -477,7 +479,7 @@ for $\tau_a\ge1.4\,\tauper{1}$.
 % numbers: Takeup* macros (maps/validity.kinematics, cached in paper_numbers_slow.json);
 % tests: test_validity.py (d'Alembert, exact gamma = 1 bounds, envelope 2.5 a_m)
 
-\paragraph{(iii) Drive grip.} The prescribed velocity presumes that the belt does not slip
+\paragraph{(iii) Drive grip} The prescribed velocity presumes that the belt does not slip
 on the drive pulley, $T(2L,t)\le\egrip\,T(0,t)$ throughout the start. Adding the peaks of
 the two strands, which is conservative,
 \begin{equation}\label{eq:grip}
@@ -509,7 +511,7 @@ Section~\ref{sec:startup} keeps starts well outside that range.
 % tests: test_validity.py::test_requirement_against_full_loop, test_requirement_accuracy_band
 % (0.04 m_belt), test_grip_requirement (3 %), test_rebound_curve (0.8 / r)
 
-\paragraph{Take-up on the tight side.} With the drive on the return strand, a take-up
+\paragraph{Take-up on the tight side} With the drive on the return strand, a take-up
 upstream of it, on its tight side, leaves the model valid but is impractical
 (\cref{fig:validity}d). The take-up then anchors the drive-entry tension, and the
 resistance of the carry strand is subtracted from the slack side, so the counterweight must

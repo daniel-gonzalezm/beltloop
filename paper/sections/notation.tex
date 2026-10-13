@@ -21,7 +21,7 @@
 %   - Rigging ratio lambda (model.tex used i, the imaginary unit).
 %   - T_t/F_U gets no symbol (the notes of step 5.4 used tau).
 % =====================================================================
-\begin{table}[p]
+\begin{table}[tp]
 \centering
 \caption{Notation. Dimensionless quantities are scaled with the strand length $L$,
 the return-strand transit time $L/c_r$, the peak drive acceleration $a_m$ and the
@@ -54,10 +54,24 @@ $\lambda$ & rigging ratio (counterweight travel per unit carriage travel; $\lamb
 $\delta_c$ & inclination of the take-up carriage\\
 $\Tt$ & static belt tension at the take-up\\
 $T_1$, $T_2$ & belt tensions at the drive entry and exit (tight and slack side)\\
-$\Wr=g\mu_rL$ & weight of the return strand\\
+$\Wret=g\mu_rL$ & weight of the return strand\\
 $F_U$ & running peripheral force at the drive (DIN 22101)\\
 $\egrip$ & drive factor (friction coefficient $\mu$ between belt and pulley, wrap angle $\theta$)\\
 $m_d$, $\hat c$ & reduced drive mass over $\mu_rL$ and slip damping over $\mu_rc_r$ (drive without speed control)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% Second part of the same table (step 7.1): at 12 pt the full table is taller than
+% a page, so it is set as two floats with the same number.
+\begin{table}[tp]
+\centering
+\addtocounter{table}{-1}
+\caption{Notation (continued).}
+\footnotesize
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{0.72\linewidth}@{}}
+\toprule
+Symbol & Meaning\\
 \midrule
 \multicolumn{2}{@{}l}{\emph{Response}}\\
 $w$, $U$ & elastic displacement of the belt; rigid motion imposed by the drive\\
@@ -70,7 +84,7 @@ $\chi$; $z_t$ & transmission coefficient through the take-up; belt-side impedanc
 \midrule
 \multicolumn{2}{@{}l}{\emph{Dimensionless parameters and modal quantities}}\\
 $\gamma=c_r/c_c$ & wave-speed ratio, $\gamma^2=\mu_c/\mu_r$\\
-$\beta$ & take-up mass ratio, $4\Mtu/(\nstr^2\mu_rL)=(4/\nstr)\lambda\,\Tt/\Wr$ (carriage mass neglected)\\
+$\beta$ & take-up mass ratio, $4\Mtu/(\nstr^2\mu_rL)=(4/\nstr)\lambda\,\Tt/\Wret$ (carriage mass neglected)\\
 $\hat\zeta$ & damping parameter, $c_rt_v/(2L)$; modal damping $\zeta_k=\hat\zeta\Omega_k$\\
 $\tau$; $\Omega$ & dimensionless time, $c_rt/L$; dimensionless circular frequency, $\omega L/c_r$\\
 $\kappa_r$, $\kappa_c$ & dimensionless wavenumbers, $\Omega$ and $\gamma\Omega$\\

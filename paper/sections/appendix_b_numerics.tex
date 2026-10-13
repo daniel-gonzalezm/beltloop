@@ -12,7 +12,7 @@ Section~\ref{sec:lumped} and the scripts that produce every figure, table and nu
 of the paper. This appendix describes the numerical steps that the closed form leaves
 open, and the lumped-mass model used for its verification.
 
-\paragraph{Natural frequencies.} The roots of~\eqref{eq:chareq} are found without a
+\paragraph{Natural frequencies} The roots of~\eqref{eq:chareq} are found without a
 search grid, from the interlacing property of Section~\ref{sec:properties}. The poles
 of~\eqref{eq:receptance}, the fixed--free frequencies of each strand, are bracketed
 first with the scaled Pr\"ufer angle $\phi=\operatorname{atan2}(\kappa W,W')$ of the
@@ -43,8 +43,8 @@ checks of Section~\ref{sec:fieldchecks}.
 % tests: test_eigen.py (fixed-free roots, all roots against a dense scan, close roots
 %        at beta = 1e-7, FE agreement, torque variant), test_harrison.py (damped drive)
 
-\paragraph{Modes and modal quantities.} Each mode is obtained by propagating
-$(W,W')=(0,1)$ through the chain with the matrices~\eqref{eq:transfer}, with the jump of
+\paragraph{Modes and modal quantities} Each mode is obtained by propagating the
+starting vector $(W,W')=(0,1)$ through the chain with the matrices~\eqref{eq:transfer}, with the jump of
 $W$ and the take-up amplitude $Y$ of~\eqref{eq:eigen_tu} at the take-up. On a segment
 $W$ is a combination of $\cos\kappa x$ and $\sin\kappa x$, so the integrals that enter
 the modal mass~\eqref{eq:inner}, the participation factors~\eqref{eq:participation}
@@ -56,7 +56,7 @@ $\beta$, which the free-end structure makes harmless.
 % tests: test_modes.py (interfaces, closed-form integrals, weighted orthogonality,
 %        Parseval, quasi-static sums)
 
-\paragraph{Exact integration of the modal equations.} On each interval of a start-up
+\paragraph{Exact integration of the modal equations} On each interval of a start-up
 profile the loads $\hat a(\tau)$ and $\varphi(\tau)$ are outputs of a small linear
 system $\mat z'=\mat E\mat z$: the polynomial pieces of the triangular, parabolic and
 piecewise-linear profiles, and the sine and cosine of the sinusoidal profile, whose
@@ -70,7 +70,7 @@ resonance $\Omega_k=\varpi$. A jump of the drive velocity, as in the offset star
 % tests: test_response.py (exosystem against closed form, exact integration against an
 %        ODE solver, residual amplitude at exact resonance, damping ratio)
 
-\paragraph{Quasi-static split.} The modal sum~\eqref{eq:outputs} for the tension
+\paragraph{Quasi-static split} The modal sum~\eqref{eq:outputs} for the tension
 converges slowly, because the tension is the derivative of the displacement and the
 loads reach every mode. It is therefore split into the quasi-static
 field~\eqref{eq:quasistatic}, summed in closed form, and a dynamic remainder. With
@@ -80,9 +80,11 @@ $p_k^{\mathrm{qs}}=-(\Gamma_k\hat a_f+R_k\varphi_f)/\Omega_k^2$, where the lagge
 obey $2\hat\zeta\hat a_f'+\hat a_f=\hat a$ and $2\hat\zeta\varphi_f'+\varphi_f=\varphi$,
 a first-order filter with the same time constant for every mode, and
 \begin{equation}\label{eq:split}
+\begin{gathered}
   \hat T=\hat T_{\mathrm{qs}}+\sum_k\left(q_k+2\hat\zeta q_k'\right)W_k',\qquad
-  \hat y=\tfrac12\bigl(\hat a_fI_\mu+\varphi_fI_r\bigr)+\sum_kq_kY_k,\qquad
+  \hat y=\tfrac12\bigl(\hat a_fI_\mu+\varphi_fI_r\bigr)+\sum_kq_kY_k,\\
   q_k=p_k-p_k^{\mathrm{qs}},
+\end{gathered}
 \end{equation}
 with $I_\mu=\int_0^2\int_\xi^x\hat\mu\,\dd x'\,\dd x$ and $I_r$ defined likewise. The
 remainder $q_k$ is driven only by the rate of change of the quasi-static response and
@@ -95,7 +97,7 @@ the plain sum.
 % tests: test_response.py (split convergence with damping, lagged loads, quasi-static
 %        limit); numbers: paper_numbers.py, section "Appendix B"
 
-\paragraph{Lumped-mass model.} The model of Section~\ref{sec:lumped} divides the loop,
+\paragraph{Lumped-mass model} The model of Section~\ref{sec:lumped} divides the loop,
 from the drive exit to the drive entry, into $N$ elements with nodes at the head and
 tail pulleys and at the take-up. Each element carries half of its mass at each end, a
 linear spring $EA/h$ and a Kelvin--Voigt dashpot, so that the damping matrix is

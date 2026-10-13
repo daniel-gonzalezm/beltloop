@@ -1,26 +1,41 @@
 % =====================================================================
-% main.tex -- manuscript (phase 6). Neutral article class; the journal
-% template is applied in phase 7 (order: JSV -> JVET -> Shock and Vibration).
+% main.tex -- manuscript (phase 7). Elsevier elsarticle class, set up for
+% the Journal of Sound and Vibration (step 7.1). Alternatives if JSV
+% declines: JVET (Springer, sn-jnl) and Shock and Vibration (Wiley).
 %
 % Build from this folder (paper/ inside the beltloop repository):
 %   pdflatex main && bibtex main && pdflatex main && pdflatex main
+% Submission layout: preprint, 12 pt, single column, line numbers.
+% Length estimate in journal layouts (step 7.1), same sources:
+%   pdflatex -jobname=main_3p "\def\paperlayout{3p,times}\input{main}"
+% (1p and 5p likewise; copy main.bbl to main_3p.bbl first; run twice). In the
+% two-column layout figures span both columns, as the typesetter would
+% place them; long displayed equations may overflow there, so the page
+% count is an estimate.
+%
 % Figures and tables are read from the code outputs, so they are never
 % copied by hand:
 %   ../maps/figures/paper/   (paper_figures.py, paper_tables.py)
 %   ../validation/figures/   (fig_lumped_validation.py)
 % Numbers quoted in the text come from paper_numbers.tex, written by the
 % code (one macro per number). Do not type a computed number in the text.
+% Highlights: separate file, highlights.tex (Elsevier asks for a file).
 % =====================================================================
-\documentclass[a4paper,11pt]{article}
+% nopreprintline: the "Preprint submitted to" footer collides with the
+% title-page footnotes when lineno is active (checked in step 7.1).
+\providecommand{\paperlayout}{preprint,12pt,nopreprintline}
+\edef\next{\noexpand\documentclass[\paperlayout,a4paper]{elsarticle}}\next
 
-% ---- Layout ---------------------------------------------------------
-\usepackage[margin=25mm]{geometry}
+% ---- Encoding and fonts ---------------------------------------------
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-% lmodern and microtype together (microtype needs scalable fonts)
-\IfFileExists{lmodern.sty}{\usepackage{lmodern}\usepackage{microtype}}{}
+% lmodern and microtype together (microtype needs scalable fonts); the
+% journal layouts use Times (option times), so lmodern only in preprint.
+\makeatletter
+\ifpreprint\IfFileExists{lmodern.sty}{\usepackage{lmodern}\usepackage{microtype}}{}\fi
+\makeatother
 \usepackage[mathlines]{lineno}   % line numbers for review copies
-\linenumbers
+\makeatletter\ifpreprint\linenumbers\fi\makeatother
 
 % ---- Mathematics, units, tables, figures ----------------------------
 \usepackage{amsmath,amssymb}
@@ -29,40 +44,72 @@
 \usepackage{graphicx}
 \graphicspath{{../maps/figures/paper/}{../validation/figures/}{figures/}}
 
+% In the two-column journal layout (length estimate only) every figure and
+% one-column table spans the page width, since all are drawn for it.
+\makeatletter
+\if@twocolumn
+  \renewenvironment{figure}[1][tbp]{\@dblfloat{figure}[#1]}{\end@dblfloat}
+  \renewenvironment{table}[1][tbp]{\@dblfloat{table}[#1]}{\end@dblfloat}
+\fi
+\makeatother
+
+% The two generated tables (paper_tables.py) open a widetable float: a
+% full-width float in the journal layouts, a landscape page where the text
+% is narrower than the tables need (single-column submission layout).
+\usepackage{rotating}
+\makeatletter
+\newif\ifsidewaystables
+\ifdim\textwidth<440pt \sidewaystablestrue\fi
+\if@twocolumn \sidewaystablesfalse\fi
+\ifsidewaystables
+  \newenvironment{widetable}[1][t]{\begin{sidewaystable}}{\end{sidewaystable}}
+\else
+  \newenvironment{widetable}[1][t]{\begin{table*}[#1]}{\end{table*}}
+\fi
+\makeatother
+
 % ---- References -----------------------------------------------------
-% Numbered citations (JSV standard). \citet gives "Harrison [3]".
-\usepackage[numbers,sort&compress]{natbib}
+% elsarticle loads natbib with numbers; \citet gives "Harrison [3]".
+\biboptions{sort&compress}
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
 \usepackage[capitalise,nameinlink]{cleveref}
+% elsarticle numbers appendices as "Appendix A", so cleveref must not add the name again.
+\crefformat{appendix}{#2#1#3}
+\Crefformat{appendix}{#2#1#3}
 
 % ---- Project macros -------------------------------------------------
 \input{macros}
 \InputIfFileExists{paper_numbers}{}{%
   \PackageWarningNoLine{main}{paper_numbers.tex not found: run maps/paper_numbers.py}}
 
-% ---- Title ----------------------------------------------------------
+\journal{Journal of Sound and Vibration}
+
+\begin{document}
+
+\begin{frontmatter}
+
 \title{Closed-form longitudinal modal analysis of belt conveyors with a
        gravity take-up at an arbitrary position}
 % Title decided by the author on 2026-10-07 (the free-end framing moves to the
 % abstract and the contributions); wording reviewed in step 6.8 and kept.
+
 % Author (step 6.2). Name form decided by the author: "Daniel González-Monsalve", with the
 % hyphen, so that the indexes (Scopus, Web of Science) file both family names; use the same
-% form in ORCID, Scopus Author ID and the submission system. Postal address of the
-% corresponding author given by the author on 2026-10-07 (Elsevier asks for it); the
-% journal template of phase 7 decides where it goes.
-\author{Daniel González-Monsalve\\[2pt]
-        \small Department of Mechanical Engineering, Faculty of Engineering,\\
-        \small Universidad de Concepción, Edmundo Larenas 219, Concepción, Chile\\
-        \small\href{mailto:danielgonzalezm@udec.cl}{danielgonzalezm@udec.cl}\quad
-        ORCID: \href{https://orcid.org/0000-0002-3892-4722}{0000-0002-3892-4722}}
-\date{}
-
-\begin{document}
-\maketitle
+% form in ORCID, Scopus Author ID and the submission system. The ORCID iD
+% (0000-0002-3892-4722) is linked in the submission system, which passes it to the
+% published article. Postal address of the corresponding author given on 2026-10-07.
+\author{Daniel González-Monsalve\corref{cor1}}
+\ead{danielgonzalezm@udec.cl}
+\cortext[cor1]{Corresponding author.}
+% Classic \address: with a single author the key-value \affiliation of
+% elsarticle 3.3 prints a stray label (checked in step 7.1).
+\address{Department of Mechanical Engineering, Faculty of Engineering,
+          Universidad de Concepción, Edmundo Larenas 219, Concepción, Chile}
 
 \begin{abstract}
-% Step 6.8. At most 250 words (Elsevier); numbers are macros, so the submission
+% Step 6.8. At most 250 words (JSV guide, checked in step 7.1: 249 space-separated
+% tokens with the macros expanded, units counted apart); numbers are macros, so the submission
 % form takes the text from the compiled PDF. The free end is presented as built
 % into the closed form, not as a new observation (step 6.7b, notes 4.35).
 % [HB1989] "settled conveyor by conveyor" depends on Harrison and Barfoot (1989).
@@ -75,13 +122,13 @@ builds in a behaviour known from simulations and records: a light take-up acts a
 free end. It splits the loop into two strands, fixed at the drive and free at the
 take-up, whose modes interlace with the loop modes. The take-up mass acts as a tip
 mass of a quarter of its value, with a closed-form correction; since the mass
-follows from the take-up tension, it lengthens the fundamental period of the
+follows from the take-up tension, it lengthens the fundamental period of
 published conveyors longer than \qty{1}{\kilo\metre} by at most
 \qty{\NumLongShiftMax}{\percent}. The fundamental belongs to the strand that
 contains the carry strand, and moving the take-up from head to tail shortens it by
 up to a factor of \NumHeadTailRatioGammaOne. Each strand starts up along a
 universal curve of the fixed--free string, giving the drive tensions, take-up
-travel and grip condition in closed form, and a start time of two to three
+travel and grip condition in closed form, and a start time of 2--3
 fundamental periods. The solution is verified against an independent lumped-mass
 model and is consistent with take-up records of a \qty{5.1}{\kilo\metre} conveyor;
 applied to a published \qty{1}{\kilo\metre} conveyor, it shows that its
@@ -89,9 +136,13 @@ applied to a published \qty{1}{\kilo\metre} conveyor, it shows that its
 pulley.
 \end{abstract}
 
-\noindent\textbf{Keywords:} belt conveyor; longitudinal vibration;
-gravity take-up; transfer matrix; modal analysis; start-up
-% Six keywords; check the limit of the chosen journal in phase 7.
+\begin{keyword}
+% Six keywords; the JSV guide allows 1 to 7 (checked in step 7.1).
+belt conveyor \sep longitudinal vibration \sep gravity take-up \sep
+transfer matrix \sep modal analysis \sep start-up
+\end{keyword}
+
+\end{frontmatter}
 
 \input{sections/01_introduction}
 \input{sections/02_model}
@@ -103,12 +154,18 @@ gravity take-up; transfer matrix; modal analysis; start-up
 \input{sections/08_conclusions}
 \input{sections/declarations}
 
-\bibliographystyle{plainnat}   % elsarticle-num (or the journal style) in phase 7
-\bibliography{references}
-
+% Elsevier order: back-matter statements, appendices, references (step 7.1).
 \appendix
+% JSV guide: tables, figures and equations of appendices numbered A.1, B.1, ...
+\counterwithin*{table}{section}
+\counterwithin*{figure}{section}
 \input{sections/appendix_a_transfer}
 \input{sections/appendix_b_numerics}
 % \input{sections/appendix_c_cases}  % step 6.8: empty; the case notes stay in Table 2 (decide in phase 7 if the table must shrink)
+
+% Numbered references with full author lists; the -names variant keeps
+% \citet ("Harrison [3]") working with natbib.
+\bibliographystyle{elsarticle-num-names}
+\bibliography{references}
 
 \end{document}
