@@ -16,6 +16,9 @@ paper/*.out
 paper/*.synctex.gz
 paper/main.pdf
 paper/highlights.pdf
+paper/*.spl
+paper/main_*p.*
+!paper/main_*p.tex
 
 # Standalone preview of the generated tables (maps/figures/paper/tables_preview.tex)
 maps/figures/paper/tables_preview.aux
