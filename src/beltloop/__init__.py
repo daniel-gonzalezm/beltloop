@@ -15,4 +15,4 @@ from .response import (StartupResponse, integrate_modes, lagged_loads, residual_
 from .transfer import (AB, J, S, char_fun, char_fun_torque, takeup_transmission,
                        takeup_transmission_impedance)
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"

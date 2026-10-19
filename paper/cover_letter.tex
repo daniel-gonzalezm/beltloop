@@ -1,0 +1,65 @@
+% =====================================================================
+% cover_letter.tex -- cover letter for the submission to the Journal of Sound and
+% Vibration (draft of step 7.2; to be reviewed and signed by the author).
+% Numbers are macros of paper_numbers.tex, as in the manuscript.
+% Build: pdflatex cover_letter
+% =====================================================================
+\documentclass[a4paper,11pt]{letter}
+\usepackage[margin=22mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\newcommand{\TODO}[1]{\textcolor{red}{[#1]}}
+\input{paper_numbers}
+
+\signature{Daniel González-Monsalve}
+\address{Daniel González-Monsalve\\
+Department of Mechanical Engineering, Faculty of Engineering\\
+Universidad de Concepción, Edmundo Larenas 219, Concepción, Chile\\
+danielgonzalezm@udec.cl \quad ORCID 0000-0002-3892-4722}
+\date{\TODO{date of submission}}
+
+\begin{document}
+\begin{letter}{Editor-in-Chief\\Journal of Sound and Vibration}
+\opening{Dear Editor,}
+
+I am submitting the manuscript \emph{Closed-form longitudinal modal analysis of belt
+conveyors with a gravity take-up at an arbitrary position} for consideration as a research
+article in the \emph{Journal of Sound and Vibration}, within the scope of analytical
+methods and modelling of linear vibration.
+
+The gravity take-up is a counterweight hanging on a pulley wrapped by the return belt, and
+its position on long overland conveyors is chosen conveyor by conveyor, by simulation or
+experience. The manuscript models the whole belt loop as a Kelvin--Voigt continuum with two
+wave speeds, a speed-controlled drive anywhere on the loop and the take-up anywhere on the
+return strand, represented as a pulley with mass, and derives its characteristic equation in
+closed form with transfer matrices. Its main results are:
+\begin{itemize}
+  \item a light take-up acts as a free end: the loop splits into two strands, fixed at the
+        drive and free at the take-up, whose modes interlace with those of the loop. Finite-element
+        simulations and field records had shown this case by case; no previous model builds it
+        into its structure;
+  \item the take-up mass enters as a tip-mass correction in closed form, and since a gravity
+        take-up's mass follows from its tension, it lengthens the fundamental period of the
+        published conveyors longer than \qty{1}{\kilo\metre} by at most
+        \qty{\NumLongShiftMax}{\percent};
+  \item the take-up position sets the lengths of the two strands, so moving it from head to
+        tail shortens the fundamental period by up to a factor of two (equal wave speeds);
+  \item each strand starts up along a universal curve of the fixed--free string, which gives
+        the drive tensions, the take-up travel and the drive grip condition in closed form.
+\end{itemize}
+The solution is verified against an independent lumped-mass model and is checked against
+take-up records and wave-speed measurements of field conveyors; the physical validation is
+partial, and the manuscript states so.
+
+The manuscript is original, has not been published, and is not under consideration
+elsewhere. I am the sole author and have no competing interests to declare. The code that
+produces every figure, table and number of the article is openly available under the MIT
+licence and archived on Zenodo, as described in the data availability statement.
+\TODO{Preprint (if posted) and suggested reviewers (if the submission form asks for them).}
+
+\closing{Yours sincerely,}
+\end{letter}
+\end{document}
