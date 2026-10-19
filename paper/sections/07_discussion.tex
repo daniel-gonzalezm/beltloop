@@ -16,7 +16,11 @@
 % Step 6.7b (Beltcon review): nordell1987 (p. 9: hydraulic retarder, damping
 % towards a fixed take-up), morrison1987 (pp. 10-11: friction, inertia, fluid
 % coupling), barfoot1997 (pp. 2-3), hou2008 (Sect. 3.1), checked in the PDFs.
-% [HB1989] marks what to revisit with Harrison and Barfoot (1989).
+% Step 7.3: harrison1989 read in the NLA scan (p. 121: gravity take-up at the slack
+% side "ideal to maintain tension to prevent slip on starting", but its dynamic
+% behaviour "may be violent" without long starting and stopping times; p. 122 and
+% Table 1: tail take-up keeps the critical tension better than a head take-up under
+% load and temperature changes, with 170 kN against 43 kN of take-up force).
 % =====================================================================
 \section{Discussion}\label{sec:discussion}
 
@@ -44,7 +48,14 @@ the peak tensions, which the start time controls (Section~\ref{sec:startup}). Th
 reasons quoted in Section~\ref{sec:intro} lie outside the model: the horizontal curve of
 ZISCO \citep{nordell1997zisco}, the second drive of \citet{kruse2019overland} and the drift
 stop simulated by \citet{cdi2002}, in which the drive is not speed-controlled.
-% [HB1989] Add the relation to Harrison and Barfoot (1989) here once read.
+The statics is also where \citet{harrison1989} placed their comparison: on their conveyor a
+tail take-up held the tension at the critical point of the profile under changes of load and
+temperature far better than a head take-up, at the price of a take-up force of
+\qty{170}{\kilo\newton} against \qty{43}{\kilo\newton}. They also warned that a gravity
+take-up at the slack side of the drive, ideal against slip, may behave violently unless the
+starts and stops are long; the universal curve states how long, since the take-up travel
+overshoots its quasi-static value by up to a factor \NumStartTravelMax\ in starts of about
+one fundamental period and settles only in starts of a few (Section~\ref{sec:startup}).
 
 \paragraph{Previous continuum models} The decoupling that \citet{song2012} obtained by
 moving the take-up to the tail is the free end at one particular position; it holds at any
