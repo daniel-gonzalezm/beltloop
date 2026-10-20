@@ -1,4 +1,4 @@
-"""Phase 4.7: intermediate drive (drive anywhere on the return strand) in the limit beta -> 0.
+"""Intermediate drive (drive anywhere on the return strand) in the limit beta -> 0.
 
 With drive and take-up on the return strand, one strand (C) holds the whole carry strand, with
 a return segment l1 between the drive and the carry strand (at C's fixed end) and a return
@@ -13,7 +13,7 @@ C is the downstream strand B and l2 = 1 - sigma_t. Results:
     return belt from the free end to the fixed end lengthens T_1 beyond four transits (up to
     1.38 x 4t for gamma = 3) and concentrates the strand's mass in the fundamental (effective
     mass up to the whole strand mass, against 8/pi^2 of it for a uniform strand);
-  * the start-up formulas of phase 4.5 still hold with T_1 and m_B of strand B: exit exact
+  * the start-up formulas of Section 5.3 of the paper still hold with T_1 and m_B of strand B: exit exact
     (strand A uniform), take-up travel within ~1.5 %, entry slightly above the universal curve.
 
 Panels: (a) T_1 / (4 t_B) against the drive offset l1, take-up right after the drive

@@ -1,8 +1,8 @@
-"""Phase 5.6: LaTeX tables of the paper (maps/paper_tables.py).
+"""LaTeX tables of the paper (maps/paper_tables.py).
 
 Checks: provenance marks, the identity beta = (4/n) lam T_t / W_r, the fundamental periods
-against independent routes (validation of Harrison, the dimensional start-ups of 5.5, the
-intermediate-drive figure), beta / beta_5 against step 5.4, the take-up mass limit, and that
+against independent routes (validation of Harrison, the dimensional start-ups of Section 6, the
+intermediate-drive figure), beta / beta_5 against maps/beta_min.py, the take-up mass limit, and that
 the committed .tex files are the generator's output.
 """
 import re
@@ -85,7 +85,7 @@ def test_T1_harrison_equals_validation():
 
 
 def test_T1_matches_dimensional_startups():
-    """Eigenvalue route (table of cases) against the Conveyor route of step 5.5."""
+    """Eigenvalue route (table of cases) against the Conveyor route of maps/applications.py."""
     app = {(r["tag"], r["label"]): r for r in pt.app_rows()}
     for t in ("Lo", "SM", "Su"):
         assert BY[t]["T1"][0] == pytest.approx(app[(t, "real")]["T1"], rel=2e-3)
@@ -94,7 +94,7 @@ def test_T1_matches_dimensional_startups():
 def test_T1_nordell_ciozda_and_song():
     assert BY["NC"]["T1"][0] == pytest.approx(27.5, abs=0.05)           # fig_modal (d) caption
     head, tail = BY["S"]["T1"]
-    assert head > tail                                                  # head > tail (4.12)
+    assert head > tail                                                  # head > tail
     assert head == pytest.approx(40.4, abs=0.05) and tail == pytest.approx(29.0, abs=0.05)
 
 

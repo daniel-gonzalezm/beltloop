@@ -1,4 +1,4 @@
-"""Phase 5.5: application start-ups on conveyors from the literature.
+"""Application start-ups on conveyors from the literature.
 
 For each case the take-up is moved along the return strand with the case's counterweight
 (same mass, hence the same T_t and beta) and a speed-controlled start is simulated with the
@@ -11,19 +11,19 @@ Total tension = T_t + offset(s, t), and the offset does not depend on T_t once t
 counterweight mass is fixed, so every requirement is a closed bound on T_t from one run:
 
   slack      T(s, t) > 0 on the whole loop, during the start and after it
-             (validity of the linear model, Section 4.18, condition 1);
+             (validity of the linear model, Section 5.4 of the paper, condition 1);
   grip       T_entry(t) <= E T_exit(t), E = exp(mu theta) of the source (condition 3);
   sag        running carry and return tensions above g m' l / (8 h_rel), h_rel = 2 %
-             (DIN 22101 eqs. 51-52 at the practice of the sources; phase 5.4).
+             (DIN 22101 eqs. 51-52 at the practice of the sources).
 
 The required take-up tension T_t,req is the largest of the three. The shortest admissible
 start t_a,req is the shortest sine start for which the case's own T_t meets every condition
 from that duration on (inf when the running state alone fails). The carriage check (condition
 2) is reported but never governs (margin g / |y''| > 10 in every run).
 
-Cases (phase 5.5, decided with Daniel): Lo (Lodewijks 1996, 1 km, one drive pulley, E = 3,
+Cases: Lo (Lodewijks 1996, 1 km, one drive pulley, E = 3,
 published 30 s starts), SM (Suchorab-Matuszewska et al. 2025, 3 km incline, tandem drive,
-E = 16.4, no published start: reference 3 T_1 at the real position, the rule of Section 4.16)
+E = 16.4, no published start: reference 3 T_1 at the real position, the rule of Section 5.3 of the paper)
 and Su (Surtees 1995, 805 m, intermediate drive, E = 11.5, published 25 s). Si, LL and Pa were
 set aside (Si: E and profile unknown, start at 12 T_1; LL: motor steps, F_U assumed, decline;
 Pa: no start time, no E).
@@ -57,8 +57,8 @@ import cases as cs  # noqa: E402
 from beltloop import natural_frequencies  # noqa: E402
 
 G = cs.G_STD
-ZETA_HAT = 0.01            # base damping of the project (Section 4.4)
-H_REL_SAG = 0.02           # sag criterion in running (practice of the sources, phase 5.4)
+ZETA_HAT = 0.01            # base damping
+H_REL_SAG = 0.02           # sag criterion in running (practice of the sources)
 KIND = "sine"
 TAGS = ("Lo", "SM", "Su")
 REF_MULT = 3.0             # reference start for cases without a published duration: 3 T_1
@@ -178,7 +178,7 @@ def positions(c: cs.Case, n: int = 25) -> np.ndarray:
 def alternative(c: cs.Case) -> float:
     """Alternative take-up position for the time histories: the tail end of the return with a
     head drive; with an intermediate drive, the tight side, half way between the head and the
-    drive (the zone that Section 4.18 calls impractical)."""
+    drive (the zone that Section 5.4 of the paper calls impractical)."""
     sd = c.sigma_d.value
     return 0.995 if sd == 0.0 else 0.5 * sd
 
@@ -215,7 +215,7 @@ def histories(c: cs.Case, t_a: float) -> dict:
 
 
 def duration_histories(c: cs.Case, t_a: float) -> dict:
-    """Last row for Lo (decision of phase 5.5): same (real) position, the reference start and the
+    """Last row for Lo: same (real) position, the reference start and the
     shortest admissible start with the case's T_t, both simulated over the same window."""
     d = {}
     ta_min = shortest_start(c, c.sigma_t[0])
@@ -331,7 +331,7 @@ def write_table(rows, path):
     head = (f"{'case':4} {'take-up':22} {'sig_t':>6} {'xi':>6} {'T1 s':>6} {'t_a s':>6} {'t_a/T1':>6} "
             f"{'entry kN':>8} {'/run':>5} {'exit min':>8} {'travel m':>8} {'Tt req':>7} {'governs':>8} "
             f"{'T2 req':>7} {'Tt':>6} {'t_a,min s':>9}")
-    lines = ["Application start-ups (phase 5.5): sine profile, zeta_hat = 0.01, DIN resistances with "
+    lines = ["Application start-ups: sine profile, zeta_hat = 0.01, DIN resistances with "
              "onset phi = V/V_inf, case's counterweight. Tensions in kN.", head]
     for r in rows:
         tm = "-" if not np.isfinite(r["t_a_req"]) else f"{r['t_a_req']:.0f}"
@@ -439,7 +439,7 @@ def figure(d: dict, path=None, lo_last_row: str = "duration"):
             key = f"{tag}_dur_{lab}" if by_duration else f"{tag}_{lab}"
             t = d[f"{key}_t"]
             # entry plain, exit with open squares, entry / e^{mu theta} thin: readable without
-            # colour (step 6.2); the curves are also labelled directly in panel (g)
+            # colour; the curves are also labelled directly in panel (g)
             cx.plot(t, d[f"{key}_entry"] / 1e3, ls, color=cols[0])
             cx.plot(t, d[f"{key}_exit"] / 1e3, ls, color=cols[1], marker="s", ms=2.4, mfc="w",
                     mew=0.6, markevery=(0.04 if ls == "-" else 0.09, 0.1))

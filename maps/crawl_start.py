@@ -1,4 +1,4 @@
-"""Phase 4.5b: does an initial crawl (plateau) help? Linear model, strand picture.
+"""Does an initial crawl (plateau) help? Linear model, strand picture.
 
 Start: constant acceleration to the crawl speed v_p V_inf over tau_r, hold tau_p, parabolic main
 acceleration (peak a_m) over tau_a (beltloop.crawl_start). Resistances, Coulomb-like, appear as
@@ -11,7 +11,7 @@ Load ratio rho = R / (m a_m): running resistance over inertial force of the stra
 1996 ch. 8 ~ 0.7; long, slow starts such as KPC ~ 5-10). Metrics: peak fixed-end (drive entry)
 tension over R + m a_m, and peak free-end displacement (take-up travel) over its quasi-static
 running value plus inertial peak. Uniform strand (exact for strand A, within a few % for strand
-B, phase 4.5), plus a loop check.
+B), plus a loop check.
 
 Run:  python maps/crawl_start.py   (prints tables, writes maps/figures/crawl_start.pdf)
 """

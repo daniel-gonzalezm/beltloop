@@ -1,4 +1,4 @@
-"""Harrison (1983) case in detail (phase 3.4): sensitivity of the slow take-up period to
+"""Harrison (1983) case in detail (Section 4.2 of the paper): sensitivity of the slow take-up period to
 the take-up position xi, the line density rho (beta), the wave-speed ratio gamma and the
 drive model (mass md, slip dashpot cd), and the features the linear model does not capture.
 
@@ -14,17 +14,17 @@ mean of four peak and four trough spacings); slow period 24.9 s (Fig. 5e, measur
 displacement after removing the 7 s ripple with a one-period moving average: four peak
 spacings 23.0-26.7 s). The ratio of the two does not depend on the time scale.
 
-Phase 3.7 additions from Harrison (1985), Beltcon 3 (same 5 km belt, 20 t take-up,
+Additions from Harrison (1985), Beltcon 3 (same 5 km belt, 20 t take-up,
 SR2400, 740 kN peak of the original design):
   * Figs. 2a and 3a draw a double-loop take-up: the carriage hangs on n = 4 belt strands,
     so the belt-side mass is 4M/n^2 = M/4 (beta/4) and the carriage travels 1/4 of the
-    belt stored in the loop. N_STRANDS = 4 is now the base value (n = 2 kept for
+    belt stored in the loop. N_STRANDS = 4 is the base value (n = 2 kept for
     comparison).
   * Fig. 4a (modified design, empty belt): S1 (carry, distance d from the head) -> S3
     (tail) 3.0 s, S3 -> S2 (return, same d) 3.1 s, read with 2 s per major division
     (+-0.1-0.2 s). Both legs cover L - d, so gamma = c_r/c_c = 3.0/3.1 = 0.97, range
-    0.90-1.06, independent of d. The phase 3.4 explanation (gamma ~ 1.2-1.3) is not
-    supported.
+    0.90-1.06, independent of d. A heavier carry strand (gamma ~ 1.2-1.3) as the
+    explanation of the slow-period difference is therefore not supported.
   * Fig. 2b (original design, free take-up): the carry side S1 moves at once, the return
     S2 (downstream of the take-up) stays at zero and jumps 7.6 s later (text; 8.3 +- 0.5 s
     read from the figure), i.e. after about one loop transit. Its first plateau is about
@@ -137,7 +137,7 @@ def slip_dashpot(slip, rho=79.0, gamma=GAMMA_MEAS):
 
 
 def drive_check(rho=79.0, gamma=GAMMA_MEAS):
-    """Step 6.4: test the prescribed-velocity assumption on Harrison's wound-rotor drive with
+    """Test the prescribed-velocity assumption on Harrison's wound-rotor drive with
     the drive without speed control of Section 3.6 (mass m_d, slip dashpot c_hat), on the base
     model (n = 4, gamma = 0.97, xi = 0.005). Returns the free-drive limit, the drive mass that
     alone would give the measured slow period, and the periods (first two) and damping ratios
@@ -277,7 +277,7 @@ def main():
         b = modal_basis(lp, beta, 300)
         ts = L / cr
         W = b.W(np.array([XI0 + 1e-7]))[:, 0]
-        for V, am, lab in ((2.6, 2.2, "phase 3.4 reading of 1983 Fig. 5: 2.2 m/s^2 to 2.6 m/s"),
+        for V, am, lab in ((2.6, 2.2, "reading of 1983 Fig. 5: 2.2 m/s^2 to 2.6 m/s"),
                            (1.6, 0.63, "1985 Fig. 2b first plateau: 1.6 m/s in about 4 s")):
             prof = StartProfile("sine", np.pi * V / (2 * am) / ts, "none")
             r = startup_response(b, prof, 0.0, t / ts)

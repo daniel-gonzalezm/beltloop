@@ -1,4 +1,4 @@
-"""Phase 4.5: start-up tension and take-up travel through the universal strand curves.
+"""Start-up tension and take-up travel through the universal strand curves.
 
 With beta -> 0 each strand (fixed at the drive, free at the take-up) responds on its own, so
 the drive-entry peak follows the curve of strand B in r = tau_a / T_1, the drive-exit minimum
@@ -30,7 +30,7 @@ ZETAS = (0.0, 0.02, 0.05, 0.1)
 # Start time over fundamental period for cases with published start time (illustration only):
 # Lodewijks 1996 ch. 8 (30 s, T1 = 28.5 s from this model, linear profile in the source);
 # Song et al. 2012 (300 s, T1 = 40.0 s with the take-up at the head);
-# KPC, Sinaga 2008 (780 s, T1 ~ 66-73 s estimated in the phase 4.4 review).
+# KPC, Sinaga 2008 (780 s, T1 ~ 66-73 s estimated).
 CASES = [("Lodewijks 1996, ch. 8", 30.0 / 28.5), ("Song et al. 2012 (head)", 300.0 / 40.0),
          ("KPC (Sinaga 2008)", 780.0 / 70.0)]
 

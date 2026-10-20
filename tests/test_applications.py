@@ -1,4 +1,4 @@
-"""Phase 5.5: application start-ups (maps/applications.py)."""
+"""Application start-ups (maps/applications.py)."""
 import sys
 from dataclasses import replace
 from pathlib import Path
@@ -18,7 +18,7 @@ LO, SM, SU = (cs.BY_TAG[t] for t in ("Lo", "SM", "Su"))
 
 def test_slow_start_tends_to_running_grip():
     """Quasi-static limit: with a very slow start the grip requirement tends to the running
-    one of phase 5.4, T_2 >= F_U / (E - 1) carried to the take-up."""
+    one, T_2 >= F_U / (E - 1) carried to the take-up."""
     for c, s in ((LO, 0.001), (LO, 0.5), (SU, SU.sigma_t[0])):
         r = ap.run(c, s, 3000.0)
         req_run = bm.grip_requirement(bm.state(c, 1.0, s), c.E.value)
@@ -66,7 +66,7 @@ def test_requirement_is_exact_by_superposition():
 
 
 def test_lodewijks_30s_starts_exceed_the_grip():
-    """Section 4.26 finding, full model: every 30 s start of Table 8.7 needs a tension ratio of
+    """Full model (Section 6 of the paper): every 30 s start of Table 8.7 needs a tension ratio of
     4.2-6.1 against e^(0.35 pi) = 3.0; the sine (Harrison) start needs T_t ~ 2.4 times his."""
     rows = ap.lodewijks_grip()
     ratios = [r[2] for r in rows]
@@ -88,7 +88,7 @@ def test_lodewijks_shortest_start_and_infeasible_tail():
 
 def test_tight_side_is_impractical():
     """Su: a take-up between the head and the intermediate drive needs an order of magnitude
-    more tension than one after the drive (Section 4.18: 8 to 10 times in the generic case)."""
+    more tension than one after the drive (Section 5.4 of the paper: 8 to 10 times in the generic case)."""
     slack = ap.run(SU, SU.sigma_t[0], SU.t_a.value)
     tight = ap.run(SU, ap.alternative(SU), SU.t_a.value)
     assert ap.alternative(SU) < SU.sigma_d.value
@@ -97,7 +97,7 @@ def test_tight_side_is_impractical():
 
 
 def test_fundamental_bounds_head_drive():
-    """Head drive, beta small: 4 gamma L / c_r < T_1 <= 4 t_B L / c_r (Section 4.15), up to the
+    """Head drive, beta small: 4 gamma L / c_r < T_1 <= 4 t_B L / c_r (Section 5.1 of the paper), up to the
     small lengthening by the take-up mass."""
     for c in (LO, SM):
         cv = ap.conveyor(c, 0.5)
@@ -107,14 +107,14 @@ def test_fundamental_bounds_head_drive():
 
 
 def test_carriage_never_governs():
-    """Condition 2 is inactive in every application run (margin > 10, Section 4.18)."""
+    """Condition 2 is inactive in every application run (margin > 10, Section 5.4 of the paper)."""
     d = ap.data()
     for tag in ap.TAGS:
         assert d[f"{tag}_accel_margin"].min() > 10.0
 
 
 def test_quoted_values():
-    """Numbers quoted in the caption of fig_applications (phase 5.5)."""
+    """Numbers quoted in the caption of fig_applications."""
     d = ap.data()
     s, k = d["Lo_sigma"], int(np.argmin(np.abs(d["Lo_sigma"] - 0.001)))
     assert d["Lo_req_grip"][k] / 1e3 == pytest.approx(51.5, abs=0.3)

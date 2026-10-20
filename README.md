@@ -51,7 +51,7 @@ Outside the package:
 |---|---|
 | `validation/` | Lumped-mass validation figure; Harrison (1983, 1985) and Lodewijks (1996, ch. 8) case studies, with digitised data in `validation/data/` and the summaries the paper quotes (`lumped_validation.json`, `lodewijks_case.json`, written by their scripts) |
 | `maps/` | Parametric study. `cases.py` holds the conveyors from the literature (single source, with the provenance of every input and the conventions used to derive the line densities and the take-up mass ratio). `paper_figures.py` regenerates the figures of the paper from stored data in `maps/data/` (`--recompute` to recalculate, ~5 min); `paper_tables.py` writes the LaTeX tables of the paper (cases with provenance marks, and the application start-ups); `paper_numbers.py` writes every number quoted in the paper as a LaTeX macro (`paper/paper_numbers.tex`; `--check` tells whether it is up to date); `fig_loop.py` draws the loop schematic (Figure 1); the other scripts are the working figures of each step |
-| `paper/` | LaTeX source of the manuscript (phase 6); it reads the figures, tables and numbers above directly, see `paper/README.md` |
+| `paper/` | LaTeX source of the manuscript; it reads the figures, tables and numbers above directly, see `paper/README.md` |
 | `examples/` | Minimal start-up example |
 
 ## Numerical method (summary)

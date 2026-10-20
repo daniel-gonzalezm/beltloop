@@ -1,8 +1,8 @@
 """Independent reference implementations used only by the tests.
 
-* dense_scan_roots: root finding by sign changes on a fine grid (the phase-2 method);
+* dense_scan_roots: root finding by sign changes on a fine grid (an independent, slow method);
 * fe_frequencies: linear finite elements with consistent mass, take-up handled by the
-  constraint w(xi+) = w(xi-) - 2y and an extra dof y with mass beta (from verify_phase2.py);
+  constraint w(xi+) = w(xi-) - 2y and an extra dof y with mass beta;
 * fe_torque_frequencies: same with a torque-controlled drive of mass md.
 """
 import numpy as np

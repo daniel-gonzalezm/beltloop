@@ -278,7 +278,7 @@ def takeup_mass_threshold(loop: Loop, strand: str, j: int = 1, tol: float = 0.05
     lengthened by a fraction tol with respect to beta -> 0 (exact, no root search).
 
     strand is 'A' (drive exit -> take-up) or 'B' (take-up -> drive entry). The mode is followed
-    by its strand, not by its rank in the loop (phase 4.4). Since the characteristic equation
+    by its strand, not by its rank in the loop. Since the characteristic equation
     is F(Om) = A12/A22 + B12/B11 = 4/(beta Om^2), the beta that puts a root at a target
     frequency Om_t is explicit: beta = 4/(Om_t^2 F(Om_t)). With Om_t = Om_p/(1 + tol) and
     Om_p the strand pole, the root at Om_t is the one born at Om_p (interlacing: as beta grows

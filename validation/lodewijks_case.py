@@ -1,4 +1,4 @@
-"""Lodewijks (1996), Ch. 8: velocity-controlled starts of a loaded 1 km conveyor (phase 3.5).
+"""Lodewijks (1996), Ch. 8: velocity-controlled starts of a loaded 1 km conveyor (Section 4.3 of the paper).
 
 Source: G. Lodewijks, Dynamics of Belt Systems, PhD thesis, TU Delft, 1996 (scanned PDF;
 printed page = PDF page - 20). Data used (printed pages):
@@ -157,7 +157,7 @@ def write_summary(table, pe, py, pm, extra=None):
     """Numbers of the cross-comparison (validation section) for maps/paper_numbers.py, which
     reads this file instead of rerunning the starts (about 30 s). Peak strain of each Table 8.7
     profile, model A undamped against Lodewijks, and the periods of the oscillation after the
-    start (fits over 30-60 s for Lodewijks, 30-90 s for model A). Step 6.4 adds the peak
+    start (fits over 30-60 s for Lodewijks, 30-90 s for model A); also the peak
     strains themselves (Lodewijks, model A with zeta_1 = 0 and 0.05), the mean take-up travel
     after the 30 s start (Lodewijks' record and model A), his travel for the 50 s start of the
     duration sweep, and the periods of the two alternatives that would give his 18 s period."""

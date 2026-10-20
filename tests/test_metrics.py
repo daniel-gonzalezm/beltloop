@@ -1,4 +1,4 @@
-"""Phase 4.5: universal fixed-free strand curves and start-up metrics of the loop."""
+"""Universal fixed-free strand curves and start-up metrics of the loop."""
 import numpy as np
 import pytest
 
@@ -96,7 +96,7 @@ def test_takeup_mass_barely_matters():
             assert m1.D_entry == pytest.approx(m0.D_entry, rel=0.015)
 
 
-# --------------------------------------------------------------- crawl start (phase 4.5b)
+# --------------------------------------------------------------- crawl start
 from beltloop import Segment, crawl_onset, crawl_start, startup_with_onset  # noqa: E402
 
 

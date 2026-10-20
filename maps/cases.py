@@ -1,10 +1,9 @@
 """Conveyors from the literature: single source of case data for all figures and tables.
 
-Phase 5.2 rewrite. Every input is a `Datum` that records where it comes from, so that the
-parameter table of the paper can show the provenance of each number and the figures can be
-regenerated after the source checks of phase 5.3. Tags follow the first author of the source.
+Every input is a `Datum` that records where it comes from, so that the parameter table of
+the paper can show the provenance of each number. Tags follow the first author of the source.
 
-Conventions (phase 5.2)
+Conventions
 -----------------------
 Lengths and positions
     L is the strand length (centre distance along the belt). Positions are geometric, in
@@ -15,7 +14,7 @@ Inertial line densities
     mu_r = belt + reduced mass of the return idlers;
     mu_c = belt + reduced mass of the carry idlers + coupled bulk material.
     Reduced idler mass = sum of I / r^2 of the rolls per metre (4 I / d^2). When a source gives
-    only the roll mass m, the reduced mass is KAPPA_IDLER * m (phase 5.3): CEMA (2007) tables
+    only the roll mass m, the reduced mass is KAPPA_IDLER * m: CEMA (2007) tables
     5.41-5.44 give, for steel rolls of classes B4-E7 and belt widths 18-48 in, a ratio
     WK^2 / (W (d/2)^2) of 0.72-0.92 (0.67-0.95 if the table pairing is read the other way),
     median about 0.8. Range 0.6-0.92: the lower end covers a source mass that includes the
@@ -51,7 +50,7 @@ Take-up (beta)
          beta = 4 T_t^2 / (M_w g^2 mu_r L), whatever n and i (n T_t = i M_w g);
       3. only M_w known: direct counterweight on n = 2 strands assumed;
       4. only T_t known: direct counterweight on n strands assumed (M_w = n T_t / g), with
-         n = 2 unless the source shows the reeving (phase 5.3(b): Pascual's Fig. 5).
+         n = 2 unless the source shows the reeving.
     Rules 3 and 4 give the largest beta among direct counterweights with n >= 2 (and among
     roped rigs with i <= 1), i.e. an upper bound for the take-up mass effect.
 """
@@ -107,7 +106,7 @@ def cema_reduced(wk2_lb_in2, d_in, spacing):
 
 def reduced_idlers(mass_per_metre, note):
     """Reduced idler density from a published roll (or set) mass per metre, with the CEMA
-    ratio and its range (phase 5.3)."""
+    ratio and its range."""
     m = mass_per_metre
     return D(KAPPA_IDLER * m, f"{note}; x {KAPPA_IDLER} (CEMA I/(m r^2))",
              KAPPA_LO * m, KAPPA_HI * m)
@@ -125,7 +124,7 @@ def coupled_carry_density(m_unloaded: float, m_loaded: float, alpha: float) -> f
 def din_peripheral_force(L, f, m_ic, m_ir, m_b, m_l, H=0.0, C=1.0, kappa=None):
     """Running peripheral force, DIN 22101 eqs. 14 and 26 with cos(delta) = 1:
     F_U = C f g L (m_Ro + m_Ru + 2 m_b + m_l) + g m_l H. The rotating idler masses are taken
-    as the reduced masses divided by kappa (phase 5.4; the split only matters through the
+    as the reduced masses divided by kappa (the split only matters through the
     reduced/rotating ratio, 0.6-0.92)."""
     k = KAPPA_IDLER if kappa is None else kappa
     return C * f * G_STD * L * ((m_ic + m_ir) / k + 2 * m_b + m_l) + G_STD * m_l * H
@@ -159,7 +158,7 @@ class Case:
     n: Datum | None = None             # belt strands carrying the carriage
     i: Datum | None = None             # counterweight travel per carriage travel
     M_c: Datum | None = None           # carriage and pulleys, kg
-    # operation (filled in phase 5.3)
+    # operation
     V: Datum | None = None             # m/s
     t_a: Datum | None = None           # start duration, s
     profile: str | None = None         # start profile kind
@@ -167,13 +166,13 @@ class Case:
     F_U: Datum | None = None           # running peripheral force, N
     f: Datum | None = None             # DIN 22101 fictitious friction coefficient
     carry_profile: Datum | None = None  # ((distance from tail, elevation), ...), m
-    # take-up tension design (phase 5.4)
+    # take-up tension design
     l_o: Datum | None = None           # carry idler spacing, m
     l_u: Datum | None = None           # return idler spacing, m
     p_A: Datum | None = None           # start factor: peak peripheral force at start / F_U
     F_A: Datum | None = None           # peak peripheral force at start, N (when published)
     takeup_basis: str = ""             # criterion that set T_t, as documented by the source
-    basis_short: str = ""              # the same, abridged for the case table (phase 5.6)
+    basis_short: str = ""              # the same, abridged for the case table
     notes: str = ""
 
     # ------------------------------------------------------------ densities and speeds
@@ -197,7 +196,7 @@ class Case:
 
     def gamma_range(self):
         """(gamma at the lowest, gamma at the highest coupling of the material class), or None
-        when gamma is given directly (measured or published): no coupling bar (phase 5.3(d))."""
+        when gamma is given directly (measured or published): no coupling bar."""
         if self.gamma_given is not None:
             return None
         lo, hi = self.alpha.range
@@ -274,7 +273,7 @@ class Case:
         from beltloop import Conveyor
         EA = (None if self.EA is None else self.EA.value) if EA is None else EA
         if EA is None:
-            raise ValueError(f"{self.tag}: EA unknown (phase 5.3)")
+            raise ValueError(f"{self.tag}: EA unknown")
         L = self.L.value
         st = self.sigma_t[0] if sigma_t is None else sigma_t
         m_r = None if self.m_b is None else self.m_b.value
@@ -286,15 +285,13 @@ class Case:
 
 
 # =============================================================================== cases
-# Values as derived in phases 3-4 (sources in the project notes, sections 4.10-4.20 and 7).
-# Phase 5.3 checks each one against its source; until then, "published" means "as read in
-# phases 3-4".
+# Each value was checked against its source; the note of each Datum says where it comes from.
 FT = 0.3048
 _SI_IDLERS = (round(cema_reduced(880.0, 7, 3.0), 2), round(cema_reduced(907.0, 7, 6.0), 2))
 
 CASES_FULL = [
     Case("H", "Harrison 1983/85", "harrison1983", L=P(5100.0), sigma_t=[0.005],
-         # Phase 5.6: strand values from the loop quantities, as in validation/harrison_case.py
+         # Strand values from the loop quantities, as in validation/harrison_case.py
          # (transit basis), so that the case table gives the T_1 of the validation section
          # (28.4 s). Before: mu_r = 79 and c_r = 1450 as if gamma = 1 (T_1 = 28.0 s).
          mu_r_given=D(2 * 79.0 / (1 + 0.97 ** 2),
@@ -418,7 +415,7 @@ CASES_FULL = [
                "already holds it. Idlers: 90 % of the roll mass (Simonsen 1987)"),
     Case("Pa", "Pascual et al. 2005", "pascual2005",
          L=P(2561.0, "belt half length l / 2, Table 1 (Fig. 5: 1800 + 770 = 2570 m)"),
-         # Phase 5.3(b): take-up in the belt loop just after the head drive (Fig. 5, "tensor
+         # Take-up in the belt loop just after the head drive (Fig. 5, "tensor
          # pulley", drawn in two positions), not at the tail as the thesis read it.
          sigma_t=[0.02],
          m_b=P(118.0), m_ic=P(67.0, "\"equivalent rollers' mass\" (eq. 2): taken as reduced"),
@@ -448,7 +445,7 @@ CASES_FULL = [
                          "drawn; 1791 m closes L). The thesis swapped the two slopes"),
          l_o=A(1.2, "not published", 1.0, 1.5), l_u=A(3.0, "not published", 2.5, 3.5),
          takeup_basis="not stated (1988 Harrison design); T_t matches about 2 % carry sag at "
-                      "the tail, at the foot of the 9 deg incline (phase 5.4)",
+                      "the tail, at the foot of the 9 deg incline",
          basis_short="not stated (about 2\\,\\% sag)",
          notes="copper mine, northern Chile (data from a 1988 Harrison report). The 45.5 t of "
                "Table 1 (\"other masses\") is the driven (tail) pulley m3 = 45.0 t of Table 2, "
@@ -506,7 +503,7 @@ CASES_FULL = [
          carry_profile=A(((0.0, 0.0), (274.6, 18.0)), "straight incline; profile not published"),
          l_o=P(1.2), l_u=P(3.0),
          takeup_basis="not stated; running tensions imply e^(mu theta) = 3.0 and about 1 % sag "
-                      "at the tail (phase 5.4)",
+                      "at the tail",
          basis_short="not stated (grip at $\\mathrm{e}^{\\mu\\theta} = 3.0$)",
          notes="take-up position and rigging unknown (dotted line on the maps); no start time; "
                "drive 150 kW nameplate, below the 164 kW demand"),

@@ -1,4 +1,4 @@
-"""Step 6.2: every number quoted in the manuscript, as a LaTeX macro in paper/paper_numbers.tex.
+"""Every number quoted in the manuscript, as a LaTeX macro in paper/paper_numbers.tex.
 
     python maps/paper_numbers.py               # write paper/paper_numbers.tex (a few seconds)
     python maps/paper_numbers.py --check       # exit status 1 if the file is out of date
@@ -11,20 +11,21 @@ cent (\\qty{\\NumLongShiftMax}{\\percent}); very small numbers in e-notation for
 
 Where the numbers come from (nothing is typed by hand except the measured values that the
 validation scripts already hold as data, which are marked "measured" in the comments):
-  * cases.py, paper_tables.py and paper_figures.py (claim 1, case margins, Song head and tail);
+  * cases.py, paper_tables.py and paper_figures.py (take-up mass effect, case margins, Song
+    head and tail);
   * maps/data/*.npz, the cached data of the paper figures (modal, beta, startup, crawl, validity,
     applications) and maps/data/table_applications.json;
   * validation/harrison_case.py (computed here, about 1 s), validation/data/lodewijks_case.json
     and validation/data/lumped_validation.json (written by their scripts);
   * maps/data/paper_numbers_slow.json: the grip ratios of Lodewijks' 30 s starts (about 30 s to
     compute; refreshed with --recompute).
-  * beltloop itself (step 6.3, Section 3): accuracy of the two-pole take-up mass correction and
+  * beltloop itself: accuracy of the two-pole take-up mass correction and
     the overshoot of a step onset of the resistances (about 6 s);
-  * step 6.4 (Section 4, Appendix B): harrison_case.drive_check() (drive without speed control,
+  * Section 4 and Appendix B: harrison_case.drive_check() (drive without speed control,
     about 9 s), validation/song_case.py, the published Nordell-Ciozda and Muja values, and the
     convergence of the modal tension (about 10 s).
 tests/test_paper_numbers.py checks that paper_numbers.tex equals the output of this script and
-pins the key numbers against the values of the state document, so a change in the code that
+pins the key numbers against reference values, so a change in the code that
 moves a number in the text cannot pass unnoticed.
 """
 from __future__ import annotations
@@ -43,7 +44,7 @@ sys.path.insert(0, str(ROOT / "validation"))
 
 OUT = ROOT / "paper" / "paper_numbers.tex"
 SLOW = HERE / "data" / "paper_numbers_slow.json"
-LONG = 1000.0          # "conveyors of 1 km or longer" (claim 1)
+LONG = 1000.0          # "conveyors of 1 km or longer" (abstract, Section 5.2)
 
 HEADER = """\
 % =====================================================================
@@ -115,8 +116,8 @@ def _slow_takeup_kinematics():
     return dict(r=[float(x) for x in rs], v=[float(x) for x in ev], a=[float(x) for x in ea])
 
 
-SLOW_KEYS = {"lodewijks_grip": _slow_lodewijks_grip,           # step 6.2
-             "takeup_kinematics": _slow_takeup_kinematics}     # step 6.6
+SLOW_KEYS = {"lodewijks_grip": _slow_lodewijks_grip,
+             "takeup_kinematics": _slow_takeup_kinematics}
 
 
 def slow_inputs(recompute=False) -> dict:
@@ -147,7 +148,7 @@ def claims(N: Numbers):
     from cases import BY_TAG
     from beltloop import Loop, natural_frequencies, takeup_mass_threshold
 
-    N.section("Claim 1: take-up mass against its threshold (paper_figures.case_margins, case table)")
+    N.section("Take-up mass against its threshold (paper_figures.case_margins, case table)")
     rows = pf.case_margins()                      # (tag, L, beta, r, r_lo, shift, shift_lo)
     known = [r for r in rows if r[0] != "WR"]
     long = [r for r in known if r[1] >= LONG]
@@ -187,8 +188,8 @@ def claims(N: Numbers):
     N.add("SuRatioLow", out[1][0], 2, "the same at alpha = 0.8")
     N.add("SuShift", out[0][1], 1, "lengthening of t_1 (%)")
     N.add("SuShiftLow", out[1][1], 1, "the same at alpha = 0.8 (%)")
-    # Step 6.5: the shortest conveyors of the Wheatley and Rubel plant (their Table 1; n = 2 and the
-    # take-up position of WR assumed), from maps/beta_min.py (phase 5.4)
+    # The shortest conveyors of the Wheatley and Rubel plant (their Table 1; n = 2 and the
+    # take-up position of WR assumed), from maps/beta_min.py
     import beta_min as bm
     reg = {row[0]: row for row in bm.regime()}
     for tag, name in (("WR-B", "WRB"), ("WR-C", "WRC")):
@@ -214,11 +215,11 @@ def modal(N: Numbers):
     N.add("ModalHatched", 100 * np.mean(np.abs(d["dF1"]) > 0.05), 0,
           "share of the (xi, gamma) plane where beta = 0.1 changes it by > 5 % (%)")
     N.add("ModalHatchedMedian", 100 * np.median(np.abs(d["dF1"])), 1,
-          "median change of the fundamental's participation with beta = 0.1 (%) (step 6.5)")
+          "median change of the fundamental's participation with beta = 0.1 (%)")
     X, G = np.meshgrid(d["xis"], d["gams"])
     F1f = (8 / np.pi ** 2) * (1 - X + G ** 2) / (1 + G ** 2)
     N.add("ModalParticipationFormulaErr", 100 * (F1f / d["F1"] - 1).max(), 1,
-          "largest overestimate of F_1 ~ (8/pi^2)(1 - xi + gamma^2)/(1 + gamma^2) over the map (%) (step 6.5)")
+          "largest overestimate of F_1 ~ (8/pi^2)(1 - xi + gamma^2)/(1 + gamma^2) over the map (%)")
     for g, name in ((1.0, "One"), (2.0, "Two")):
         T = [2 * np.pi / natural_frequencies(Loop.from_positions(0.0, x, g), 0.0, 1)[0]
              for x in (1e-6, 1 - 1e-6)]
@@ -234,7 +235,7 @@ def modal(N: Numbers):
     N.add("NCIncrease", 100 * (nc[2] / nc[3] - 1), 0, "(%)")
     import intermediate_drive as idr
     ncr = idr.nordell_ciozda()             # (label, t_1, 4 t_B, ratio, F_1, t_2) for both drives
-    N.add("NCFourTransit", ncr[0][2], 1, "Nordell and Ciozda: four transits of strand B (s) (step 6.5)")
+    N.add("NCFourTransit", ncr[0][2], 1, "Nordell and Ciozda: four transits of strand B (s)")
     N.add("NCRatioHead", ncr[1][3], 2, "the same strands with a head drive: tau_1/(4 tau_B)")
     su = d["sasol"]
     N.add("SuFourTransit", su[1], 3, "Surtees: tau_1/(4 tau_B), beta -> 0")
@@ -243,7 +244,7 @@ def modal(N: Numbers):
     N.section("Song et al. (2012): take-up next to the head drive against the tail")
     s = BY_TAG["S"]
     for beta, suffix, note in ((s.beta, "", "beta from the take-up tension (case table)"),
-                               (0.0, "Light", "beta -> 0, as Song et al. modelled it; quoted in the text (step 6.2)")):
+                               (0.0, "Light", "beta -> 0, as Song et al. modelled it; quoted in the text")):
         T = [2 * np.pi * s.L.value / (s.c_r * natural_frequencies(
             Loop.from_positions(0.0, x, s.gamma()), beta, 1)[0]) for x in s.xis]
         N.add(f"SongPeriodHead{suffix}", T[0], 1, f"t_1 (s), {note}")
@@ -251,7 +252,7 @@ def modal(N: Numbers):
     four = 4 * s.L.value * (1 / s.c_r + 1 / (s.c_r / s.gamma()))
     T0 = 2 * np.pi * s.L.value / (s.c_r * natural_frequencies(
         Loop.from_positions(0.0, s.xis[0], s.gamma()), 0.0, 1)[0])
-    N.add("SongFourTransit", four, 1, "four transits of strand B, take-up at the head (s) (step 6.5)")
+    N.add("SongFourTransit", four, 1, "four transits of strand B, take-up at the head (s)")
     N.add("SongFourTransitRatio", T0 / four, 3, "t_1 / four transits, take-up at the head, beta -> 0")
 
 
@@ -271,7 +272,7 @@ def beta_regime(N: Numbers):
     near = Z[:, d["xis"] <= 0.1]
     N.add("BetaFiveMinNearDrive", near[np.isfinite(near)].min(), 2,
           "smallest beta_5(B1), gamma >= 1.4, xi <= 0.1: the rule T_t <~ W_r/4 (n = 2) is "
-          "stated for a take-up near the drive (decision of step 6.2)")
+          "stated for a take-up near the drive")
     Zf = np.where(np.isfinite(d["B1"]), d["B1"], np.inf).min(axis=1)
     N.add("RuleGammaAnyPosition", d["gams"][np.argmax(Zf >= 0.5)], 1,
           "gamma above which beta_5(B1) >= 0.5 for every take-up position (grid 0.025)")
@@ -279,7 +280,7 @@ def beta_regime(N: Numbers):
     N.add("SinglePoleCoefficient", 4 * ((1 + tol) ** 2 - 1), 2, "beta_5 ~ 0.41 m~ (one pole)")
     N.add("BetaFiveAOneSlope", 2 * ((1 + tol) ** 2 - 1), 3, "beta_5(A1) ~ 0.205 xi (uniform strand)")
 
-    # Step 6.5: scope of A1 (fig_beta (c)): the case at the tail, and how slowly the published
+    # Scope of A1 (fig_beta (c)): the case at the tail, and how slowly the published
     # starts drive A1 even with the take-up at the tail (tau_A1 = 4 xi <= 4).
     from cases import BY_TAG, CASES_FULL
     from beltloop import Loop, natural_frequencies, poles
@@ -288,7 +289,7 @@ def beta_regime(N: Numbers):
     pA = np.pi / (2 * s.xis[1])
     k = int(np.argmin(abs(poles(lp, 8) - pA)))
     N.add("StAOneShift", 100 * (pA / natural_frequencies(lp, s.beta, k + 1)[k] - 1), 1,
-          "St (take-up at the tail): lengthening of A1 by the take-up mass (%); panel (c) of fig_beta until step 6.8")
+          "St (take-up at the tail): lengthening of A1 by the take-up mass (%)")
     ratios = [(c.tag, c.c_r * c.t_a.value / c.L.value / 4) for c in CASES_FULL
               if c.t_a is not None and c.c_r is not None]
     tag, r = min(ratios, key=lambda p: p[1])
@@ -431,7 +432,7 @@ def applications(N: Numbers, slow: dict):
           "Su: smallest required T_t along the return, slack side (kN)")
     N.add("AppAccelMarginMin", min(d[f"{t}_accel_margin"].min() for t in ("Lo", "SM", "Su")), 0,
           "condition 2 (take-up follows the belt): smallest margin in the application runs")
-    # Step 6.8: drive factors and drive position of the cases, until then typed in the text.
+    # Drive factors and drive position of the cases.
     N.add("SMGripFactor", BY_TAG["SM"].E.value, 1, "SM: e^{mu theta} of the tandem drive")
     N.add("SuGripFactor", BY_TAG["Su"].E.value, 1, "Su: e^{mu theta} of the drive")
     N.add("SuDrivePos", BY_TAG["Su"].sigma_d.value, 3, "Su: drive position sigma_d/L from the head")
@@ -467,7 +468,7 @@ def validation(N: Numbers):
     N.add("HarrisonTransmissionMin", h["transmission_7s"][0], 2, "|t| through the take-up at 7 s")
     N.add("HarrisonTransmissionMax", h["transmission_7s"][1], 2)
 
-    N.section("Validation: Harrison, drive without speed control (Section 3.6; step 6.4)")
+    N.section("Validation: Harrison, drive without speed control (Section 3.6)")
     # base model n = 4, gamma = 0.97, rho = 79 kg/m; harrison_case.drive_check()
     N.add("HarrisonFreeDriveSlow", h["drive_free_slow"], 1, "free drive (m_d -> 0): slow period (s)")
     N.add("HarrisonFreeDriveSecond", h["drive_free_second"], 1, "free drive: second period (s), the loop transit")
@@ -503,7 +504,7 @@ def validation(N: Numbers):
     N.add("NCArrivalC", tC, 2, "wave from the drive to the take-up, point C (s); measured 5.86")
     tBs = (L - xd) / cr + (L - xd) / cc
     N.add("NCArrivalBShort", tBs, 2, "front from the drive to point B through the take-up and the "
-          "tail (s); absent in the record (Nordell 1987, Fig. 7; step 6.7b)")
+          "tail (s); absent in the record (Nordell 1987, Fig. 7)")
     N.add("NCArrivalBMeas", 3.72, 2, "measured (their Fig. 10)")
     N.add("NCArrivalCMeas", 5.86, 2, "measured (their Fig. 11)")
     N.add("NCSpeedReturn", nc["c_r"], 0, "their wave speed on the empty return strand (m/s)")
@@ -567,7 +568,7 @@ def validation(N: Numbers):
 
 
 def solution(N: Numbers):
-    """Step 6.3, Section 3 (closed-form solution): accuracy of the take-up mass correction and
+    """Section 3 (closed-form solution): accuracy of the take-up mass correction and
     the overshoot of a step onset of the resistances (about 6 s)."""
     from beltloop import (Loop, StartProfile, modal_basis, natural_frequencies, startup_response,
                           takeup_mass_approx)
@@ -586,7 +587,7 @@ def solution(N: Numbers):
     N.add("MassCorrErrFundOne", 100 * worst1, 1, "the same for the fundamental at beta = 1 (%)")
 
     N.section("Closed-form solution (Section 3): step onset of the resistances")
-    # tests/test_response.py::test_step_overshoot_can_exceed_two (confirmed with FE in phase 3)
+    # tests/test_response.py::test_step_overshoot_can_exceed_two (confirmed with FE)
     lp = Loop.from_positions(0.0, 0.05, 2.0, r_return=1.0, r_carry=1.0)
     mb = modal_basis(lp, 0.1, 300)
     tau = np.linspace(0.0, 60.0, 6001)
@@ -598,7 +599,7 @@ def solution(N: Numbers):
 
 
 def numerics(N: Numbers):
-    """Step 6.4, Appendix B: convergence of the tension with the quasi-static split
+    """Appendix B: convergence of the tension with the quasi-static split
     (tests/test_response.py::test_split_convergence_with_damping, about 10 s)."""
     from beltloop import Loop, StartProfile, modal_basis, startup_response
     N.section("Appendix B (numerical methods): convergence of the modal tension")

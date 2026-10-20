@@ -1,4 +1,4 @@
-"""Phase 4.8: final figures of the paper (results of phase 4), one reproducible script.
+"""Figures of the paper, one reproducible script.
 
     python maps/paper_figures.py                 # all figures, cached data where available
     python maps/paper_figures.py modal beta      # some figures
@@ -6,20 +6,21 @@
 
 Data go to maps/data/<figure>.npz (small; committed, so the figures can be restyled without
 recomputing), figures to maps/figures/paper/<figure>.pdf and .png, and the numbers quoted in
-the captions are printed. Case markers come from maps/cases.py. The working figures of each
-step (maps/*.py) stay as the record of that step.
+the captions are printed. Case markers come from maps/cases.py. The working figures of the
+exploration scripts (maps/*.py) go to maps/figures/.
 
-Figures (numbering of the manuscript decided in phase 6):
+Figures:
   modal     frequencies and participation in (xi, gamma), beta -> 0, plus the intermediate drive
   beta      take-up mass threshold beta_5, each mode followed by its strand (B1, B2, A1)
   startup   universal start-up curve of the fixed-free strand and the loop collapse
-  crawl     initial crawl: duration of the ramp versus duration of the hold
+  crawl     initial crawl: duration of the ramp versus duration of the hold (not in the paper)
   validity  validity conditions: slack at the exit, rebound, minimum T_2, tight side
   applications  start-ups of Lo, SM and Su in physical units against the take-up position
-                (phase 5.5; also writes table_applications.txt, about 30 s)
+                (also writes table_applications.txt, about 30 s)
+
 The loop schematic (Figure 1) is drawn by maps/fig_loop.py and the lumped-mass validation figure
 by validation/fig_lumped_validation.py, both with style.py; the numbers that the captions and
-the text quote are written by maps/paper_numbers.py (step 6.2).
+the text quote are written by maps/paper_numbers.py.
 """
 import sys
 from pathlib import Path
@@ -52,13 +53,13 @@ def cached(name, compute, recompute):
 # Cases near the drive (xi <= CLUSTER_XI) pile up on the left edge of the maps. They are spread
 # into lanes LANE_DX apart (display only: the caption gives the true xi) so that their coupling
 # bars do not overlap, and the labels of the cases with xi <= LEADER_XI are set in a column at
-# LEADER_X with leader lines; a case at the tail is drawn at EDGE_XI (phase 5.3(d)).
+# LEADER_X with leader lines; a case at the tail is drawn at EDGE_XI.
 CLUSTER_XI, LANE_X0, LANE_DX, LANE_PAD = 0.03, 0.004, 0.016, 0.08
 LEADER_XI, LEADER_X, LEADER_GAP = 0.15, 0.16, 0.12
 EDGE_XI = 0.985
 
 
-# A case whose take-up position is unknown (WR) is left off the maps (phase 5.3(d)): its line
+# A case whose take-up position is unknown (WR) is left off the maps: its line
 # across xi carried only gamma. It stays in the case table and in the text (case_margins).
 SHOW_UNKNOWN_POSITION = False
 
@@ -173,7 +174,7 @@ def data_modal():
                 nc=np.array([NORDELL_CIOZDA["sigma_d"], nc[0][3], nc[0][1], nc[1][1]]), sasol=sasol)
 
 
-# Colour maps of fig_modal: (name, lo, hi), dark end cut off (phase 5.3(d)).
+# Colour maps of fig_modal: (name, lo, hi), dark end cut off.
 CMAPS = dict(a=("viridis", 0.30, 1.0), b=("magma", 0.50, 1.0), c=("cividis", 0.40, 1.0))
 
 
@@ -217,7 +218,7 @@ def fig_modal(d):
     ax.plot(*d["nc"][:2], "k*", ms=7, zorder=6)
     ax.annotate(NORDELL_CIOZDA["tag"], d["nc"][:2], xytext=(-4, 3), textcoords="offset points", fontsize=6, ha="right")
     xs, ys = d["sasol"][:2]
-    if len(d["sasol"]) > 2:                    # coupling bar (phase 5.3(d))
+    if len(d["sasol"]) > 2:                    # coupling bar
         ax.plot([xs, xs], [d["sasol"][2], ys], "k-", lw=0.6, zorder=5)
         ax.plot(xs, d["sasol"][2], "k_", ms=3.0, mew=0.6, zorder=5)
     ax.plot(xs, ys, "kD", ms=3.5, mfc="w", zorder=6)
@@ -304,7 +305,7 @@ def b2_region_edges(gamma, tol=TOL5):
     return x1, x2, x3
 
 
-# Step 6.8 (decision of the author): the A1 panel (c) leaves the paper; its scope stays in the
+# The A1 panel (c) is not in the paper; its scope is in the
 # text of Section 5.2 and its numbers in paper_numbers.py. True restores the three-panel figure.
 BETA_A1_PANEL = False
 
@@ -370,7 +371,7 @@ def fig_beta(d):
 
 
 def fig_beta_a1(ax, d):
-    """Panel (c) of fig_beta up to step 6.8: threshold of A1 for gamma = 2 and the tail case."""
+    """Optional panel (c) of fig_beta: threshold of A1 for gamma = 2 and the tail case."""
     a1 = cached("beta_a1", data_a1, "--recompute" in sys.argv)
     extra = draw_a1(ax, a1, A1_MODE)
     ax.plot(d["xl"], 4 * d["xl"] / 2 * (1.05 ** 2 - 1), "k:", lw=0.9,
@@ -414,7 +415,7 @@ def case_margins():
     return rows
 
 
-# How fig_beta (c) shows where the threshold of A1 is not defined (phase 5.3(d)):
+# How fig_beta (c) shows where the threshold of A1 is not defined:
 #   "shade"      grey bands as in (b): veering, not reached;
 #   "asymptotes" thin vertical lines at the asymptotes, gaps left blank;
 #   "strip"      asymptotes, plus the veering intervals as a strip along the xi axis;
@@ -482,7 +483,7 @@ def a1_class(xi, gamma):
 
 
 def data_a1(gamma=2.0, n=3000, tol=1e-11):
-    """beta_5 of A1 along xi, branch by branch (phase 5.3(d)). The edges between classes are
+    """beta_5 of A1 along xi, branch by branch. The edges between classes are
     located by bisection to tol in xi; each finite branch is sampled densely towards its right
     edge, where it ends either at a veering edge (finite value) or at a zero of F(Om_t), where
     beta_5 -> infinity. Branches are returned joined by NaN; intervals as (class, x0, x1)."""
@@ -566,7 +567,7 @@ def collapse_envelope(rc=None):
 def practice():
     """(tag, tau_a / T_1) for every case with a published start time: exact T_1 of the loop with
     the case's beta, gamma (alpha = 1) and the take-up at its first listed position (S: at the
-    head, as in their Fig. 1). Phase 5.3(d): from cases.py instead of hard-coded ratios."""
+    head, as in their Fig. 1)."""
     from cases import BY_TAG, CASES_FULL
     from beltloop import Loop, natural_frequencies
     out = []

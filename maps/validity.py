@@ -1,4 +1,4 @@
-"""Phase 4.6: validity zones of the prescribed-velocity linear model.
+"""Validity zones of the prescribed-velocity linear model.
 
 Three conditions, all in units of the belt inertia force (horizontal conveyor, resistances
 proportional to the inertial line density, r = rho mu a_m, onset phi = V/V_inf):

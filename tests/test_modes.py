@@ -1,5 +1,5 @@
 """Mode shapes, orthogonality, participation factors and quasi-static sums.
-Ports check 7 of verify_phase2.py and adds interface and closed-form-integral checks."""
+Includes interface and closed-form-integral checks."""
 import numpy as np
 import pytest
 

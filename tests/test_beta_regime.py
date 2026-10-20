@@ -1,4 +1,4 @@
-"""Phase 4.2: take-up mass regime. Effective modal masses of the strands and the
+"""Take-up mass regime. Effective modal masses of the strands and the
 small-beta (two-pole) approximation of the natural frequencies."""
 import numpy as np
 import pytest

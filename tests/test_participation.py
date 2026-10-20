@@ -1,4 +1,4 @@
-"""Phase 4.4: modal participation strand by strand (beta -> 0) and its take-up mass
+"""Modal participation strand by strand (beta -> 0) and its take-up mass
 correction; structure of the fundamental for a head drive."""
 import numpy as np
 import pytest

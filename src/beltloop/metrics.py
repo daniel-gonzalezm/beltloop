@@ -1,4 +1,4 @@
-"""Start-up metrics and the universal curves of a fixed-free strand (phase 4.5).
+"""Start-up metrics and the universal curves of a fixed-free strand (Section 5.3 of the paper).
 
 With beta -> 0 the take-up is a free end and the loop splits into two strands, fixed at
 the drive and free at the take-up (eigen.strand_participation). During a start each strand
@@ -203,7 +203,7 @@ def startup_with_onset(basis, profile, onset_profile, zeta_hat: float, tau, x):
     return T, y
 
 
-# --------------------------------------------------------------- take-up kinematics (4.6)
+# --------------------------------------------------------------- take-up kinematics
 @dataclass
 class TakeupKinematics:
     """Extremes of the belt-side take-up velocity and acceleration during a start.
@@ -244,7 +244,7 @@ def takeup_kinematics(loop: Loop, profile, zeta_hat: float = 0.0, beta: float = 
     return TakeupKinematics(v.max() / V_inf, v.min() / V_inf, a.max(), a.min())
 
 
-# --------------------------------------------------------------- validity zones (4.6)
+# --------------------------------------------------------------- validity zones
 def strand_rebound(ratios, kind: str = "sine", zeta1: float = 0.0, n_modes: int = 60,
                    points: int = 300, periods_after: float = 3.0):
     """Rebound curves of a uniform fixed-free strand (complement of strand_curves).

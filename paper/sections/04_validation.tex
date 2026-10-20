@@ -1,7 +1,5 @@
 % =====================================================================
-% Section 4 -- Verification and validation, in three levels. Written in
-% step 6.4 from claims 3(a)-(f) (state, section 3), notes 4.8, 4.9 points
-% 5, 7 and 10, 4.10-4.13, and the drive check of step 6.4 (notes 4.31).
+% Section 4 -- Verification and validation, in three levels.
 % Every number is a macro of paper_numbers.tex; scripts:
 %   validation/fig_lumped_validation.py, harrison_case.py, lodewijks_case.py,
 %   song_case.py.
@@ -144,7 +142,7 @@ disturbance moved past the take-up in the direction of belt travel. The belt jus
 the take-up slowed by about \qty{7}{\percent} during the first second, while the drives
 were decelerating, and then recovered, as expected from a retarder that holds the carriage
 until its drag is exceeded (Section~\ref{sec:relation}).
-% step 6.7b: nordell1987 (Beltcon 4), Figs. 5-9, the same event as nordell1984 case 1 in a
+% nordell1987 (Beltcon 4), Figs. 5-9: the same event as nordell1984 case 1 in a
 % legible copy; NumNCArrivalBShort = (L - x_d)(1/c_r + 1/c_c) in maps/paper_numbers.py.
 
 \paragraph{The slow take-up period} After the start, the take-up of the original
@@ -197,7 +195,7 @@ of this conveyor had their rotor resistance switched out in steps as the speed r
 the comparison remains a consistency check: the record confirms the take-up as a free
 end, locates the remaining differences in the drive, and does not test the value of
 $\beta$.
-% notes 4.10, 4.13 and 4.31; validation/harrison_case.py (summary, drive_check)
+% validation/harrison_case.py (summary, drive_check)
 
 \subsection{Cross-comparison with other models}\label{sec:crosscheck}
 
@@ -228,7 +226,7 @@ also merges the drive and the take-up into a single moving pulley
 \citep[Eq.~7.55]{lodewijks1996}, a different system from the conveyor of his Fig.~8.1, the
 agreement of the peaks is a cross-check between models of different scope, not a validation
 of either.
-% notes 4.11; validation/lodewijks_case.py, data/lodewijks_case.json
+% validation/lodewijks_case.py, data/lodewijks_case.json
 
 \paragraph{Song et al.\ (2012)} The two-strand continuum of \citet{song2012} is the
 limit $\beta\to0$ of the present model with the take-up moved to the tail, where
@@ -247,7 +245,7 @@ strands), and their own running tensions imply a take-up travel of
 \qty{\NumSongTravelTensions}{\metre}, not the \qty{\NumSongTravelPub}{\metre} they report.
 Their geometry is used in Section~\ref{sec:frequencies}, with the take-up returned to the
 head drive of their Fig.~1.
-% notes 4.12; validation/song_case.py; tests/test_song.py
+% validation/song_case.py; tests/test_song.py
 
 In summary, the solution is verified to the round-off of the lumped-mass model; the field
 records confirm the two-speed kinematics and the take-up as a free end, with the remaining

@@ -1,4 +1,4 @@
-"""Step 6.2: Figure 1 of the paper, the loop schematic (no data; drawn with the common style).
+"""Figure 1 of the paper, the loop schematic (no data; drawn with the common style).
 
     python maps/fig_loop.py   ->  paper/figures/fig_loop.pdf and .png
 

@@ -1,4 +1,4 @@
-"""Phase 5.4: what sets the take-up tension, and why beta does not grow with length.
+"""What sets the take-up tension, and why beta does not grow with length.
 
 With a gravity take-up the belt-side mass ratio follows from the take-up tension:
 
@@ -23,7 +23,7 @@ case decides which one was used (`Case.takeup_basis`).
 All requirements are computed in the steady running state of `Conveyor.running_tension`
 (gravity from the carry profile, take-up holding T_t) with strand resistances from DIN eq.
 14 scaled to the case's F_U. Start: quasi-static uniform acceleration that raises the drive
-force to p F_U (the universal start curve of step 4.5 is ~1 for t_a >= 2-3 T_1).
+force to p F_U (the universal start curve is ~1 for t_a >= 2-3 T_1).
 
     python maps/beta_min.py         # table and the working figure figures/beta_min.pdf
 """
@@ -47,7 +47,7 @@ def strand_resistances(c: cs.Case, F_U: float | None = None, q_r: float = 1.0):
     """(r_r, r_c, C f): running resistances per unit length (N/m) of the return and carry
     strands, DIN eq. 14 with a common C f fitted so that (r_r + r_c) L + g m_l H = F_U.
     q_r scales the return-strand coefficient against the carry one (1: common f, DIN's
-    estimate; QNK gives about 0.55 for SM, phase 5.4); the total stays F_U."""
+    estimate; QNK gives about 0.55 for SM); the total stays F_U."""
     F = c.F_U.value if F_U is None else F_U
     k = cs.KAPPA_IDLER
     m_ro = (0.0 if c.m_ic is None else c.m_ic.value) / k
@@ -268,7 +268,7 @@ def wr_sibling_cases():
 # ------------------------------------------------------------------------- output
 def table():
     ds = designs()
-    print("Take-up tension against its requirements (phase 5.4). Tensions in kN.")
+    print("Take-up tension against its requirements. Tensions in kN.")
     print(f"{'case':5s} {'L km':>5s} {'beta':>6s} {'K':>4s} {'Tt/Wr':>6s} {'psi':>5s} {'tau':>5s} {'T_t':>6s} "
           f"{'E':>5s} {'p':>5s} {'p(t_a)':>6s} {'E_run':>6s} {'E_st':>5s} {'grip_r':>7s} "
           f"{'grip_s':>7s} {'sag1%':>6s} {'sag2%':>6s}  sag point")

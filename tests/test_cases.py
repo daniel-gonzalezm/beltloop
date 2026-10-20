@@ -1,4 +1,4 @@
-"""Phase 5.2: case data structure (maps/cases.py) and its conventions."""
+"""Case data structure (maps/cases.py) and its conventions."""
 import sys
 from pathlib import Path
 
@@ -9,20 +9,20 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "maps"))
 import cases as cs  # noqa: E402
 from beltloop import GravityTakeUp, Loop, natural_frequencies  # noqa: E402
 
-# (beta, gamma) on the maps at the close of phase 4 (maps/cases.py of step 4.8).
+# Regression values: (beta, gamma) of the cases before their revision against the sources.
 PHASE4 = {"H": (0.012410, 0.97), "S": (0.016727, 1.66587), "G": (0.0055417, 2.20122),
           "LL": (0.084179, 1.97064), "SM": (0.127578, 1.94736), "Lo": (0.204904, 2.75555),
           "Pa": (0.128743, 1.84940), "Si": (0.026559, 2.28853), "WR": (0.884353, 2.92613)}
 
 
-# Cases revised against their sources in step 5.3(a): (beta, gamma) after the revision.
+# Cases revised against their sources: (beta, gamma) after the revision.
 # SM, Si, Su: idler masses converted with the CEMA ratio; Si: CEMA E7 idlers; Su: design 2.
 PHASE53A = {"SM": (0.130963, 1.94987), "Si": (0.025363, 2.24438)}
-# Step 5.3(b): Pa with the take-up in the head loop (T_t from f2, n = 2 from Fig. 5).
+# Pa with the take-up in the head loop (T_t from f2, n = 2 from Fig. 5).
 PHASE53B = {"Pa": (0.168497, 1.84940)}
-# Step 5.3(c): S on the published take-up tension (173 kN) instead of the 4500 kg mass.
+# S on the published take-up tension (173 kN) instead of the 4500 kg mass.
 PHASE53C = {"S": (0.131150, 1.66627)}
-# Step 5.6: H with strand values from the loop transit (validation/harrison_case.py).
+# H with strand values from the loop transit (validation/harrison_case.py).
 PHASE56 = {"H": (0.012043, 0.97)}
 REVISED = {**PHASE53A, **PHASE53B, **PHASE53C, **PHASE56}
 
@@ -130,14 +130,14 @@ def test_conveyor_needs_EA():
 
 
 def test_intermediate_drive_case_frequencies():
-    """NC on the intermediate-drive panel: T1 = 27.5 s with beta -> 0 (section 4.19)."""
+    """NC on the intermediate-drive panel: T1 = 27.5 s with beta -> 0 (Section 5.1 of the paper)."""
     nc = cs.BY_TAG["NC"]
     lp = Loop.from_positions(nc.sigma_d.value, nc.sigma_t[0], nc.gamma())
     Om = natural_frequencies(lp, 0.0, 1)[0]
     assert 2 * np.pi / Om * nc.L.value / nc.c_r == pytest.approx(27.5, abs=0.05)
 
 
-# ----------------------------------------------------------------- step 5.3(a)
+# ----------------------------------------------------------------- revised cases
 @pytest.mark.parametrize("tag", list(REVISED))
 def test_revised_53(tag):
     c = cs.BY_TAG[tag]
@@ -190,7 +190,7 @@ def test_operation_fields_53a():
     assert cs.BY_TAG["Su"].t_a.value == 25.0
 
 
-# ----------------------------------------------------------------- step 5.3(b): Pascual
+# ----------------------------------------------------------------- Pascual
 def _pa_resistances(c, f):
     g = cs.G_STD
     return dict(r_c=f * g * (c.m_b.value + c.m_ic.value + c.m_l.value),
@@ -260,7 +260,7 @@ def test_pa_takeup_rule():
 
 @pytest.mark.parametrize("alpha,shift", [(1.0, 0.0119), (0.8, 0.0139), (0.3, 0.0178)])
 def test_pa_takeup_mass_shift(alpha, shift):
-    """Lengthening of the fundamental by the take-up mass, exact roots (step 5.3(b))."""
+    """Lengthening of the fundamental by the take-up mass, exact roots."""
     c = cs.BY_TAG["Pa"]
     lp = Loop.from_positions(0.0, c.sigma_t[0], c.gamma(alpha))
     w0 = natural_frequencies(lp, 0.0, 1)[0]
@@ -268,7 +268,7 @@ def test_pa_takeup_mass_shift(alpha, shift):
     assert w0 / w - 1 == pytest.approx(shift, abs=1e-4)
 
 
-# ----------------------------------------------------------------- step 5.3(c): literature
+# ----------------------------------------------------------------- literature cases
 def test_lodewijks_ch8_data():
     """Lodewijks (1996, section 8.2): speed from capacity, DIN drive force, Euler factor,
     idlers at 90 % of the roll mass, tensioning force 2 T_t on a two-strand loop."""
@@ -293,7 +293,7 @@ def test_li2009_wave_speed():
 
 def test_song_tension_inconsistency():
     """Song et al. (2012): 173 kN at the tail take-up against 4500 kg on two strands. beta
-    follows the tension (rule 0, phase 5.3(c)); the published mass gives 0.017."""
+    follows the tension (rule 0 of maps/cases.py); the published mass gives 0.017."""
     c = cs.BY_TAG["S"]
     assert c.takeup_rule()[0] == "T_t and n, direct counterweight assumed"
     assert c.takeup().T_t == pytest.approx(173e3)

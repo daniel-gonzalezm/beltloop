@@ -1,16 +1,12 @@
 % =====================================================================
-% Section 5 -- Results. Written in steps 6.5 (5.1-5.2) and 6.6 (5.3-5.4).
-% Inputs: notes 4.15-4.19 and 4.26; 4.9 points 13, 14, 16-18;
-% captions.md (draft captions; every figure of this section now carries its caption here).
-% Mechanics first (JSV emphasis); engineering material condensed.
+% Section 5 -- Results.
+% Numbers: maps/paper_numbers.py; tests named in the comments of each part.
 % =====================================================================
 \section{Results}\label{sec:results}
 
 \subsection{Natural frequencies and modal participation}\label{sec:frequencies}
-% Step 6.5, from notes 4.15 (modes by strand, bounds, participation), 4.19 (intermediate
-% drive), 4.12 (Song, take-up at the head), 4.30 (tail family without participation) and
-% 4.9 points 13 and 17. Numbers: paper_numbers.py, sections "Frequencies and participation"
-% and "Song et al. (2012)". Tests: test_participation.py, test_intermediate.py, test_song.py.
+% Numbers: paper_numbers.py, sections "Frequencies and participation" and
+% "Song et al. (2012)". Tests: test_participation.py, test_intermediate.py, test_song.py.
 \begin{figure}[tbp]
   \centering
   \includegraphics[width=\linewidth]{fig_modal}
@@ -155,11 +151,8 @@ amplification (Section~\ref{sec:startup}).
 % bounds, reversal of travel); numbers: NC* and Intermediate* macros.
 
 \subsection{When the take-up mass matters}\label{sec:betaregime}
-% Step 6.5, from notes 4.14 (threshold), 4.20 and 4.25 (exact threshold by strand, scope of
-% A1; panel (c) of fig_beta removed in step 6.8, decision of the author), 4.26 (beta from the
-% take-up tension, floors, rule T_t <~ W_r/4) and 4.29 (scope of the
-% rule); 4.9 points 12 and 18. Claim 1 figures confirmed in step 6.5 against an independent root
-% of Eq. (chareq_head). Tests: test_figures.py, test_beta_min.py, test_tables.py.
+% The period shifts were confirmed against an independent root of Eq. (chareq_head).
+% Tests: test_figures.py, test_beta_min.py, test_tables.py.
 \begin{figure}[tbp]
   \centering
   \includegraphics[width=\linewidth]{fig_beta}
@@ -269,15 +262,13 @@ beyond the threshold. In these conveyors the exact characteristic
 equation~\eqref{eq:chareq} keeps the take-up mass; in long conveyors the free-end spectra of
 Section~\ref{sec:frequencies}, with the closed-form correction, suffice, which is also why
 none of the field records of Section~\ref{sec:validation} can test the take-up mass.
-% numbers: Long*, Shift*, BetaRatio*, WR*, Su* macros (claims section of paper_numbers.py);
+% numbers: Long*, Shift*, BetaRatio*, WR*, Su* macros (paper_numbers.py);
 % WRB/WRC from maps/beta_min.regime(); tests: test_beta_min.py, test_tables.py, test_figures.py
 
 \subsection{Start-up: the universal curve of a fixed--free strand}\label{sec:startup}
-% Step 6.6, from notes 4.16 (universal curve, collapse, three formulas, profiles, damping,
-% resistances, practice), 4.17 (initial crawl; fig_crawl removed in step 6.8, decision of the
-% author, its numbers kept in the text), 4.19 (intermediate drive) and 4.9 point 14
-% (wave law: love1906, Art. 284, read in step 6.6). Numbers: paper_numbers.py, sections
-% "Universal start-up curve" and "Initial crawl". Tests: test_metrics.py,
+% Wave law: love1906, Art. 284. The figure of the initial crawl (fig_crawl) is still
+% produced by paper_figures.py but not included; its numbers are in the text.
+% Numbers: paper_numbers.py, sections "Universal start-up curve" and "Initial crawl". Tests: test_metrics.py,
 % test_intermediate.py::test_startup_collapse_intermediate, test_figures.py.
 \begin{figure}[tbp]
   \centering
@@ -413,8 +404,7 @@ an upper bound.
 % resistance overshoot)
 
 \subsection{Validity: slack, take-up and drive grip}\label{sec:validity}
-% Step 6.6, from notes 4.18 (three conditions, accuracy, tight side) and 4.9 point 16
-% (grip, DIN 22101 sec. 7.3.1 and 8.2.2, Eqs. 47-50, read again in step 6.6).
+% Grip: DIN 22101 sec. 7.3.1 and 8.2.2, Eqs. 47-50.
 % Numbers: paper_numbers.py, sections "Validity conditions" and "Take-up kinematics".
 % Tests: test_validity.py.
 \begin{figure}[tbp]

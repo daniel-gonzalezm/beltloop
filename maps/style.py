@@ -1,10 +1,10 @@
 """Common style of the paper figures.
 
 Widths follow the usual two-column journal sizes (single column 85 mm, full width 174 mm);
-check them against the author guidelines of the chosen journal before submission (phase 7).
+check them against the author guidelines of the chosen journal before submission.
 Fonts are STIX (bundled with matplotlib, Times-like, so the figures reproduce on any machine);
 line colours are the Okabe-Ito colour-blind safe set, and curves that differ by colour also differ
-by line style, marker or a direct label (step 6.2); maps use perceptually uniform colour maps.
+by line style, marker or a direct label; maps use perceptually uniform colour maps.
 """
 from pathlib import Path
 
@@ -18,7 +18,7 @@ DOUBLE = 174 * MM
 
 OKABE_ITO = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#E69F00", "#56B4E9", "#F0E442", "#000000"]
 # Markers paired with OKABE_ITO, so that curves told apart by colour can also be told apart
-# without it (step 6.2: accessibility). Open markers (mfc="w") read best on thin lines.
+# without it. Open markers (mfc="w") read best on thin lines.
 MARKERS = ["o", "s", "^", "D", "v", "P", "X", "*"]
 
 RC = {
@@ -53,7 +53,7 @@ OUT = Path(__file__).parent / "figures" / "paper"
 
 
 def light_cmap(name, lo=0.3, hi=1.0, n=256):
-    """A perceptually uniform colour map with its dark end cut off (phase 5.3(d)): the segment
+    """A perceptually uniform colour map with its dark end cut off: the segment
     [lo, hi] of `name`, resampled. Keeps the map monotonic in lightness and colour-blind safe."""
     import numpy as np
     from matplotlib.colors import ListedColormap

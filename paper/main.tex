@@ -1,12 +1,11 @@
 % =====================================================================
-% main.tex -- manuscript (phase 7). Elsevier elsarticle class, set up for
-% the Journal of Sound and Vibration (step 7.1). Alternatives if JSV
-% declines: JVET (Springer, sn-jnl) and Shock and Vibration (Wiley).
+% main.tex -- manuscript. Elsevier elsarticle class, set up for the
+% Journal of Sound and Vibration.
 %
 % Build from this folder (paper/ inside the beltloop repository):
 %   pdflatex main && bibtex main && pdflatex main && pdflatex main
 % Submission layout: preprint, 12 pt, single column, line numbers.
-% Length estimate in journal layouts (step 7.1), same sources:
+% Length estimate in journal layouts, same sources:
 %   pdflatex -jobname=main_3p "\def\paperlayout{3p,times}\input{main}"
 % (1p and 5p likewise; copy main.bbl to main_3p.bbl first; run twice). In the
 % two-column layout figures span both columns, as the typesetter would
@@ -22,7 +21,7 @@
 % Highlights: separate file, highlights.tex (Elsevier asks for a file).
 % =====================================================================
 % nopreprintline: the "Preprint submitted to" footer collides with the
-% title-page footnotes when lineno is active (checked in step 7.1).
+% title-page footnotes when lineno is active.
 \providecommand{\paperlayout}{preprint,12pt,nopreprintline}
 \edef\next{\noexpand\documentclass[\paperlayout,a4paper]{elsarticle}}\next
 
@@ -91,29 +90,21 @@
 
 \title{Closed-form longitudinal modal analysis of belt conveyors with a
        gravity take-up at an arbitrary position}
-% Title decided by the author on 2026-10-07 (the free-end framing moves to the
-% abstract and the contributions); wording reviewed in step 6.8 and kept.
 
-% Author (step 6.2). Name form decided by the author: "Daniel González-Monsalve", with the
-% hyphen, so that the indexes (Scopus, Web of Science) file both family names; use the same
-% form in ORCID, Scopus Author ID and the submission system. The ORCID iD
-% (0000-0002-3892-4722) is linked in the submission system, which passes it to the
-% published article. Postal address of the corresponding author given on 2026-10-07.
+% Name with the hyphen, so that indexes file both family names. The ORCID iD
+% (0000-0002-3892-4722) is entered in the submission system.
 \author{Daniel González-Monsalve\corref{cor1}}
 \ead{danielgonzalezm@udec.cl}
 \cortext[cor1]{Corresponding author.}
 % Classic \address: with a single author the key-value \affiliation of
-% elsarticle 3.3 prints a stray label (checked in step 7.1).
+% elsarticle 3.3 prints a stray label.
 \address{Department of Mechanical Engineering, Faculty of Engineering,
           Universidad de Concepción, Edmundo Larenas 219, Concepción, Chile}
 
 \begin{abstract}
-% Step 6.8. At most 250 words (JSV guide, checked in step 7.1: 249 space-separated
-% tokens with the macros expanded, units counted apart); numbers are macros, so the submission
-% form takes the text from the compiled PDF. The free end is presented as built
-% into the closed form, not as a new observation (step 6.7b, notes 4.35).
-% "settled conveyor by conveyor": kept after reading harrison1989 (step 7.3), who
-% conclude that each conveyor needs evaluation in its own right (p. 123).
+% At most 250 words (JSV guide; 249 with the macros expanded, units counted
+% apart). Numbers are macros, so the submission form takes the text from the
+% compiled PDF.
 The position of the gravity take-up of a long belt conveyor is a dynamic design
 decision, settled conveyor by conveyor. The loop is modelled as a one-dimensional
 Kelvin--Voigt continuum with two wave speeds, a speed-controlled drive anywhere on
@@ -138,7 +129,7 @@ pulley.
 \end{abstract}
 
 \begin{keyword}
-% Six keywords; the JSV guide allows 1 to 7 (checked in step 7.1).
+% Six keywords; the JSV guide allows 1 to 7.
 belt conveyor \sep longitudinal vibration \sep gravity take-up \sep
 transfer matrix \sep modal analysis \sep start-up
 \end{keyword}
@@ -155,16 +146,15 @@ transfer matrix \sep modal analysis \sep start-up
 \input{sections/08_conclusions}
 \input{sections/declarations}
 
-% Elsevier order: back-matter statements, appendices, references (step 7.1).
+% Elsevier order: back-matter statements, appendices, acknowledgements, references.
 \appendix
 % JSV guide: tables, figures and equations of appendices numbered A.1, B.1, ...
 \counterwithin*{table}{section}
 \counterwithin*{figure}{section}
 \input{sections/appendix_a_transfer}
 \input{sections/appendix_b_numerics}
-% \input{sections/appendix_c_cases}  % step 6.8: empty; the case notes stay in Table 2 (decide in phase 7 if the table must shrink)
 
-% JSV guide: acknowledgements in a separate section directly before the references (step 7.2).
+% JSV guide: acknowledgements in a separate section directly before the references.
 \input{sections/acknowledgements}
 
 % Numbered references with full author lists; the -names variant keeps

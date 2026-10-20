@@ -1,4 +1,4 @@
-"""Phase 4.4: natural frequencies and modal participation in the (xi, gamma) plane.
+"""Natural frequencies and modal participation in the (xi, gamma) plane.
 
 Head drive, take-up at xi on the return strand, limit beta -> 0: the take-up is a free end
 and the loop modes are the fixed-free modes of the upstream strand A (drive exit -> take-up,

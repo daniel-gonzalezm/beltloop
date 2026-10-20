@@ -1,4 +1,4 @@
-"""Phase 3.4 checks: limits used in the Harrison (1983) analysis (validation/harrison_case.py)."""
+"""Limits used in the Harrison (1983) analysis (validation/harrison_case.py)."""
 import numpy as np
 import pytest
 
@@ -59,7 +59,7 @@ def test_damped_drive_limits():
 
 
 def test_harrison_phase34_regression():
-    """Key numbers of phase 3.4 (state document): slow period with gamma at fixed loop
+    """Regression values of the Harrison case: slow period with gamma at fixed loop
     transit time 2L/1450 m/s, xi = 0.005, mean density 79 kg/m."""
     L, M, rho = 5100.0, 20000.0, 79.0
     ttr = 2 * L / 1450.0
@@ -72,7 +72,7 @@ def test_harrison_phase34_regression():
 
 
 def test_harrison_phase37_double_loop_regression():
-    """Phase 3.7: double-loop take-up (n = 4, Harrison 1985 Fig. 2a) and the measured
+    """Double-loop take-up (n = 4, Harrison 1985 Fig. 2a) and the measured
     gamma = 0.97 (Fig. 4a). Belt-side beta = 4M/(n^2 mu_r L) = beta/4; the slow period
     hardly changes (it is the quarter-wave mode of the long part, nearly free at the
     take-up)."""
@@ -86,7 +86,7 @@ def test_harrison_phase37_double_loop_regression():
         assert 2 * np.pi * L / (cr * Om) == pytest.approx(T, abs=0.01)
 
 
-# ------------------------------------------------------------------ step 6.4
+# ------------------------------------------------------------------ drive and transmission
 from beltloop import takeup_transmission_impedance  # noqa: E402
 
 

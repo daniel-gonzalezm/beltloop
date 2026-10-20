@@ -1,4 +1,4 @@
-"""Phase 4.8: take-up mass threshold per strand mode and the numbers quoted in the captions of the
+"""Take-up mass threshold per strand mode and the numbers quoted in the captions of the
 paper figures (maps/paper_figures.py). The figures read cached data; these tests recompute the
 quoted values from the package, so text, figures and code cannot drift apart."""
 import numpy as np
@@ -80,8 +80,8 @@ def test_not_reached_and_veering_zones_of_B2():
 
 
 def test_B1_is_loop_mode_1():
-    """For gamma >= 1 the fundamental is B1, so its threshold is the loop's mode-1 threshold of
-    phase 4.2 (bisection on the first root)."""
+    """For gamma >= 1 the fundamental is B1, so its threshold is the loop's mode-1 threshold
+    (bisection on the first root)."""
     for xi, g in ((0.05, 1.2), (0.5, 2.5), (0.95, 1.8)):
         lp = Loop.from_positions(0.0, xi, g)
         f = lambda lb: natural_frequencies(lp, 0.0, 1)[0] / natural_frequencies(lp, 10 ** lb, 1)[0] - 1.05
@@ -144,7 +144,7 @@ def test_b2_region_edges_uniform():
         assert {"nan": np.isnan, "inf": np.isinf, "finite": np.isfinite}[kind](b)
 
 
-# ------------------------------------------------------------------ phase 5.3(d): case markers
+# ------------------------------------------------------------------ case markers
 def _pf():
     import sys
     from pathlib import Path
@@ -236,7 +236,7 @@ def test_sasol_panel_quoted():
 
 
 def test_su_margin_for_text():
-    """Su, the second short conveyor (text, phase 5.3(d)): beta / beta_5(B1) = 0.42 (0.66 at
+    """Su, the second short conveyor (text of Section 5.2): beta / beta_5(B1) = 0.42 (0.66 at
     alpha = 0.8); fundamental +2.1 % (+3.3 %)."""
     import cases as cs
     c = cs.BY_TAG["Su"]
@@ -316,7 +316,7 @@ def test_a1_band_right_edges():
 
 
 def test_a1_reach_quoted():
-    """Notes of captions.md: reach of fig_beta (c) (definition, damping, excitation)."""
+    """Reach of fig_beta (c) (definition, damping, excitation)."""
     pf = _pf()
     import cases as cs
     iv = pf.data_a1(2.0, n=3000)["iv"]

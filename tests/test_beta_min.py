@@ -1,4 +1,4 @@
-"""Phase 5.4: take-up tension requirements (maps/beta_min.py) against the sources."""
+"""Take-up tension requirements (maps/beta_min.py) against the sources."""
 import sys
 from dataclasses import replace
 from pathlib import Path

@@ -1,5 +1,5 @@
 """Natural frequencies: closed forms, limits, independent models, root isolation.
-Ports checks 1-6, 9 and 10 of verify_phase2.py and adds checks of the root isolation."""
+Includes checks of the root isolation."""
 import numpy as np
 import pytest
 
@@ -173,7 +173,7 @@ def test_torque_variant():
 
 # --------------------------------------------------------------------- Harrison regression
 def test_harrison_regression():
-    """Slow-mode periods of the state document, section 4.7 (single wave speed)."""
+    """Slow-mode periods of the Harrison case, single wave speed (regression values)."""
     c, L, M = 1450.0, 5100.0, 20000.0
     table = {39.0: [28.2, 27.8, 27.1, 25.7, 14.8], 79.0: [28.0, 27.6, 26.9, 25.5, 14.4]}
     for rho, ref in table.items():
@@ -189,7 +189,7 @@ def test_harrison_regression():
 
 
 def test_nordell_ciozda_arrival_times():
-    """Kinematic check (state document, section 4.7): drive 5150 ft from the head on the
+    """Kinematic check (Nordell and Ciozda 1984): drive 5150 ft from the head on the
     return strand, take-up 300 ft downstream, 8150 ft conveyor, 1450 and 590 m/s."""
     ft = 0.3048
     Lc, xd = 8150 * ft, 5150 * ft

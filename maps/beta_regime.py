@@ -1,14 +1,14 @@
-"""Phase 4.2: where does the take-up mass matter?
+"""Where does the take-up mass matter?
 
 (1) Map of beta_5(xi, gamma): the belt-side mass ratio at which the k-th natural period
     departs 5 % from its beta -> 0 value (two decoupled fixed-free strands), k = 1, 2, 3,
     head drive, exact roots. (2) Table of beta and of the period shifts for the conveyors
     in the literature, exact and with the two-pole approximation.
 
-Phase 4.8: the paper figure follows each mode by its strand (B1, B2, A1) with the exact
-closed-form threshold eigen.takeup_mass_threshold (maps/paper_figures.py, figure "beta"); this
-working figure keeps the loop ordering of phase 4.2, whose mode-3 panel jumps where modes change
-strand. The case data now live in maps/cases.py.
+The paper figure follows each mode by its strand (B1, B2, A1) with the exact closed-form
+threshold eigen.takeup_mass_threshold (maps/paper_figures.py, figure "beta"); this working
+figure keeps the loop ordering, whose mode-3 panel jumps where modes change strand. The case
+data live in maps/cases.py.
 
 Run:  python maps/beta_regime.py   (prints the table, writes maps/figures/beta_regime.pdf)
 """
@@ -45,7 +45,7 @@ TOL = 0.05
 # gives gamma = 2.01 and beta = 0.137.
 import sys
 sys.path.insert(0, str(HERE))
-from cases import CASES as _CASES  # noqa: E402  (single source of the case data, phase 4.8)
+from cases import CASES as _CASES  # noqa: E402  (single source of the case data)
 
 CASES = [c[1:] for c in _CASES]
 CASES.insert(1, ("Harrison 1983/85 (39 kg/m)", 5100, 39.0, 39.0 * 0.97 ** 2, 20e3, 4, [0.005],

@@ -1,8 +1,7 @@
 % =====================================================================
-% Section 3 -- Closed-form solution. Written in step 6.3 from model.tex
-% with notes 4.3, 4.4, 4.6, 4.9 points 1-3, 6 and 11, 4.10 and 4.14.
-% Decision of step 6.3: the torque-controlled drive stays here (3.6),
-% because Section 4 uses m_d and the slip dashpot for Harrison's case.
+% Section 3 -- Closed-form solution.
+% The torque-controlled drive (Section 3.6) is kept here because Section 4
+% uses m_d and the slip dashpot for Harrison's case.
 % Every formula is checked in beltloop/tests (see the comments).
 % =====================================================================
 \section{Closed-form solution}\label{sec:solution}
@@ -54,7 +53,7 @@ For a head drive ($\sigma_d=0$, $\xi=\sigma_t/L$),
   \end{split}
 \end{equation}
 The mode shapes follow by propagating $\mat z(0)=(0,1)^\T$ through the chain.
-% tests: test_eigen.py (D against independent FE); verify_phase2 checks in test_modes.py
+% tests: test_eigen.py (D against independent FE); test_modes.py
 
 \subsection{Properties}\label{sec:properties}
 

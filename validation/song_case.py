@@ -1,5 +1,5 @@
 """Song, Wang and Zuo (2012), J. China Coal Soc. 37(S1), 217-223: cross-comparison numbers
-for the validation section (step 6.4).
+for the validation section (Section 4.3 of the paper).
 
 Their model is the limit beta -> 0 of ours with the take-up moved to the tail: two
 independent fixed-free strands (tests/test_song.py). Their example (section 3.1):

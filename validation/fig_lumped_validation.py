@@ -1,4 +1,4 @@
-"""Validation figure: modal solution vs independent lumped-mass model (phase 3.3).
+"""Validation figure: modal solution vs independent lumped-mass model (Section 4.1 of the paper).
 
 Two illustrative conveyors (invented parameters, same belt):
   A  head drive, take-up 60 m downstream of the drive, inclined carry strand
@@ -73,7 +73,7 @@ def main():
     C = style.OKABE_ITO
     fig, ax = plt.subplots(2, 2, figsize=(style.DOUBLE, 112 * style.MM), constrained_layout=True)
     # entry and exit differ by colour and marker; conveyors A and B in (c) by colour, marker
-    # and line style (readable without colour, step 6.2)
+    # and line style (readable without colour)
     sty = {"entry": (C[0], "o"), "exit": (C[1], "s")}
     summary = {}
     for panel, (name, (cv, kind)), lab_p in zip(ax[0], CASES.items(), ("(a)", "(b)")):

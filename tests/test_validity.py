@@ -1,4 +1,4 @@
-"""Phase 4.6: validity zones (slack, grip, take-up kinematics)."""
+"""Validity zones (slack, grip, take-up kinematics)."""
 import numpy as np
 import pytest
 

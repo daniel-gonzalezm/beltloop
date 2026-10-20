@@ -1,4 +1,4 @@
-"""Phase 3.6 checks: Song, Wang & Zuo (2012, J. China Coal Soc. 37(S1), 217-223).
+"""Song, Wang & Zuo (2012, J. China Coal Soc. 37(S1), 217-223).
 
 Song et al. neglect the take-up inertia and move the take-up to the tail, so the loop
 splits into two independent fixed-free strands (their Eqs. 1-8). That is the limit
@@ -37,7 +37,7 @@ def test_song_relocation_is_not_equivalent():
 
 
 def test_song_case_summary():
-    """Step 6.4 cross-comparison (validation/song_case.py): wave speeds and running drive force
+    """Cross-comparison (validation/song_case.py): wave speeds and running drive force
     from their data, take-up tension their counterweight can hold, and the take-up travel that
     their own running tensions imply (half the change of loop elongation)."""
     import sys

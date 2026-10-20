@@ -1,4 +1,4 @@
-"""Phase 4.7: drive anywhere on the return strand (intermediate drive) and take-up anywhere.
+"""Drive anywhere on the return strand (intermediate drive) and take-up anywhere.
 
 With the drive on the return strand (head and tail included) and the take-up on the return
 strand, one strand (C) contains the whole carry strand, with return segments l1 (next to the
