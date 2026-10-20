@@ -1,4 +1,4 @@
-Take-up tension against its requirements (phase 5.4). Tensions in kN.
+Take-up tension against its requirements. Tensions in kN.
 case   L km   beta    K  Tt/Wr   psi   tau    T_t     E     p p(t_a)  E_run  E_st  grip_r  grip_s  sag1%  sag2%  sag point
 Lo     1.00  0.205 2.00  0.102 0.171  0.60   21.3  3.00  1.20   2.40   2.67  3.00    17.8    21.3   22.8    9.2  carry at s/L = 1.00
 S      7.12  0.131 2.00  0.066 0.085  0.77  173.0     -  1.05   1.06   3.02  3.17       -       -   71.3   66.4  return at s/L = 0.00
@@ -16,7 +16,7 @@ Basis of T_t as documented by each source:
   S    not stated; their running tensions (337 / 113 kN, text) need e^(mu theta) = 2.98: one pulley with mu = 0.3 and ~210 deg wrap
   LL   start grip (checked, not stated as the design basis): peak tension ratio 4.25 against e^(mu alpha) = 4.81 with motor steps and no speed control
   WR   not stated
-  Pa   not stated (1988 Harrison design); T_t matches about 2 % carry sag at the tail, at the foot of the 9 deg incline (phase 5.4)
+  Pa   not stated (1988 Harrison design); T_t matches about 2 % carry sag at the tail, at the foot of the 9 deg incline
   Su   holdback on the head pulley: design 1 (23.6 kN = max of grip from the installed power and 2 % sag at the tail) could transmit 20.1 of the 35.3 kNm runback torque; design 2 raised T2 to 100 kN (83.2 kNm)
   Su1  holdback on the head pulley: design 1 (23.6 kN = max of grip from the installed power and 2 % sag at the tail) could transmit 20.1 of the 35.3 kNm runback torque; design 2 raised T2 to 100 kN (83.2 kNm)
   SM   not stated: S(3) = 140 kN is a QNK input; QNK checks slip with a safety factor 1.2. Its start factor (Kr = 1.12, Pr / Pu = 3.3) belongs to a rigid-body direct start, not to the VFD drives
