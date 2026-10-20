@@ -1,5 +1,7 @@
 # beltloop
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23487014.svg)](https://doi.org/10.5281/zenodo.23487014)
+
 Longitudinal dynamics of a belt-conveyor loop with a gravity take-up at an arbitrary
 position and the drive anywhere on the loop. Continuous 1-D model with two wave speeds
 (return and carry strands), take-up modelled as a moving pulley with mass (2:1 kinematics
