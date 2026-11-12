@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "beltloop"
-version = "1.0.0"
+version = "1.1.0"
 description = "Longitudinal modal analysis of belt-conveyor loops with a gravity take-up at an arbitrary position"
 readme = "README.md"
 license = {text = "MIT"}
