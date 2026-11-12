@@ -1,0 +1,27 @@
+% =====================================================================
+% highlights.tex -- highlights for the submission.
+% The AMM guide asks for 3 to 5 bullet points of at most 85 characters each,
+% spaces included, in a separate file. Numbers are macros of paper_numbers.tex,
+% so the text stays in step with the code; the submission file is the text of
+% the compiled PDF. Build: pdflatex highlights
+% Lengths with the macros expanded: 83, 77, 82, 83 and 81 characters.
+% =====================================================================
+\documentclass[a4paper,11pt]{article}
+\usepackage[margin=25mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{siunitx}
+\input{paper_numbers}
+\pagestyle{empty}
+\begin{document}
+\noindent\textbf{Highlights}
+\begin{itemize}
+  \item Closed-form characteristic equation for a belt conveyor loop with a gravity take-up
+  \item The known free-end split of the loop at a light take-up holds at any position
+  \item Take-up mass is tied to its tension: at most \qty{\NumLongShiftMax}{\percent} on long-belt
+        fundamental periods
+  \item Head-to-tail take-up move shortens the fundamental period \NumHeadTailRatioGammaThree--\NumHeadTailRatioGammaOneFive\ times if loaded
+  \item Closed-form start-up rules give drive tensions, take-up travel and the grip limit
+\end{itemize}
+\end{document}

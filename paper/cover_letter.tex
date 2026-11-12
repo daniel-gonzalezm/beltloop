@@ -1,0 +1,67 @@
+% =====================================================================
+% cover_letter.tex -- cover letter for the submission to Applied Mathematical
+% Modelling. The date is that of compilation.
+% Numbers are macros of paper_numbers.tex, as in the manuscript.
+% Build: pdflatex cover_letter
+% =====================================================================
+\documentclass[a4paper,11pt]{letter}
+\usepackage[margin=20mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{siunitx}
+\input{paper_numbers}
+
+\signature{Daniel González-Monsalve}
+\address{Daniel González-Monsalve\\
+Department of Mechanical Engineering, Faculty of Engineering\\
+Universidad de Concepción, Edmundo Larenas 219, Concepción, Chile\\
+danielgonzalezm@udec.cl \quad ORCID 0000-0002-3892-4722}
+\date{\today}
+
+\begin{document}
+\begin{letter}{Editor-in-Chief\\Applied Mathematical Modelling}
+\opening{Dear Editor,}
+
+I am submitting the manuscript \emph{Closed-form longitudinal modal analysis of belt
+conveyors with a gravity take-up at an arbitrary position} for consideration as a research
+article in \emph{Applied Mathematical Modelling}.
+
+Long overland belt conveyors in mining are tensioned by a gravity take-up, a counterweight
+hanging on a pulley wrapped by the return belt, and its position shapes the transient tensions
+of every start and stop. Practice chooses that position conveyor by conveyor, by simulation or
+experience. The manuscript gives a closed-form model for this engineering decision: the belt
+loop is modelled as a Kelvin--Voigt continuum with two wave speeds, a speed-controlled drive
+anywhere on the loop and the take-up anywhere on the return strand, represented as a pulley
+with mass, and transfer matrices give its characteristic equation in closed form. Its main
+results are:
+\begin{itemize}\setlength{\itemsep}{1pt}
+  \item the free end that a light take-up is known to form holds at any position; moving the
+        take-up from head to tail shortens the fundamental period by a factor
+        \NumHeadTailRatioGammaThree--\NumHeadTailRatioGammaOneFive\ on loaded belts, so it is not
+        the equivalent transformation it has been taken for;
+  \item the take-up mass enters as a closed-form tip-mass correction, and since it follows from
+        the take-up tension it lengthens the fundamental period of the published conveyors of
+        \qty{1}{\kilo\metre} or longer by at most \qty{\NumLongShiftMax}{\percent};
+  \item a universal start-up curve gives the drive tensions, the take-up travel, the drive grip
+        condition and a start-time rule; the published \qty{30}{\second} starts of a
+        \qty{1}{\kilo\metre} conveyor would have slipped on its single drive pulley.
+\end{itemize}
+The tools are classical; what is new is their use with the take-up and drive positions as
+continuous parameters. The solution is verified against a second
+implementation and checked against take-up records and wave-speed measurements of field
+conveyors; the physical validation is partial, and the manuscript states so. The code that
+produces every figure, table and number is openly available and archived on Zenodo.
+
+An earlier version was submitted to the \emph{Journal of Sound and Vibration} (JSV-D-26-03301)
+and declined without review as outside its scope, the editor suggesting a journal oriented to
+applications in mechanical or mining engineering; no technical objections were raised. The
+manuscript has since been shortened to the length of this journal and reframed around the
+engineering problem, with supporting details in appendices and in a supplementary file.
+
+The manuscript is original, has not been published, and is not under consideration
+elsewhere. I am the sole author and have no competing interests to declare.
+
+\closing{Yours sincerely,}
+\end{letter}
+\end{document}

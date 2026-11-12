@@ -1,0 +1,195 @@
+% =====================================================================
+% Section 2 -- Model.
+% Numbers quoted from the literature (lodewijks2013, Fig. 8) are typed;
+% computed numbers come from paper_numbers.tex.
+% =====================================================================
+\section{Model}\label{sec:model}
+
+\input{sections/notation}
+
+\subsection{Assumptions}\label{sec:assumptions}
+
+The conveyor is a closed loop of belt with a single drive station and a single gravity
+take-up on the return strand; the notation is listed in \cref{tab:notation}.
+\begin{enumerate}
+  \item[(A1)] \emph{One-dimensional continuum.} Belt, reduced idler mass and the part of the
+  bulk material that moves with the belt form an inertial line density; the axial stiffness
+  $EA$ is the same around the loop.
+  \item[(A2)] \emph{Homogeneous strands.} The return and carry strands, both of length $L$,
+  have constant inertial line densities $\mu_r$ and $\mu_c$ and wave speeds
+  $c_j=\sqrt{EA/\mu_j}$; the coupling of the material to the belt enters $\mu_c$ through the
+  factor $\alpha$ of \citet{lodewijks2002}.
+  \item[(A3)] \emph{Kelvin--Voigt belt}, $T_d=EA\,(\varepsilon+t_v\dot\varepsilon)$, without
+  the stiffening by sag at low tension \citep{ellis1987} or the dependence of the modulus on
+  tension and temperature \citep{zarzycki2023}.
+  \item[(A4)] \emph{Small belt speed.} The belt speed is small against the wave speeds, so
+  material and spatial coordinates coincide: $V/c_c=\NumSpeedRatioMin$--$\NumSpeedRatioMax$ in
+  the conveyors of \cref{tab:cases}, except the loaded fabric belt of
+  \citet{lodewijks1996}, with \NumSpeedRatioLo.
+  \item[(A5)] \emph{Point pulleys.} Head, tail and bend pulleys have no inertia or friction.
+  \item[(A6)] \emph{Drive.} The drive pulley imposes the belt velocity $V(t)$ without slip,
+  checked a posteriori (Section~\ref{sec:validity}; drive without speed control in
+  \cref{app:torque}).
+  \item[(A7)] \emph{Gravity take-up.} The take-up pulley rotates freely on a carriage loaded
+  by a counterweight; their translational masses form a mass $\Mtu$ referred to the carriage.
+  Rope elasticity, sheave inertia and friction, retarders and end stops are neglected.
+  \item[(A8)] \emph{Linearity.} The start is a linear increment on the static equilibrium.
+\end{enumerate}
+
+\subsection{Geometry and loop coordinate}\label{sec:geometry}
+
+\begin{figure}[t]
+  \centering
+  \IfFileExists{figures/fig_loop.pdf}{%
+    \includegraphics[width=\linewidth]{fig_loop}}{%
+    \fbox{\parbox{0.9\linewidth}{\centering\vspace{3em}Loop schematic (run
+    maps/fig\_loop.py).\vspace{3em}}}}
+  \caption{Conveyor loop with the drive on the return strand. The geometric
+  coordinate $\sigma$ runs from the head pulley along the return strand; the loop
+  coordinate $s$ runs from the drive exit ($s=0$) to the drive entry ($s=2L$). The
+  take-up at $s=\xi L$ divides the loop into strand~A, from the drive exit to the take-up,
+  and strand~B, from the take-up by the tail and the carry strand to the drive entry.}
+  \label{fig:loop}
+\end{figure}
+
+A geometric coordinate $\sigma\in[0,2L)$ runs along the belt in the direction of travel
+from the head pulley, so the return strand occupies $0\le\sigma<L$ (\cref{fig:loop}). The drive
+is at $\sigma_d$, anywhere on the loop, and the take-up at $\sigma_t\in(0,L)$. The analysis uses
+the loop coordinate
+\begin{equation}\label{eq:loopcoord}
+  s=(\sigma-\sigma_d)\bmod 2L,\qquad s\in[0,2L],
+\end{equation}
+whose ends are the two faces of the drive pulley; the take-up at $s_t=\xi L$ divides the loop
+into strand~A ($0\le s\le s_t$) and strand~B ($s_t\le s\le 2L$).
+
+\subsection{Static state and dynamic increment}\label{sec:increment}
+
+With $\mw(s)$ the line density that contributes to weight (without the reduced idler mass)
+and $\delta(s)$ the inclination of the path, the static tension satisfies
+\begin{equation}\label{eq:static}
+  \frac{\dd T_0}{\dd s}=\mw(s)\,g\sin\delta(s),\qquad T_0(s_t)=\Tt,
+\end{equation}
+where $\Tt$ is held by the counterweight. During a start the displacement of a belt
+particle is
+\begin{equation}\label{eq:decomposition}
+  u(s,t)=u_0(s)+U(t)+w(s,t),\qquad U(t)=\int_0^tV(t')\,\dd t',
+\end{equation}
+with $u_0$ the static displacement, $U$ the rigid motion imposed by the drive and $w$ the
+elastic response. A uniform translation of the belt along its path does not change the
+belt stored in the take-up, so $U$ does not move the take-up. After subtraction of the
+static equilibrium, balance of momentum gives in every segment
+\begin{equation}\label{eq:pde}
+  \mu(s)\,w_{tt}=\frac{\partial T_d}{\partial s}-\mu(s)\,a(t)-r(s)\,\varphi(t),
+  \qquad T_d=EA\,(w_s+t_v\,w_{st}),
+\end{equation}
+with $a=\dot V$. Here $-\mu a$ is the inertial load of the prescribed motion, and $r\varphi$ the
+motion resistances, whose onset $\varphi(t)$ tends to one at steady speed ($\varphi=V/V_\infty$
+as base case, a unit step as upper bound). Gravity is balanced by the static state, which
+includes the counterweight; applying it as a load to an unstrained belt would excite a spurious
+transient. The initial conditions are
+\begin{equation}\label{eq:ic}
+  w(s,0)=w_t(s,0)=0,\qquad y(0)=\dot y(0)=0,
+\end{equation}
+with $y$ the take-up displacement, positive when the belt stored in the take-up grows
+(the counterweight descends); the path of the conveyor is fixed.
+
+\subsection{Interface and boundary conditions}\label{sec:interfaces}
+
+Without slip both faces of the drive follow $U(t)$, and by~\eqref{eq:decomposition}
+\begin{equation}\label{eq:bc_drive}
+  w(0,t)=w(2L,t)=0.
+\end{equation}
+At the head and tail pulleys, and wherever the line density changes, displacement and
+tension are continuous, $\jump{w}=\jump{T_d}=0$, with $\jump{f}=f(s^+)-f(s^-)$.
+
+At the take-up pulley, hung on two belt branches ($\nstr=2$), free rotation makes the
+tension equal on both sides,
+\begin{equation}\label{eq:bc_tu_tension}
+  T_d(s_t^-,t)=T_d(s_t^+,t)\equiv T_d(s_t,t).
+\end{equation}
+When the pulley moves by $y$, the belt stored around it grows by $2y$; since the loop
+coordinate collapses the take-up loop to the point $s_t$, the rest of the loop must
+lengthen by the same amount, $\int_0^{2L}w_s\,\dd s=2y$, and with~\eqref{eq:bc_drive}
+\begin{equation}\label{eq:bc_tu_jump}
+  \jump{w}_{s_t}=-2y(t).
+\end{equation}
+The two branches pull the pulley with $2T$, and with the static part balanced by the
+counterweight
+\begin{equation}\label{eq:bc_tu_dyn}
+  \Mtu\,\ddot y=-2\,T_d(s_t,t).
+\end{equation}
+These conditions are the continuum counterpart of the 2:1 kinematics of
+\citet[Eq.~7.55]{lodewijks1996} and \citet[Eqs.~4--5]{kulinowski2014}, were written for a
+continuum by \citet[Eqs.~5--6]{song2012}, who then neglected the take-up inertia, and follow
+from Hamilton's principle (\cref{app:transfer}).
+
+Eliminating $y$ gives $T_d(s_t)=(\Mtu/4)\,\jump{w_{tt}}_{s_t}$: the belt sees the take-up as
+a mass $\Mtu/4$ in series, which resists only the relative acceleration of the two belt
+ends. A point mass embedded in the belt \citep{harrison1983,sakharwade2019} has instead a
+continuous displacement and a tension jump, $\jump{T_d}=\Mtu w_{tt}$, and the opposite
+limits: as $\Mtu\to0$ the embedded mass disappears, whereas the pulley enforces
+$T_d(s_t)=0$, a device of constant force; as $\Mtu\to\infty$ the embedded mass becomes a
+fixed node, whereas the pulley becomes a fixed pulley around which the belt runs freely.
+
+A carriage hung on $\nstr$ strands ($\nstr=4$ in \citet{harrison1985b} and
+\citet{nordell1997zisco}), with displacement $y_c$, gives $\jump{w}_{s_t}=-\nstr y_c$ and
+$\Mtu\ddot y_c=-\nstr T_d(s_t)$. The equivalent displacement $y=(\nstr/2)\,y_c$ and mass
+\begin{equation}\label{eq:nmap}
+  \Mtu_{\mathrm{eq}}=\frac{4\Mtu}{\nstr^2}
+\end{equation}
+recover~\eqref{eq:bc_tu_jump}--\eqref{eq:bc_tu_dyn} exactly and conserve kinetic energy;
+the rest of the paper is written for the equivalent two-strand take-up.
+
+\subsection{Take-up mass and static tension}\label{sec:static}
+
+The take-up mass is not a free parameter. With counterweight mass $M_w$, carriage mass
+$M_c$, rigging ratio $\lambda$ (counterweight travel per unit carriage travel) and track
+inclination $\delta_c$, virtual work and kinetic energy give
+\begin{equation}\label{eq:reeving}
+  \nstr\,\Tt=g\,(\lambda M_w+M_c\sin\delta_c),\qquad
+  \Mtu=M_c+\lambda^2M_w=\frac{\lambda\,\nstr\,\Tt}{g}+(1-\lambda\sin\delta_c)\,M_c ,
+\end{equation}
+and, with the inertial weight of the return strand $\Wret=g\mu_rL$ (belt and reduced idlers), the mass ratio of
+Section~\ref{sec:dimensionless} becomes
+\begin{equation}\label{eq:beta_tension}
+  \beta=\frac{4\Mtu}{\nstr^2\mu_rL}
+  =\frac{4}{\nstr}\,\lambda\,\frac{\Tt}{\Wret}+\frac{4(1-\lambda\sin\delta_c)\,M_c}{\nstr^2\mu_rL}.
+\end{equation}
+The second term vanishes for a vertical take-up with a directly hung counterweight and is
+otherwise small. A gravity take-up therefore cannot combine a large tension with a small mass:
+rigging changes the mass for a given tension, and the tension is fixed by the running-state
+design (grip at the drive, sag limits). It depends on the take-up position through the statics: on a horizontal conveyor governed by grip,
+$\Tt=T_{2,\min}+r_r\,\xi L$ grows only with the resistance of the return run between the
+drive and the take-up, whereas a slope or a drive on the return strand can change it
+severalfold (Section~\ref{sec:application}).
+
+\subsection{Dimensionless formulation}\label{sec:dimensionless}
+
+Lengths are scaled by $L$, times by the transit time $L/c_r$, accelerations by the peak
+drive acceleration $a_m$, displacements by $a_mL^2/c_r^2$ and tensions by $\mu_rLa_m$:
+\begin{equation}\label{eq:scales}
+\begin{gathered}
+  x=\frac{s}{L},\quad \tau=\frac{c_rt}{L},\quad
+  \hat w=\frac{c_r^2}{a_mL^2}\,w,\quad \hat y=\frac{c_r^2}{a_mL^2}\,y,\\
+  \hat T=\frac{T_d}{\mu_rLa_m},\quad \hat a=\frac{a}{a_m},\quad
+  \hat r=\frac{r}{\mu_ra_m}.
+\end{gathered}
+\end{equation}
+The parameters are
+\begin{equation}\label{eq:params}
+  \gamma=\frac{c_r}{c_c}=\sqrt{\frac{\mu_c}{\mu_r}},\quad
+  \beta=\frac{4\Mtu}{\nstr^2\mu_rL},\quad
+  \xi=\frac{s_t}{L},\quad
+  \hat\zeta=\frac{c_rt_v}{2L},\quad
+  \tau_a=\frac{c_rt_a}{L},
+\end{equation}
+with the drive position $\sigma_d/L$ and the shape of the start profile of duration $t_a$.
+With $\hat\mu=1$ on the return strand and $\gamma^2$ on the carry strand, and $EA=\mu_rc_r^2$,
+the problem becomes
+\begin{gather}
+  \hat\mu\,\hat w_{\tau\tau}=\frac{\partial\hat T}{\partial x}-\hat\mu\,\hat a(\tau)
+  -\hat r(x)\,\varphi(\tau),\qquad \hat T=\hat w_x+2\hat\zeta\,\hat w_{x\tau},\label{eq:pde_nd}\\
+  \hat w(0,\tau)=\hat w(2,\tau)=0,\qquad \jump{\hat w}_\xi=-2\hat y,\notag\\
+  \jump{\hat T}_\xi=0,\qquad \beta\,\hat y_{\tau\tau}=-2\,\hat T(\xi,\tau),\label{eq:bc_nd}
+\end{gather}
+with $\hat w$ and $\hat T$ continuous at the head and tail pulleys.

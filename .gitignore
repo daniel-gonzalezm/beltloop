@@ -1,0 +1,32 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+examples/*.png
+.venv/
+
+# LaTeX build files (manuscript)
+paper/*.aux
+paper/*.log
+paper/*.bbl
+paper/*.blg
+paper/*.out
+paper/*.synctex.gz
+paper/main.pdf
+paper/supplementary.pdf
+paper/highlights.pdf
+paper/*.spl
+paper/main_*p.*
+!paper/main_*p.tex
+
+# Standalone preview of the generated tables (maps/figures/paper/tables_preview.tex)
+maps/figures/paper/tables_preview.aux
+maps/figures/paper/tables_preview.log
+maps/figures/paper/tables_preview.bbl
+maps/figures/paper/tables_preview.blg
+maps/figures/paper/tables_preview.out
+maps/figures/paper/tables_preview.pdf
+paper/cover_letter.pdf
+paper/submission/

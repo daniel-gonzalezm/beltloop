@@ -1,0 +1,22 @@
+% =====================================================================
+% S4 -- Parameters of the illustrative conveyors of the verification (Fig. 2 of the
+% article). Source: validation/fig_lumped_validation.py (CASES, conveyor()).
+% =====================================================================
+\section{Illustrative conveyors of the verification}\label{sec:supp_lumped}
+
+The two conveyors of Fig.~\ref{A-fig:validation} of the article share the belt and the loads:
+$L=\qty{3000}{\metre}$, $EA=\qty{120}{\mega\newton}$, inertial line densities
+$\mu_r=40$ and $\mu_c=\qty{100}{\kilo\gram\per\metre}$ (weighing densities 30 and
+\qty{80}{\kilo\gram\per\metre}), a counterweight hung directly on two strands with
+$\Tt=\qty{70}{\kilo\newton}$, resistances $r_r=15$ and $r_c=\qty{45}{\newton\per\metre}$ with
+onset $\varphi=V/V_\infty$, Kelvin--Voigt time $t_v=\qty{0.3}{\second}$, and a start to
+$V_\infty=\qty{5}{\metre\per\second}$ in $t_a=\qty{60}{\second}$.
+\begin{itemize}
+  \item Conveyor~V1: head drive, take-up \qty{60}{\metre} downstream of it; the carry strand rises
+  \qty{10}{\metre} over the first \qty{1500}{\metre} from the tail and \qty{30}{\metre} over the
+  rest; sine profile.
+  \item Conveyor~V2: drive on the return strand \qty{1200}{\metre} from the head, take-up
+  \qty{300}{\metre} downstream of it ($\xi=0.1$); horizontal; parabolic profile.
+\end{itemize}
+The modal solution uses 120 modes; the lumped model, $N$ elements and the Newmark scheme with a
+time step of $12.5/N$~s.

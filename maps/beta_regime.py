@@ -1,0 +1,124 @@
+"""Where does the take-up mass matter?
+
+(1) Map of beta_5(xi, gamma): the belt-side mass ratio at which the k-th natural period
+    departs 5 % from its beta -> 0 value (two decoupled fixed-free strands), k = 1, 2, 3,
+    head drive, exact roots. (2) Table of beta and of the period shifts for the conveyors
+    in the literature, exact and with the two-pole approximation.
+
+The paper figure follows each mode by its strand (B1, B2, A1) with the exact closed-form
+threshold eigen.takeup_mass_threshold (maps/paper_figures.py, figure "beta"); this working
+figure keeps the loop ordering, whose mode-3 panel jumps where modes change strand. The case
+data live in maps/cases.py.
+
+Run:  python maps/beta_regime.py   (prints the table, writes maps/figures/beta_regime.pdf)
+"""
+from pathlib import Path
+
+import numpy as np
+from scipy.optimize import brentq
+
+from beltloop import Loop, natural_frequencies, takeup_mass_approx
+
+G_STD = 9.80665
+HERE = Path(__file__).parent
+OUT = HERE / "figures"
+TOL = 0.05
+
+# name, L [m], mu_r, mu_c [kg/m], take-up mass M [kg], strands n, xi values, note
+#
+# Li and Li (2009): 7600 m, ST-2000 1400 mm, belt 54 kg/m, "elasticity 1300 kN/cm" read as per cm
+# of width (EA = 182 MN), 2500 t/h at 4 m/s (173.6 kg/m), idlers 159 mm at 1.2 m (carry) and 3 m
+# (return), 42 800 kg take-up next to the second (tandem) head drive pulley. Their theoretical
+# wave speed c = sqrt(E/m) = 837 m/s implies m = 259.8 kg/m on the carrying strand, i.e. 32.2 kg/m
+# of carrying idlers; the return idlers (same roll length per set, 3 m pitch) are scaled to 12.9
+# kg/m, so mu_r = 66.9 kg/m. n = 2 is supported by their Fig. 4 (about 200 kN on the slack side
+# versus 42.8 t * g / 2 = 210 kN; the "20 kN" of their text is read as a typo). Varying the idler
+# estimate by +-50 % moves gamma within 1.94-2.01 and beta within 0.077-0.093.
+#
+# KGHM variant 1 (Suchorab-Matuszewska, Kawalec and Krol 2025, supplementary QNK-TT report
+# "variant1.pdf"): 3000 m, single head drive 4 x 500 kW, GTP-St-4000 belt of 54 kg/m2 x 1.2 m
+# = 64.8 kg/m, 2000 t/h at 3 m/s (185.2 kg/m), carrying idlers 3 x 9.10 kg every 0.83 m
+# (32.9 kg/m), V return idlers 2 x 12.30 kg every 2.5 m (9.8 kg/m; two rolls per set assumed).
+# Gravity take-up at node 3 with belt tension S(3) = 140 kN; node 3 is at the foot of the 300 m,
+# 7 deg return section, i.e. 300 m from the head (xi = 0.1 in their model). Direct counterweight
+# with n = 2 assumed (not stated): M = 2 T_t / g = 28.6 t. One return roll per set instead of two
+# gives gamma = 2.01 and beta = 0.137.
+import sys
+sys.path.insert(0, str(HERE))
+from cases import CASES as _CASES  # noqa: E402  (single source of the case data)
+
+CASES = [c[1:] for c in _CASES]
+CASES.insert(1, ("Harrison 1983/85 (39 kg/m)", 5100, 39.0, 39.0 * 0.97 ** 2, 20e3, 4, [0.005],
+                 "density of the text"))
+
+
+def period_shift(loop, beta, k):
+    """Relative increase of the k-th period (k from 0) with respect to beta -> 0."""
+    return natural_frequencies(loop, 0.0, k + 1)[k] / natural_frequencies(loop, beta, k + 1)[k] - 1
+
+
+def beta_threshold(xi, gamma, k, tol=TOL):
+    lp = Loop.from_positions(0.0, xi, gamma)
+    f = lambda lb: period_shift(lp, 10.0 ** lb, k) - tol
+    lo, hi = -4.0, 2.0
+    if f(hi) < 0:
+        return np.nan            # never reaches tol (e.g. a mode pinned at a coincident pole)
+    return 10.0 ** brentq(f, lo, hi, xtol=2e-3)
+
+
+def case_table():
+    print(f"{'case':34s}{'n':>3}{'beta':>8}{'gamma':>7}{'xi':>7}"
+          f"{'dT1':>8}{'dT1 ap':>8}{'dT2':>8}{'dT2 ap':>8}  note")
+    rows = []
+    for name, L, mr, mc, M, n, xis, note in CASES:
+        beta = 4 * M / (n * n * mr * L)
+        gam = np.sqrt(mc / mr)
+        for xi in xis:
+            lp = Loop.from_positions(0.0, xi, gam)
+            w0 = natural_frequencies(lp, 0.0, 2)
+            w = natural_frequencies(lp, beta, 2)
+            wa = takeup_mass_approx(lp, beta, 2)
+            d, da = w0 / w - 1, w0 / wa - 1
+            print(f"{name:34s}{n:3d}{beta:8.3f}{gam:7.2f}{xi:7.3f}"
+                  f"{d[0]:8.2%}{da[0]:8.2%}{d[1]:8.2%}{da[1]:8.2%}  {note}")
+            rows.append((name, beta, gam, xi))
+    return rows
+
+
+def main():
+    rows = case_table()
+    xis = np.linspace(0.01, 0.99, 41)
+    gams = np.linspace(1.0, 3.0, 17)
+    maps = np.array([[[beta_threshold(x, g, k) for x in xis] for g in gams] for k in range(3)])
+    for k in range(3):
+        m = maps[k]
+        print(f"mode {k + 1}: beta_5 from {np.nanmin(m):.3f} to {np.nanmax(m):.3f}; "
+              f"median {np.nanmedian(m):.3f}; never reached at {np.isnan(m).sum()} of {m.size} points")
+    try:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+        from matplotlib.colors import LogNorm
+    except ImportError:
+        return
+    OUT.mkdir(exist_ok=True)
+    levels = [0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5]
+    fig, axs = plt.subplots(1, 3, figsize=(11, 3.6), sharey=True, constrained_layout=True)
+    for k, ax in enumerate(axs):
+        cs = ax.contourf(xis, gams, maps[k], levels=levels, norm=LogNorm(), cmap="viridis", extend="both")
+        cl = ax.contour(xis, gams, maps[k], levels=levels, colors="k", linewidths=0.5)
+        ax.clabel(cl, fmt="%g", fontsize=7)
+        for name, beta, gam, xi in rows:
+            if 1.0 <= gam <= 3.0:
+                ax.plot(xi, gam, "o", ms=4, mfc="w", mec="k")
+                ax.annotate(f"{beta:.2g}", (xi, gam), xytext=(3, 3), textcoords="offset points", fontsize=6)
+        ax.set(xlabel=r"take-up position $\xi$", title=f"mode {k + 1}")
+    axs[0].set_ylabel(r"wave-speed ratio $\gamma = c_r/c_c$")
+    fig.colorbar(cs, ax=axs, label=r"$\beta$ for a 5 % period shift")
+    fig.savefig(OUT / "beta_regime.pdf")
+    fig.savefig(OUT / "beta_regime.png", dpi=150)
+    print("figure:", OUT / "beta_regime.pdf")
+
+
+if __name__ == "__main__":
+    main()

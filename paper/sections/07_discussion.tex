@@ -1,0 +1,57 @@
+% =====================================================================
+% Section 6 -- Discussion (file name kept from the earlier numbering).
+% Statements checked in the sources: kulinowski2013 (slip on drum AB in all
+% recorded starts; Fig. 9 shows take-up records that damp out in one or two
+% cycles), kulinowski2021 (29-37 kN), kung2005henderson (counterweight pulled
+% against the mechanical stops), zamorano1991 (counterweight travel larger than
+% the available travel damaged the tower), nordell1987 (p. 9: hydraulic
+% retarder, damping towards a fixed take-up), morrison1987 (pp. 10-11:
+% friction, inertia, fluid coupling), barfoot1997 (pp. 2-3), hou2008
+% (Sect. 3.1), harrison1989 (p. 121: gravity take-up at the slack side ideal
+% against slip, but its dynamic behaviour "may be violent" without long
+% starting and stopping times), gao2026 (p. 15: tension changes attributed to the
+% static baseline tension).
+% =====================================================================
+\section{Discussion}\label{sec:discussion}
+
+\subsection{Relation to practice and to previous models}\label{sec:relation}
+
+The strand picture gives a mechanical content to the reasons of practice quoted in
+Section~\ref{sec:intro}. A take-up right after the drive keeps the exit tension constant
+\citep{lodewijks2013} because strand~A, between the drive exit and the free end, is then short
+and its dynamic tension $D(t_a/\tper{A1})\,m_Aa_m$ vanishes with $\xi$. A tail take-up makes the
+whole return strand strand~A, which the drive exit must set in motion from the start: hence the
+concern that the take-up ``has to move the entire return strand'', so that the start must be long
+or the take-up tension high \citep{barfoot1997}. The warning that a slack-side gravity take-up
+may behave violently unless starts and stops are long \citep{harrison1989} is quantified by the
+travel curve, which overshoots most at about one fundamental period. Changing the counterweight
+at fixed rigging, as \citet{gao2026} did, also changes the pre-tension
+(Eq.~\eqref{eq:beta_tension}); they attribute the resulting changes of tension to it themselves,
+and since the inertia alone would change the fundamental period of their conveyor by
+\qty{\NumShiftG}{\percent}, their changes of displacement and velocity most likely have the same
+origin. Slip at the drive is observed in the field \citep{kulinowski2013,kulinowski2021}.
+
+Devices that resist the carriage move the take-up away from the free end
+(Eq.~\eqref{eq:transmission_z}): a hydraulic buffer transmits part of every front, a rigid stop
+makes the take-up a fixed pulley, with the spectrum $(\mat B\mat A)_{12}=0$, and a retarder keeps
+it transparent until its drag is exceeded \citep{morrison1987,nordell1987}. The free-end results
+hold while the carriage moves freely.
+
+\subsection{Limitations}\label{sec:limitations}
+
+The take-up is frictionless and its rig has no inertia (A7), whereas measured carriage forces
+fluctuate with the inertia of the weights and the efficiency of the rig
+\citep{kulinowski2021,poe2000sheave}, and measured carriage oscillations die out within one or
+two cycles \citep[Fig.~9]{kulinowski2013}; such friction damps the oscillations after a
+speed-controlled start more than its peak tensions. Contact of the carriage with its
+stops \citep{kung2005henderson,zamorano1991} lies outside the linear model, which instead sizes
+the travel that the tower must allow. Sag at low tension \citep{ellis1987} and the dependence of
+the modulus on tension and temperature \citep{zarzycki2023,hou2008} change the wave speeds, and
+with them every period in seconds, but not the dimensionless results. The resistances appear
+along the whole loop at once rather than behind the stretching front. Drives on fluid couplings
+or with stepped torque change the spectrum and need not reflect the waves (\cref{app:torque};
+\citet{morrison1987}). The layout has one drive station, homogeneous strands and a straight
+path. Finally, none of the field checks tests the take-up mass: a start record with a free
+take-up, a speed-controlled drive, a time history of the take-up and published conveyor data
+would test the model directly, and modern overland conveyors already record the take-up
+position in operation \citep{kruse2019overland}.

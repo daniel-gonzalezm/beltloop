@@ -1,0 +1,374 @@
+"""Harrison (1983) case in detail (Section 4.2 of the paper): sensitivity of the slow take-up period to
+the take-up position xi, the line density rho (beta), the wave-speed ratio gamma and the
+drive model (mass md, slip dashpot cd), and the features the linear model does not capture.
+
+Data (Harrison 1983, Beltcon 2, section 6 and Fig. 5; empty belt):
+  L = 5.1 km, M = 20 t, wave period t1 = 7 s read as the loop transit 2L/c (c = 1450 m/s;
+  Eq. 2 gives 1464 m/s with 9 kg/m of steel cord and 79 kg/m of belt + rotating parts),
+  slow take-up period 25 s. The 79 kg/m figure follows from Eq. 2; the paper's
+  m = 398 100 kg corresponds to 39 kg/m of loop. Both densities are used.
+  Take-up a few tens of metres downstream of the head drive (Fig. 5a inset): xi = 0.005
+  (25 m) as base value, 0.002-0.02 as range.
+Values read from Fig. 5 (scale bar 10 s = 30 px, +-1 px): wave period 7.3 +- 0.4 s (Fig. 5c,
+mean of four peak and four trough spacings); slow period 24.9 s (Fig. 5e, measured take-up
+displacement after removing the 7 s ripple with a one-period moving average: four peak
+spacings 23.0-26.7 s). The ratio of the two does not depend on the time scale.
+
+Additions from Harrison (1985), Beltcon 3 (same 5 km belt, 20 t take-up,
+SR2400, 740 kN peak of the original design):
+  * Figs. 2a and 3a draw a double-loop take-up: the carriage hangs on n = 4 belt strands,
+    so the belt-side mass is 4M/n^2 = M/4 (beta/4) and the carriage travels 1/4 of the
+    belt stored in the loop. N_STRANDS = 4 is the base value (n = 2 kept for
+    comparison).
+  * Fig. 4a (modified design, empty belt): S1 (carry, distance d from the head) -> S3
+    (tail) 3.0 s, S3 -> S2 (return, same d) 3.1 s, read with 2 s per major division
+    (+-0.1-0.2 s). Both legs cover L - d, so gamma = c_r/c_c = 3.0/3.1 = 0.97, range
+    0.90-1.06, independent of d. A heavier carry strand (gamma ~ 1.2-1.3) as the
+    explanation of the slow-period difference is therefore not supported.
+  * Fig. 2b (original design, free take-up): the carry side S1 moves at once, the return
+    S2 (downstream of the take-up) stays at zero and jumps 7.6 s later (text; 8.3 +- 0.5 s
+    read from the figure), i.e. after about one loop transit. Its first plateau is about
+    44 % of the final speed (about 1.6 m/s if the chart gain equals the final 3.7 m/s),
+    reached in about 4 s.
+
+Run:  python validation/harrison_case.py  ->  validation/figures/harrison_case.{pdf,png}
+"""
+from pathlib import Path
+
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.optimize import brentq
+
+from beltloop import (Loop, StartProfile, damped_drive_root, modal_basis, natural_frequencies,
+                      natural_frequencies_torque, startup_response, takeup_transmission)
+
+OUT = Path(__file__).parent / "figures"
+
+L, M, C = 5100.0, 20000.0, 1450.0
+T_TR = 2 * L / C                       # loop transit time (7.03 s)
+RHOS = (39.0, 79.0)
+XI0 = 0.005
+N_STRANDS = 4                          # double-loop take-up, Harrison (1985) Figs. 2a, 3a
+GAMMA_MEAS, GAMMA_MEAS_BAND = 0.97, (0.90, 1.06)   # Harrison (1985) Fig. 4a
+MEAS_SLOW, MEAS_SLOW_BAND = 24.9, (23.0, 26.7)
+MEAS_WAVE, MEAS_WAVE_BAND = 7.3, (6.9, 7.7)
+HARRISON_SLOW, HARRISON_WAVE = 25.0, 7.0
+
+
+def setup(rho, gamma=1.0, xi=XI0, basis="transit", strands=N_STRANDS):
+    """Loop, belt-side beta = 4M/(n^2 mu_r L) and c_r for a mean loop density rho (kg/m)
+    split so that mu_c/mu_r = gamma^2. basis='transit': loop transit time fixed at
+    2L/1450 m/s (the 7 s period); basis='return': c_r = 1450 m/s."""
+    mur = 2 * rho / (1 + gamma ** 2)
+    cr = L * (1 + gamma) / T_TR if basis == "transit" else C
+    return Loop.from_positions(0.0, xi, gamma), 4 * M / (strands ** 2 * mur * L), cr, mur
+
+
+def periods(rho, gamma=1.0, xi=XI0, basis="transit", n=2, strands=N_STRANDS):
+    lp, beta, cr, _ = setup(rho, gamma, xi, basis, strands)
+    return 2 * np.pi * L / (cr * natural_frequencies(lp, beta, n))
+
+
+def periods_torque(rho, md, gamma=1.0, xi=XI0, n=2, strands=N_STRANDS):
+    """Torque-controlled drive (cd = 0); md in units of mu_r L."""
+    lp, beta, cr, _ = setup(rho, gamma, xi, strands=strands)
+    Om = natural_frequencies_torque(lp, beta, md, 6.0, 20000)
+    return 2 * np.pi * L / (cr * Om[:n])
+
+
+def periods_embedded(rho, xi=XI0, n=1):
+    """Thesis model (embedded mass, wrong): the whole take-up mass M sits in a uniform loop
+    (one wave speed c) fixed at both drive faces, cot(Om xi) + cot(Om (2 - xi)) = beta Om,
+    beta = M/(rho L). Kept only to quote what that model gives for Harrison's belt. Roots are
+    bracketed between consecutive poles of the left-hand side (one root per interval)."""
+    beta = M / (rho * L)
+    f = lambda Om: 1 / np.tan(Om * xi) + 1 / np.tan(Om * (2 - xi)) - beta * Om
+    poles = np.sort(np.r_[np.arange(1, 4 * n + 2) * np.pi / xi, np.arange(1, 4 * n + 2) * np.pi / (2 - xi)])
+    edges = np.r_[0.0, poles]
+    roots = []
+    for a, b in zip(edges[:-1], edges[1:]):
+        lo, hi = a + 1e-9 * (b - a) + 1e-12, b - 1e-9 * (b - a)
+        if np.sign(f(lo)) != np.sign(f(hi)):
+            roots.append(brentq(f, lo, hi, xtol=1e-14))
+        if len(roots) == n:
+            break
+    return 2 * np.pi * L / (C * np.array(roots))
+
+
+STILL_MEAS = 7.6                       # return belt still after the start, Harrison (1985) text
+CARRIAGE_MEAS = 2.0                    # carriage travel in the start, about 2 m (1983 Fig. 5e)
+
+
+def startup_check(rho=79.0, strands=N_STRANDS, V=1.6, am=0.63, t_end=15.0, gamma=GAMMA_MEAS):
+    """First start plateau of Harrison (1985) Fig. 2b (1.6 m/s in about 4 s) as a sine ramp,
+    undamped, with the measured gamma (gamma = 1 changes every output by less than 2 %):
+    carriage travel at 7 s and its maximum up to t_end, belt stored in the loop, and the
+    largest speed just downstream of the take-up before the wave returns."""
+    t = np.linspace(0, t_end, int(40 * t_end) + 1)
+    lp, beta, cr, _ = setup(rho, gamma, strands=strands)
+    b = modal_basis(lp, beta, 300)
+    ts = L / cr
+    W = b.W(np.array([XI0 + 1e-7]))[:, 0]
+    prof = StartProfile("sine", np.pi * V / (2 * am) / ts, "none")
+    r = startup_response(b, prof, 0.0, t / ts)
+    ybelt = r.takeup_displacement() * am * L ** 2 / cr ** 2
+    ycar = 2 / strands * ybelt
+    vS = (W @ r.dp) * am * L / cr + V * prof.velocity(t / ts)
+    t_back = (gamma + 1 - XI0) * ts            # carry strand, then the return strand to the take-up
+    i7 = np.argmin(abs(t - 7.0))
+    return dict(carriage_7s=ycar[i7], carriage_max=ycar.max(), stored_max=2 * ybelt.max(),
+                v_still=abs(vS[t < t_back - 0.1]).max(), t_back=t_back)
+
+
+RUN_POWER = 900e3                      # running power (Harrison 1985b, original design), W
+V_RUN = 3.7                            # running speed (1983 Fig. 5a), m/s
+SLIP_NATURAL = 0.03                    # assumed slip on the natural characteristic (rotor shorted)
+SLIP_SOFT = (0.2, 0.3)                 # assumed slip with rotor resistance in circuit
+DRIVE_MASSES = (0.1, 0.3, 1.0, 3.0)    # reduced drive masses m_d tried (not published)
+
+
+def slip_dashpot(slip, rho=79.0, gamma=GAMMA_MEAS):
+    """Dimensionless slip dashpot c_hat = c_d/(mu_r c_r) of an induction drive whose force
+    falls linearly from the running force F = P/V at slip s to zero at synchronous speed:
+    c_d = F/(s V). Order of magnitude only (running force for rated force)."""
+    _, _, cr, mur = setup(rho, gamma)
+    return RUN_POWER / V_RUN / (slip * V_RUN) / (mur * cr)
+
+
+def stored_running(rho, gamma=GAMMA_MEAS, xi=XI0):
+    """Belt stored in the loop by the running resistances alone (quasi-static), m: the running
+    force P/V spread uniformly over the loop, take-up at xi, EA from the base set-up. An upper
+    bound for the empty belt, since 900 kW is the installed power."""
+    _, _, cr, mur = setup(rho, gamma)
+    EA = mur * cr ** 2
+    r = RUN_POWER / V_RUN / (2 * L)
+    return r * ((2 * L) ** 2 / 2 - 2 * L * xi * L) / EA
+
+
+def drive_check(rho=79.0, gamma=GAMMA_MEAS):
+    """Test the prescribed-velocity assumption on Harrison's wound-rotor drive with
+    the drive without speed control of Section 3.6 (mass m_d, slip dashpot c_hat), on the base
+    model (n = 4, gamma = 0.97, xi = 0.005). Returns the free-drive limit, the drive mass that
+    alone would give the measured slow period, and the periods (first two) and damping ratios
+    with a slip dashpot on the natural characteristic and with rotor resistance in circuit."""
+    lp, beta, cr, mur = setup(rho, gamma)
+    free = periods_torque(rho, 1e-4, gamma)
+    lm = brentq(lambda lm: periods_torque(rho, 10 ** lm, gamma)[0] - MEAS_SLOW, -1, 2)
+    md_meas = 10 ** lm
+    second_md = periods_torque(rho, md_meas, gamma)[1]
+    Om = natural_frequencies(lp, beta, 2)
+    T0 = 2 * np.pi * L / (cr * Om)
+
+    def roots(md, ch):
+        r = [damped_drive_root(lp, beta, md, ch, o + 1e-4j) for o in Om]
+        return [2 * np.pi * L / (cr * x.real) for x in r], [x.imag / abs(x) for x in r]
+
+    c_nat = slip_dashpot(SLIP_NATURAL, rho, gamma)
+    nat = [roots(md, c_nat) for md in DRIVE_MASSES]
+    soft_c = [slip_dashpot(s, rho, gamma) for s in SLIP_SOFT]
+    soft = [roots(md, ch) for md in (1.0, 3.0) for ch in soft_c]
+    return dict(
+        free_slow=free[0], free_second=free[1], md_meas=md_meas,
+        md_meas_belt_ratio=md_meas * mur * L / (rho * 2 * L), md_meas_second=second_md,
+        c_natural=c_nat, natural_change=max(abs(t[0][0] / T0[0] - 1) for t in nat),
+        c_soft=(min(soft_c), max(soft_c)),
+        soft_slow=(min(t[0][0] for t in soft), max(t[0][0] for t in soft)),
+        soft_zeta=(min(t[1][0] for t in soft), max(t[1][0] for t in soft)),
+        soft_second=(min(t[0][1] for t in soft), max(t[0][1] for t in soft)),
+        run_force=RUN_POWER / V_RUN)
+
+
+def summary():
+    """Numbers of the validation section (Harrison 1983, 1985b), for maps/paper_numbers.py.
+    Base model: n = 4, measured gamma = 0.97, loop transit fixed, xi = 0.005, rho = 79 kg/m."""
+    T = periods(79.0, GAMMA_MEAS)
+    band = [periods(79.0, g)[0] for g in GAMMA_MEAS_BAND]
+    second = [periods(rho, g)[1] for rho in RHOS for g in (GAMMA_MEAS,)]
+    emb = [periods_embedded(rho, xi)[0] for rho in RHOS for xi in (0.002, 0.005, 0.02, 0.2)]
+    tr = []
+    for rho in RHOS:
+        _, beta, cr, _ = setup(rho, GAMMA_MEAS)
+        tr.append(abs(takeup_transmission(beta, 2 * np.pi * L / (cr * 7.0))))
+    st = startup_check()
+    dr = {"drive_" + k: v for k, v in drive_check().items()}
+    betas = [setup(rho, GAMMA_MEAS)[1] for rho in RHOS]
+    return dict(**dr, beta=(min(betas), max(betas)), slow=T[0], slow_band=(min(band), max(band)), second=(min(second), max(second)),
+                slow_meas=MEAS_SLOW, wave_meas=MEAS_WAVE, gamma_meas=GAMMA_MEAS,
+                gamma_band=GAMMA_MEAS_BAND, embedded_max=max(emb),
+                transmission_7s=(min(tr), max(tr)), still_meas=STILL_MEAS,
+                carriage_meas=CARRIAGE_MEAS,
+                stored_run=(min(stored_running(r) for r in RHOS), max(stored_running(r) for r in RHOS)),
+                **st)
+
+
+def main():
+    OUT.mkdir(exist_ok=True)
+    print(f"Loop transit 2L/c = {T_TR:.2f} s; measured ratio slow/wave = "
+          f"{MEAS_SLOW / MEAS_WAVE:.2f} (Fig. 5 read-out), {HARRISON_SLOW / HARRISON_WAVE:.2f} (stated)")
+
+    # ---------------------------------------------------------------- strands and measured gamma
+    print("\nPrescribed drive, xi = 0.005, transit fixed: slow / second period [s], "
+          "single (n = 2) and double (n = 4) loop")
+    for nst in (2, 4):
+        for rho in RHOS:
+            row = []
+            for g in (GAMMA_MEAS_BAND[0], GAMMA_MEAS, 1.0, GAMMA_MEAS_BAND[1]):
+                T = periods(rho, g, strands=nst)
+                row.append(f"gamma={g:.2f}: {T[0]:5.2f}/{T[1]:4.2f}")
+            print(f"  n={nst} rho={rho:.0f} (beta={setup(rho, strands=nst)[1]:.4f}): " + "  ".join(row))
+
+    # ---------------------------------------------------------------- xi and rho
+    print(f"\nPrescribed drive, gamma = 1, n = {N_STRANDS}: slow / second period [s]")
+    for rho in RHOS:
+        for xi in (0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2):
+            T = periods(rho, xi=xi)
+            print(f"  rho={rho:4.0f} xi={xi:5.3f}: {T[0]:6.2f} / {T[1]:5.2f}  ratio {T[0] / T_TR:.3f}")
+    print("  wave-speed uncertainty: c = 1464 m/s (Eq. 2) shortens all periods by 1.0 %")
+
+    # ---------------------------------------------------------------- gamma
+    print("\nPrescribed drive, xi = 0.005: slow / second period [s] versus gamma")
+    for basis in ("transit", "return"):
+        for g in (1.0, 1.1, 1.2, 1.3, 1.5):
+            T = [periods(rho, g, basis=basis) for rho in RHOS]
+            mur = 2 * 79 / (1 + g * g)
+            print(f"  {basis:7s} gamma={g:.1f} (mu_r, mu_c = {mur:5.1f}, {g * g * mur:5.1f} kg/m at 79): "
+                  + "  ".join(f"rho={r:.0f}: {t[0]:5.2f}/{t[1]:4.2f}" for r, t in zip(RHOS, T)))
+    gneed = brentq(lambda g: periods(79.0, g)[0] - MEAS_SLOW, 1.0, 3.0)
+    print(f"  gamma for {MEAS_SLOW} s (transit basis, rho = 79): {gneed:.2f}")
+
+    # ---------------------------------------------------------------- drive mass
+    print("\nTorque-controlled drive (cd = 0), xi = 0.005, gamma = 1: slow / second period [s]")
+    for md in (1e-4, 0.1, 0.3, 1.0, 3.0, 10.0, 30.0):
+        T = [periods_torque(rho, md) for rho in RHOS]
+        print(f"  md={md:7.4f}: " + "  ".join(f"rho={r:.0f}: {t[0]:5.2f}/{t[1]:4.2f}" for r, t in zip(RHOS, T)))
+    for rho in RHOS:
+        lm = brentq(lambda lm: periods_torque(rho, 10 ** lm)[0] - MEAS_SLOW, -1, 2)
+        md = 10 ** lm
+        Md = md * rho * L
+        J = Md * (3.7 / (1490 * np.pi / 30)) ** 2      # reduced to a 1490 rpm motor shaft
+        print(f"  rho={rho:.0f}: md = {md:.2f} for {MEAS_SLOW} s -> M_d = {Md / 1e3:.0f} t, "
+              f"J = {J:.0f} kg m^2 at 1490 rpm (assumed 4-pole, 50 Hz); second period "
+              f"{periods_torque(rho, md)[1]:.2f} s")
+
+    # ---------------------------------------------------------------- drive slip dashpot
+    print("\nDrive with slip dashpot cd = c_d/(mu_r c_r), md = 0.3, xi = 0.005, gamma = 1, rho = 79")
+    Z = 79.0 * C
+    for P, s in ((0.6e6, 0.03), (1.2e6, 0.01)):     # assumed rated power and slip (not in the paper)
+        print(f"  induction motor on its running characteristic, P = {P / 1e6:.1f} MW, slip {s:.0%}: "
+              f"c_d = P/(s V^2) = {P / (s * 3.7 ** 2) / 1e6:.1f} MN s/m, cd = {P / (s * 3.7 ** 2) / Z:.0f}")
+    lp, beta, cr, _ = setup(79.0)
+    Om0 = natural_frequencies(lp, beta, 1)[0]
+    guess = Om0 + 1e-4j
+    for cd in (1e3, 100, 30, 10, 5, 3, 2):
+        Om = damped_drive_root(lp, beta, 0.3, cd, guess)
+        guess = Om
+        print(f"  cd={cd:6.0f}: period {2 * np.pi * L / (cr * Om.real):5.2f} s, "
+              f"damping ratio {Om.imag / abs(Om):.3f}")
+
+    # ---------------------------------------------------------------- belt damping
+    zeta_w = np.log(1 / 0.8) / (2 * np.pi)            # ~0.8 amplitude ratio per 7 s cycle, Fig. 5c
+    tv = 2 * zeta_w / (2 * np.pi / MEAS_WAVE)
+    zs = tv * (2 * np.pi / periods(79.0)[0]) / 2
+    print(f"\nKelvin-Voigt bound: attributing the 7 s decay (zeta ~ {zeta_w:.3f}) to the belt gives "
+          f"t_v ~ {tv:.2f} s, zeta_slow ~ {zs:.4f}, period change {1 / np.sqrt(1 - zs ** 2) - 1:.1e}")
+
+    # ---------------------------------------------------------------- take-up transparency
+    print("\nWave transmission through the take-up, |t| = beta Om/sqrt(beta^2 Om^2 + 4)")
+    for rho in RHOS:
+        _, beta, cr, _ = setup(rho)
+        for P in (25.0, 7.0, 1.0):
+            Om = 2 * np.pi * L / (cr * P)
+            print(f"  rho={rho:.0f} period {P:4.1f} s: |t| = {abs(takeup_transmission(beta, Om)):.3f}")
+
+    # ---------------------------------------------------------------- hard start, time domain
+    print("\nFirst start step as a sine ramp, undamped, rho = 79, gamma = 1")
+    t = np.linspace(0, 30, 601)
+    for nst in (2, 4):
+        lp, beta, cr, mur = setup(79.0, strands=nst)
+        b = modal_basis(lp, beta, 300)
+        ts = L / cr
+        W = b.W(np.array([XI0 + 1e-7]))[:, 0]
+        for V, am, lab in ((2.6, 2.2, "reading of 1983 Fig. 5: 2.2 m/s^2 to 2.6 m/s"),
+                           (1.6, 0.63, "1985 Fig. 2b first plateau: 1.6 m/s in about 4 s")):
+            prof = StartProfile("sine", np.pi * V / (2 * am) / ts, "none")
+            r = startup_response(b, prof, 0.0, t / ts)
+            ybelt = r.takeup_displacement() * am * L ** 2 / cr ** 2   # belt-side (2:1) travel
+            ycar, store = 2 / nst * ybelt, 2 * ybelt
+            vS = (W @ r.dp) * am * L / cr + V * prof.velocity(t / ts)  # belt speed after take-up
+            i7, i15 = np.argmin(abs(t - 7.0)), np.argmin(abs(t - 15.0))
+            print(f"  n={nst}, {lab}: carriage {ycar[i7]:.2f} m at 7 s, max {ycar[:i15].max():.2f} m "
+                  f"(0-15 s); belt stored in the loop max {store[:i15].max():.1f} m; speed just "
+                  f"downstream of the take-up <= {abs(vS[:i7 - 5]).max():.3f} m/s until the wave "
+                  f"returns ({(2 - XI0) * ts:.1f} s)")
+    print("  records: carriage about 2 m (1983 Fig. 5e); 24 m of belt from the loop (1985, text); "
+          "return belt still for 7.6 s (1985 Fig. 2b)")
+
+    # ---------------------------------------------------------------- figure
+    fig, ax = plt.subplots(2, 2, figsize=(9.0, 6.6))
+
+    def band(a, lo, hi, val, txt):
+        a.axhspan(lo, hi, color="0.88", zorder=0)
+        a.axhline(val, color="0.5", lw=0.8, ls=":")
+        a.text(0.02, val, txt, transform=a.get_yaxis_transform(), va="bottom", fontsize=7, color="0.35")
+
+    xis = np.geomspace(0.002, 0.3, 40)
+    a = ax[0, 0]
+    band(a, *MEAS_SLOW_BAND, MEAS_SLOW, "measured (Fig. 5e)")
+    for rho, ls in zip(RHOS, ("-", "--")):
+        a.plot(xis, [periods(rho, xi=x)[0] for x in xis], "k" + ls, label=rf"$\rho$ = {rho:.0f} kg/m")
+    a.axvspan(0.002, 0.02, color="tab:blue", alpha=0.08)
+    a.set(xscale="log", xlabel=r"take-up position $\xi$", ylabel="slow period (s)", ylim=(20, 30))
+    a.legend(fontsize=8, loc="lower left")
+    a.set_title(r"(a) position and density, $\gamma$ = 1, $n$ = 4", fontsize=9, loc="left")
+
+    gs = np.linspace(0.9, 2.0, 34)
+    a = ax[0, 1]
+    band(a, *MEAS_SLOW_BAND, MEAS_SLOW, "measured")
+    for basis, ls in (("transit", "-"), ("return", "--")):
+        a.plot(gs, [periods(79.0, g, basis=basis)[0] for g in gs], "k" + ls,
+               label="loop transit fixed (7.03 s)" if basis == "transit" else r"$c_r$ fixed (1450 m/s)")
+    a.axvspan(*GAMMA_MEAS_BAND, color="tab:blue", alpha=0.08)
+    a.text(GAMMA_MEAS, 35, "measured\n(1985, Fig. 4a)", ha="center", va="top", fontsize=7, color="0.35")
+    a.set(xlabel=r"wave-speed ratio $\gamma = c_r/c_c$", ylabel="slow period (s)", ylim=(20, 36), xlim=(0.85, 2.05))
+    a.legend(fontsize=8, loc="upper left")
+    a.set_title(r"(b) two wave speeds, $\xi$ = 0.005, $\rho$ = 79 kg/m", fontsize=9, loc="left")
+
+    mds = np.geomspace(0.01, 100, 40)
+    a = ax[1, 0]
+    band(a, *MEAS_SLOW_BAND, MEAS_SLOW, "slow, measured")
+    band(a, *MEAS_WAVE_BAND, MEAS_WAVE, "wave, measured")
+    Tt = np.array([periods_torque(79.0, m) for m in mds])
+    a.plot(mds, Tt[:, 0], "k-", label="first")
+    a.plot(mds, Tt[:, 1], "k--", label="second")
+    Tp = periods(79.0)
+    a.plot([mds[-1]] * 2, Tp, "ko", ms=4, label="prescribed velocity")
+    a.set(xscale="log", xlabel=r"reduced drive mass $m_d = M_d/(\mu_r L)$", ylabel="period (s)", ylim=(0, 32))
+    a.legend(fontsize=8, loc="center right")
+    a.set_title("(c) drive without speed control", fontsize=9, loc="left")
+
+    Ps = np.geomspace(0.3, 60, 200)
+    a = ax[1, 1]
+    for rho, ls in zip(RHOS, ("-", "--")):
+        _, beta, cr, _ = setup(rho)
+        a.plot(Ps, abs(takeup_transmission(beta, 2 * np.pi * L / (cr * Ps))), "k" + ls,
+               label=rf"$\rho$ = {rho:.0f} kg/m ($\beta$ = {beta:.3f})")
+    for P in (MEAS_WAVE, MEAS_SLOW):
+        a.axvline(P, color="0.5", lw=0.8, ls=":")
+    a.set(xscale="log", xlabel="wave period (s)", ylabel="transmission |t|", ylim=(0, 1))
+    a.legend(fontsize=8)
+    a.set_title("(d) waves crossing the take-up", fontsize=9, loc="left")
+
+    for a in ax.flat:
+        a.tick_params(labelsize=8)
+        a.xaxis.label.set_size(9)
+        a.yaxis.label.set_size(9)
+    fig.tight_layout()
+    for ext in ("pdf", "png"):
+        fig.savefig(OUT / f"harrison_case.{ext}", dpi=200)
+    print(f"\nFigure written to {OUT}/harrison_case.(pdf|png)")
+
+
+if __name__ == "__main__":
+    main()

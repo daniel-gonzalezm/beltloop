@@ -1,0 +1,85 @@
+% =====================================================================
+% Section 1 -- Introduction.
+% Quotations and statements checked in the sources: harrison1985b (Sect. 3:
+% return belt still until the stress has gone round the belt; take-up at the
+% tail or at the lowest tension), nordell1997zisco (Sect. 3.4: take-up after
+% the tail drive, near the horizontal curve), cornet2002 (p. 2),
+% lodewijks2013 (p. 2), morrison1987 (p. 10, reflection at a moving
+% counterweight), nordell1987 (pp. 15 and 22: take-ups replaced or moved; the
+% return-strand wave of a stop absorbed by the take-up), harrison1989
+% (pp. 121-123: static comparison of head and tail take-ups; "Each conveyor
+% needs evaluation in its own right"), song2012 (journal pp. 217-218: the take-up
+% moved to the tail "through an equivalent transformation"; p. 218: belt on both
+% sides of the take-up pulley treated as free boundaries, take-up inertia
+% neglected), harrison1983 (Eq. 7: mass-spring period, 24 s).
+% =====================================================================
+\section{Introduction}\label{sec:intro}
+
+Overland belt conveyors carry ore and coal over several kilometres, and over such lengths the
+belt is an elastic system: a change of drive speed travels along it as a stress wave, more
+slowly on the loaded carry strand than on the return strand, so the belt far from the drive
+starts moving seconds after the belt at the drive \citep{harrison1983,nordell1984,lodewijks2002}.
+The transient tensions govern the belt rating, the take-up travel and the grip on the drive
+pulleys, and dynamic analysis is part of the design of long conveyors
+\citep{lodewijks2002,nordell1997zisco}. Most are tensioned by a gravity take-up: a counterweight
+hung from a carriage whose pulley is wrapped by the return belt, which holds the slack-side
+tension and stores the belt that the loop releases or takes up as its stretch changes.
+
+Where to place the take-up is decided partly on dynamic grounds, but one conveyor at a time. A
+take-up right after a head drive keeps the tension leaving the drive constant
+\citep{lodewijks2013}; a take-up at the tail, or at the lowest tension, was recommended against
+the surge of the return belt at start-up \citep{harrison1985b}; at ZISCO the take-up went to the
+tail because a head take-up would have caused larger tension fluctuations in a horizontal curve
+\citep{nordell1997zisco}; and a simulated stop left very different minimum tensions with the
+take-up at the head and at the tail \citep{cdi2002}. Owners have moved take-ups ``in the hope of reducing observed hazards''
+\citep{nordell1987}, and the location is said to be dictated by the terrain and ``by the belt
+dynamic behavior'' \citep{cornet2002}. The one study devoted to the question compared a head
+and a tail take-up through the static tensions, called the dynamics vital but left them out,
+and concluded that each conveyor needs evaluation in its own right \citep{harrison1989}.
+
+The two wave speeds of the loop are well established \citep{nordell1984,lodewijks2002,cdi1998}.
+Discrete and finite-element models include the kinematics of the take-up pulley, which stores
+twice its own travel of belt \citep{lodewijks1996,kulinowski2014,song2003}, but answer the
+question one layout at a time; equivalent models embed the take-up in the belt as a mass
+\citep{harrison1983,sakharwade2019}, which gives the wrong limits
+(Section~\ref{sec:interfaces}). Among continuum models, \citet{song2012} wrote the two-strand
+continuum with the take-up condition, neglected the take-up inertia and moved the take-up from
+the head drive to the tail, a move they describe as an equivalent transformation;
+\citet{zhang1999}, \citet{pang2015} and \citet{li2018} treated a tail take-up as a mass that
+moves with the end of the belt; others leave out the return strand
+\citep{ellis1987,pihnastyi2020}; and in a recent discrete study the counterweight mass was
+varied together with the static tension it produces \citep{gao2026}.
+
+The mechanism that links the take-up to the loop is also known: a take-up whose inertial
+impedance is small against that of the belt holds a constant force and acts as a free end, which
+splits the loop into two strands, each fixed at the drive and free at the take-up. Field records
+showed the return belt beyond the take-up at rest until the stress had gone round the
+loop \citep{harrison1985b}, simulations showed the reflection \citep{morrison1987,nordell1987},
+\citet{harrison1983} estimated the slow take-up oscillation as a belt spring with the take-up
+at its end, and \citet{song2012} used the free ends to separate the two strands of their
+continuum, with the take-up at the tail. What has not been worked out is what the mechanism implies when the
+take-up and the drive can sit anywhere: how the take-up position sets the spectrum and the
+start-up tensions, and when the take-up mass stops being negligible.
+
+The tools needed are classical: transfer matrices, the interlacing of receptances, Rayleigh's
+quotient with a tip mass and d'Alembert's solution of a fixed--free string. What this paper
+adds is their use on the whole loop, with the take-up and drive positions as continuous
+parameters, which gives:
+\begin{enumerate}
+  \item a closed-form characteristic equation for the loop with two wave speeds, a gravity
+  take-up modelled as a pulley with mass anywhere on the return strand and the drive anywhere
+  on the loop, whose split into two fixed--free strands holds for a light take-up at any
+  position (Section~\ref{sec:solution});
+  \item the take-up mass as a tip mass of a quarter of its value, and the link
+  $\beta=(4/\nstr)\lambda\Tt/\Wret$ between mass ratio and take-up tension, which bounds its
+  effect on the fundamental period of real conveyors (Section~\ref{sec:betaregime});
+  \item bounds on the fundamental period as a function of the take-up position, which show that
+  moving the take-up to the tail is not an equivalent transformation
+  (Section~\ref{sec:frequencies});
+  \item a universal start-up curve of the fixed--free strand, a finite d'Alembert sum, for the
+  drive tensions, the take-up travel, the grip condition and a start-time rule
+  (Sections~\ref{sec:startup} and~\ref{sec:validity}).
+\end{enumerate}
+The results are verified against a second implementation, checked against partial field records
+(Section~\ref{sec:validation}) and applied to three published conveyors
+(Section~\ref{sec:application}).

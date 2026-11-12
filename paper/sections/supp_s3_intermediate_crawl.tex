@@ -1,0 +1,72 @@
+% =====================================================================
+% Supplementary material, S3 -- drive on the return strand and initial crawl.
+% Numbers: paper_numbers.py (NC*, Intermediate*, Crawl* macros).
+% Tests: test_intermediate.py (three-segment equation vs an independent
+% implementation, both sides, bounds, reversal of travel,
+% test_startup_collapse_intermediate: +4.5 %, +2.5 %); test_metrics.py (crawl:
+% ramp of one period removes the resistance overshoot).
+% =====================================================================
+\section{Drive on the return strand and initial crawl}\label{supp:intermediate}
+
+\paragraph{Drive on the return strand} With the drive at $\sigma_d$ on the return strand and the
+take-up downstream of it, strand~B runs from the take-up through a return run $\ell_2$ to the
+tail, the whole carry strand, and a return run $\ell_1=\sigma_d/L$ from the head to the drive;
+strand~A is the uniform return run between the drive and the take-up. With the take-up as a free
+end, the frequencies of strand~B follow from
+\begin{equation}\label{eq:strandB3}
+  \gamma\tan\Omega\ell_1\,\tan\gamma\Omega+\tan\Omega\ell_1\,\tan\Omega\ell_2
+  +\frac{1}{\gamma}\tan\Omega\ell_2\,\tan\gamma\Omega=1,
+\end{equation}
+which reduces to Eq.~(\ref{A-eq:strandB}) of the article for $\ell_1=0$, to
+$\tan\Omega\ell_1\tan\gamma\Omega=1/\gamma$ for a take-up at the tail ($\ell_2=0$), and, for
+$\gamma=1$, to $\Omega(\ell_1+1+\ell_2)=\pi/2$ by the tangent addition formula. Strand~B again
+holds the fundamental for $\gamma\ge1$ and any position of the drive and take-up on the return
+strand: by Rayleigh's principle, adding belt at either end of the carry strand lowers its
+frequency, so $\Omega_{B1}\le\pi/(2\gamma)\le\pi/2<\Omega_{A1}$. A take-up upstream of the
+drive, on its tight side, gives the same family with the roles of $\ell_1$ and $\ell_2$
+exchanged, since reversing the direction of travel leaves the spectrum unchanged; that position
+is impractical for other reasons (\ref{A-app:validity} of the article). The period
+bounds become
+\begin{equation}\label{eq:bounds_intermediate}
+  4\gamma<\tauper{1}\le4\tauB+4(\gamma-1)\,\ell_1,\qquad \tauB=\gamma+\ell_1+\ell_2,
+\end{equation}
+where the upper bound follows from giving the run $\ell_1$ the density of the carry strand,
+which can only lengthen the period, and applying Eq.~(\ref{A-eq:bounds_head}) of the article. The
+run $\ell_1$ sits at the fixed end of the heavy strand and acts as a soft spring: the period now
+exceeds four transits, by up to \qty{\NumIntermediateOverMax}{\percent} for $\gamma=3$
+(Fig.~\ref{A-fig:modal}d of the article), and the rule of four transits errs in opposite
+directions with a head and with an intermediate drive. For $\gamma=1$ only the total length of
+the strand matters. On the geometry of \citet{nordell1984}, with the drive \qty{5150}{ft} from
+the head and the take-up \qty{300}{ft} downstream of it, the fundamental period is
+\qty{\NumNCPeriod}{\second} against four transits of \qty{\NumNCFourTransit}{\second}
+($\tauper{1}/(4\tauB)=\NumNCRatio$); with a head drive and the same strand lengths it would be
+\qty{\NumNCPeriodHead}{\second} ($\NumNCRatioHead$), so the position of the drive alone
+lengthens the period by \qty{\NumNCIncrease}{\percent}. Since the modes of a strand share out
+its mass, the effective mass of the fundamental never exceeds $m_B$. Moving the drive away from
+the head thus lengthens $\tper{1}$ and calls for slower starts at the same dynamic amplification.
+With the drive on the return strand, strand~A is still uniform and the exit formula of
+Eq.~(\ref{A-eq:startup_formulas}) of the article remains exact; the entry peak lies slightly above
+the universal curve, by at most \qty{4.5}{\percent} for $\tau_a=\tauper{1}$ and
+\qty{2.5}{\percent} for $2\tauper{1}$ with the drive within $0.2L$ of the head.
+
+\paragraph{Initial crawl} Practice often starts with a crawl at low speed: a ramp to
+\qty{4}{\percent} of the speed in \qty{20}{\second} held for \qty{60}{\second} at ZISCO
+\citep{nordell1997zisco}, and a plateau of \qty{60}{\second} at \qty{10}{\percent} added at
+Henderson so that the take-up could keep pace with the belt stretch \citep{kung2005henderson}.
+For a uniform strand with resistances of Coulomb type, which appear in full once the belt moves
+($\rho=1$ and 5, $\zeta_1=0.01$ and $0.1$), and a crawl at \qty{5}{\percent} of the final speed
+before a parabolic acceleration of three periods, the effective part is the ramp to crawl
+speed. The peak at the fixed end, over the running-plus-inertial force, is
+\NumCrawlAbruptMin--\NumCrawlAbruptMax\ with an abrupt onset,
+\NumCrawlRampHalfMin--\NumCrawlRampHalfMax\ with a ramp of half a period and
+\NumCrawlRampOneMin--\NumCrawlRampOneMax\ with a ramp of one period $\tper{s}$, which lasts an
+odd number of periods of every mode of the strand and so leaves the resistance load without
+residual oscillation; the take-up travel falls from
+\NumCrawlTravelAbruptMin--\NumCrawlTravelAbruptMax\ times its quasi-static value to at most
+\NumCrawlTravelRampOneMax. A hold at crawl speed barely helps with light damping, because the
+first overshoot of the resistances occurs during the hold; with $\zeta_1=0.1$ it lets the
+transient decay, from \NumCrawlHoldDampedZero\ to \NumCrawlHoldDampedOne\ and
+\NumCrawlHoldDampedTwo\ after one and two periods. With speed control, a ramp to crawl speed of
+at least one period does the work. Since the resistances appear along the whole loop at once in
+the model, while in a real start they follow the stretch front, the abrupt onset is an upper
+bound.

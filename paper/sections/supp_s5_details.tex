@@ -1,0 +1,86 @@
+% =====================================================================
+% Supplementary material, S5 -- further details of Sections 3-5 and Appendix C.
+% Moved from the article in the cut of the second independent review (paso 7.5d).
+% Numbers: paper_numbers.py (StepOvershootEntry, BetaFiveAOneSlope, AOneStartRatioMin,
+% WR*, Harrison* macros). Tests: test_response.py::test_step_overshoot_can_exceed_two
+% (2.18, confirmed with FE); test_beta_min.py; test_harrison.py.
+% Sources checked: wheatley2021 (Table 1, conveyors B and C); harrison1985b (Sect. 3:
+% rotor resistance switched out in steps); song2012 (text p. 220 against Tables 1-2,
+% p. 221; travel 2.81 m in Sect. 3.1 and 2.85 m in Sect. 3.3 and Table 2).
+% =====================================================================
+\section{Further details}\label{supp:details}
+
+\paragraph{Step onset of the resistances (Section~\ref{A-sec:modal})} With a unit step $\varphi$
+each mode overshoots its quasi-static response by a factor two, but the tension field is not
+bounded by that factor: with $\gamma=2$, $\beta=0.1$, $\xi=0.05$ and resistances uniform per unit
+length, the undamped peak at the drive entry reaches \NumStepOvershootEntry\ times the
+quasi-static value (full loop, 300 modes).
+
+\paragraph{Threshold of the mode A1 (Section~\ref{A-sec:betaregime})} The mode A1, the
+quarter-wave mode of strand~A, has a small threshold, $\betafive\simeq\NumBetaFiveAOneSlope\,\xi$,
+but a short period, $4\xi L/c_r$: even with the take-up at the tail the published starts of the
+conveyors of Table~\ref{A-tab:cases} last about \NumAOneStartRatioMin\ of its periods or more (the
+least, Lo), so
+they drive it quasi-statically.
+
+\paragraph{Short conveyors (Section~\ref{A-sec:betaregime})} The \qty{275}{\metre} conveyor of
+\citet{wheatley2021} (WR) reaches its threshold only at the weakest coupling of its material
+($\beta/\betafive=\NumWRRatioLowMin$--$\NumWRRatioLowMax$). Of the other conveyors of the same
+plant \citep[Table~1]{wheatley2021}, with a counterweight hung directly on two strands and the
+take-up position of WR assumed, the \qty{\NumWRBLength}{\metre} conveyor~B gives
+$\beta/\betafive=\NumWRBRatio$, and only the \qty{\NumWRCLength}{\metre} conveyor~C lies clearly
+beyond its threshold ($\beta/\betafive=\NumWRCRatio$); there the exact
+equation~(\ref{A-eq:chareq}) keeps the mass.
+
+\paragraph{The drive of Harrison's conveyor (Section~\ref{A-sec:fieldchecks})} The slow period of
+the model exceeds Harrison's by \qty{\NumHarrisonSlowExcess}{\percent}, and the record shows an
+elastic ripple of \qty{\NumHarrisonWaveMeas}{\second} in our read-out of
+\citet[Fig.~5c]{harrison1983}, which the model with prescribed velocity does not have (its second
+period is \NumHarrisonSecondMin--\qty{\NumHarrisonSecondMax}{\second}). Both point to the drive:
+three wound-rotor motors started by torque steps. Equation~(\ref{A-eq:chareq_torque}) tests this
+with the reduced drive mass $m_d$ and the slip dashpot $\hat c$ of \ref{A-app:torque},
+neither of which is published:
+\begin{itemize}
+  \item A free drive ($m_d\to0$, $\hat c=0$) gives periods of
+  \qty{\NumHarrisonFreeDriveSlow}{\second} and \qty{\NumHarrisonFreeDriveSecond}{\second}: with
+  the take-up next to the drive the loop vibrates as a free--free string of length $2L$, and its
+  second period is the loop transit, close to the measured ripple.
+  \item Drive inertia alone reaches the measured slow period with $m_d=\NumHarrisonDriveMassMeas$,
+  a reduced drive mass \NumHarrisonDriveMassBeltRatio\ times that of the whole belt, and then gives
+  \qty{\NumHarrisonDriveMassSecond}{\second} for the second period.
+  \item A linearised slip characteristic, $c_d=F/(sV)$ with the running force
+  $F=\qty{\NumHarrisonRunForce}{\kilo\newton}$ (\qty{900}{\kilo\watt} at
+  \qty{3.7}{\metre\per\second}), gives $\hat c\approx\NumHarrisonDashpotNatural$ for a slip of
+  \qty{\NumHarrisonSlipNatural}{\percent}, typical of a motor with the rotor short-circuited. The
+  slow period then changes by at most \qty{\NumHarrisonDashpotNaturalChange}{\percent} for
+  $\NumHarrisonDriveMassMin\le m_d\le\NumHarrisonDriveMassMax$: the drive acts as a prescribed
+  velocity. With rotor resistance in circuit, slips of
+  \NumHarrisonSlipSoftMin--\qty{\NumHarrisonSlipSoftMax}{\percent} give
+  $\hat c\approx\NumHarrisonDashpotSoftMin$--$\NumHarrisonDashpotSoftMax$, and with $m_d=1$--$3$
+  the slow period falls to \NumHarrisonSoftSlowMin--\qty{\NumHarrisonSoftSlowMax}{\second}, with
+  damping ratios of \NumHarrisonSoftZetaMin--\NumHarrisonSoftZetaMax\ and a second period of
+  \NumHarrisonSoftSecondMin--\qty{\NumHarrisonSoftSecondMax}{\second}.
+\end{itemize}
+No single linear drive reproduces both features: the ripple requires a nearly free drive, and the
+slow period a soft slip characteristic or a heavy drive. A drive whose characteristic changes
+during the start would produce both, and these motors had their rotor resistance switched out in
+steps as the speed rose \citep[Sect.~3]{harrison1985b}.
+
+\paragraph{The stored belt of Harrison's conveyor (Section~\ref{A-sec:fieldchecks})}
+\Citet{harrison1985b} reports that the take-up loop supplied \qty{\NumHarrisonStoredMeas}{\metre}
+of belt at start-up. The start check of Section~\ref{A-sec:fieldchecks} stores at most
+\qty{\NumHarrisonStoredMax}{\metre}, but it applies only the inertial load of the first plateau.
+The stored belt is a quasi-static quantity, set by the running tensions and the stiffness of the
+belt rather than by the dynamics: the running resistances alone add
+\NumHarrisonStoredRunMin--\qty{\NumHarrisonStoredRunMax}{\metre} if the whole force of the
+installed \qty{900}{\kilo\watt} acts on the empty belt ($\mu_r=81$ or
+\qty{40}{\kilo\gram\per\metre}, the two densities that his data allow). Since neither the running
+tensions of the empty belt nor its stiffness are published, the stored belt does not test the
+take-up model; its order of magnitude is consistent with the record.
+
+\paragraph{Inconsistencies in the example of Song et al. (\ref{A-app:validation})}
+Besides the take-up tension and travel discussed in the article, the text and the tables of
+\citet{song2012} disagree: the steady take-up travel is \qty{2.81}{\metre} in their \S3.1 and
+\qty{2.85}{\metre} in their \S3.3 and Table~2, the maximum travel \qty{3.37}{\metre} in the text
+and \qty{3.72}{\metre} in Table~2, and the steady drive tensions 337 and \qty{113}{\kilo\newton} in
+the text and 309 and \qty{37}{\kilo\newton} in their Table~1.

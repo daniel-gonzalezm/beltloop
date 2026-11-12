@@ -1,0 +1,17 @@
+% Standalone preview of the generated tables. Compile from this folder with
+%   pdflatex tables_preview && bibtex tables_preview && pdflatex tables_preview (x2)
+% It reads the bibliography of the manuscript, paper/references.bib, with the
+% same numbered citations as the manuscript; the manuscript itself compiles both tables too.
+\documentclass[a4paper,10pt]{article}
+\usepackage[margin=18mm]{geometry}
+\usepackage{amsmath,array,booktabs,threeparttable}
+\usepackage[numbers,sort&compress]{natbib}
+% The tables open a widetable float; here it is a plain full-width float.
+\newenvironment{widetable}[1][t]{\begin{table*}[#1]}{\end{table*}}
+\begin{document}
+\input{table_cases}
+\input{table_cases_reduced}
+\input{table_applications}
+\bibliographystyle{plainnat}
+\bibliography{../../../paper/references}
+\end{document}

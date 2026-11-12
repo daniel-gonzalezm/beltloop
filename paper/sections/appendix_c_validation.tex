@@ -1,0 +1,98 @@
+% =====================================================================
+% Appendix C -- Details of the consistency checks and cross-comparisons.
+% Scripts: validation/harrison_case.py (summary, startup_check), lodewijks_case.py,
+% song_case.py. Sources checked: nordell1987 (Beltcon 4), Figs. 5-9, the same event as
+% nordell1984 case 1 in a legible copy; NumNCArrivalBShort = (L - x_d)(1/c_r + 1/c_c) in
+% maps/paper_numbers.py; harrison1983 (Eq. 7, k = 10 400 N/m); harrison1985b (p. 3: modified
+% design). The wound-rotor drive of Harrison's conveyor, the stored belt and the list of
+% inconsistencies of Song et al. are in the supplementary material (S5).
+% =====================================================================
+\section{Consistency checks and cross-comparisons}\label{app:validation}
+
+\paragraph{The free end in a stop} The stop recorded by \citet{nordell1984} shows the free end
+of Section~\ref{sec:freeend} on a second conveyor, from the other side of the take-up. Its drives
+sit on the return strand and the take-up, fitted with a hydraulic retarder, just downstream of
+them, so a front that leaves the drives towards the tail has to cross the take-up. Through the
+take-up and the tail it would reach the carry strand above the drives after
+\qty{\NumNCArrivalBShort}{\second}; the belt there kept its speed, to within about
+\qty{2}{\percent} in our reading of Figs.~6--8 of \citet{nordell1987}, which reproduces the
+records of the same event in a legible copy, until the front that went round the head arrived at
+\qty{\NumNCArrivalBMeas}{\second}, and \citet{nordell1984} note that little of the initial
+disturbance moved past the take-up in the direction of belt travel. The belt just beyond the
+take-up slowed by about \qty{7}{\percent} during the first second, while the drives were
+decelerating, and then recovered, as expected from a retarder that holds the carriage until its
+drag, 2720~kgf in both directions in their model, is exceeded; by Eq.~\eqref{eq:transmission_z}
+the take-up was not a free end while the retarder held it, so this record is weaker evidence
+than Harrison's.
+
+\paragraph{Harrison's conveyor} The conveyor is \qty{5.1}{\kilo\metre} long in
+\citet{harrison1983} and \qty{5000}{\metre} in \citet[Fig.~2a]{harrison1985b}; the model uses
+the first, with the loop transit held at $2L/(\qty{1450}{\metre\per\second})=\qty{7.03}{\second}$,
+Harrison's reading of the \qty{7}{\second} period, so that $\gamma=\NumHarrisonGammaMeas$ gives
+$c_r=\qty{1428}{\metre\per\second}$. His data allow two belt densities, from his wave-speed
+equation and from his belt mass, which give $\mu_r=\NumHarrisonMuRLow$ and
+\qty{\NumHarrisonMuRHigh}{\kilo\gram\per\metre}; with the take-up on four strands
+\citep[Fig.~2a]{harrison1985b}, $\beta=\NumHarrisonBetaMin$--$\NumHarrisonBetaMax$; the \qty{3.5}{\second} ``wave cycle around the
+belt'' of \citet[p.~6]{harrison1985b} is the head-to-tail transit, half the loop transit. For the
+start check the drive velocity is a sine ramp
+to the first plateau of the record, \qty{1.6}{\metre\per\second} with a peak acceleration of
+\qty{0.63}{\metre\per\second\squared} \citep[Fig.~2b]{harrison1985b}, without damping or
+resistances. When the front returns, the carriage has travelled
+\qty{\NumHarrisonCarriageModel}{\metre}, against about \qty{\NumHarrisonCarriageMeas}{\metre} in
+the record \citep[Fig.~5e]{harrison1983}. Over the measured range of $\gamma$
+(\NumHarrisonGammaMeasMin--\NumHarrisonGammaMeasMax) the slow period of the model is
+\NumHarrisonSlowModelMin--\qty{\NumHarrisonSlowModelMax}{\second}. Harrison estimated the slow
+period as that of a mass on a spring, $2\pi\sqrt{(M+m/3)/k}=\qty{24}{\second}$, with the whole
+belt mass $m$ and a belt stiffness $k=\qty{10.4}{\kilo\newton\per\metre}$ that he does not derive
+from the belt data. Since $m/3$ is about seven times the take-up mass $M$, his estimate is
+already a free-end picture, a belt spring with the take-up at its end, with a lumped stiffness.
+The modified design of \citet[p.~3]{harrison1985b}, in which the two belts moved away together,
+added a hydraulic buffer under the carriage but also lowered the take-up mass to
+\qty{13}{\tonne}, moved the tail pulley and halved the starting torque, so the record does not
+isolate the buffer.
+
+\paragraph{Cross-comparison with Lodewijks (1996)}\label{sec:crosscheck}
+\Citet[Ch.~8]{lodewijks1996} simulated five speed-controlled starts of a loaded, horizontal
+\qty{1}{\kilo\metre} conveyor, four of \qty{30}{\second} and a linear ramp with an added
+\qty{5}{\second} rest (\qty{35}{\second} in all), with a finite-element model that includes
+non-linear sag, speed-dependent resistances and the inertia of the pulleys, with the take-up just
+downstream of the head drive. Set up from his belt, idler, material and take-up data, the present
+model reproduces his running tension at the drive entry and, without damping, the peak belt
+strains of his Table~8.7 within \qty{\NumLodewijksPeakDevMin}{\percent} to
+\qty{\NumLodewijksPeakDevMax}{\percent}. In both models the two smooth profiles give the largest
+peaks and the linear ramp with a rest the smallest; the plain and offset linear ramps differ by
+\qty{\NumLodewijksLinearGap}{\percent} in the model and \qty{\NumLodewijksLinearGapHis}{\percent}
+in his results, in reverse order. His oscillation period, \qty{\NumLodewijksPeriodMeas}{\second},
+is a damped cosine fitted from 30 to \qty{60}{\second} to our digitisation of the drive strain and
+the take-up travel of his Figs.~8.41--8.42. The period of Section~\ref{sec:lodewijks} for a
+drive without speed control uses Eq.~\eqref{eq:chareq_torque} with his own drive inertia,
+$m_d=\NumLodewijksOwnDriveMass$. For the merged pulley, with the drive faces moving with the
+carriage, $w(0)=-y$, $w(2L)=y$ and $M\ddot y=-[T_d(0)+T_d(2L)]$, the characteristic equation is
+$2+\operatorname{tr}P-\beta\Omega^2P_{12}=0$, with $P$ the transfer matrix of the whole loop; the
+tension of the return belt at the take-up in his offset start comes from a lumped implementation
+of the same conditions, without damping, and his from our digitisation of the strain before the
+take-up in his Fig.~8.41. We could not reconcile his sweep over the start duration with his
+\qty{30}{\second} start: as we read his figures, the take-up travel for a \qty{50}{\second}
+start, \qty{\NumLodewijksTravelSweepHis}{\metre} \citep[Fig.~8.46]{lodewijks1996}, is smaller
+than the mean travel after the \qty{30}{\second} start, \qty{\NumLodewijksTravelMeanHis}{\metre}
+(our fit of his Fig.~8.42), whereas the running belt should reach the same travel after any
+start (\qty{\NumLodewijksTravelMeanModel}{\metre} in our model).
+% validation/lodewijks_case.py, data/lodewijks_case.json
+
+\paragraph{Cross-comparison with Song et al.\ (2012)} The two-strand continuum of \citet{song2012}
+is the limit $\beta\to0$ of the present model with the take-up at the tail, where
+Eq.~\eqref{eq:chareq} splits into the quarter-wave families $\cos\Omega=0$ of the return strand and
+$\cos\gamma\Omega=0$ of the carry strand. With their data the present model gives their carry wave
+speed, \qty{\NumSongCcModel}{\metre\per\second}, and a return wave speed of
+\qty{\NumSongCrModel}{\metre\per\second} against the \qty{\NumSongCrPub}{\metre\per\second} they
+print; their resistance law gives a running drive force of \qty{\NumSongFRunModel}{\kilo\newton},
+within \qty{\NumSongFRunDiff}{\percent} of their \qty{\NumSongFRunPub}{\kilo\newton}. Their example
+is not used quantitatively beyond this point, because it is not internally consistent: the take-up
+tension of \qty{\NumSongTtPub}{\kilo\newton} that both of their methods give cannot be held by their
+\qty{4500}{\kilo\gram} counterweight (\qty{\NumSongTtMass}{\kilo\newton} on two strands), and their
+own running tensions imply a take-up travel of \qty{\NumSongTravelTensions}{\metre}, not the
+\qty{\NumSongTravelPub}{\metre} they report (further inconsistencies in S5).
+Section~\ref{sec:frequencies} uses only their geometry, with the take-up at the tail of their
+model and at the head drive of their Fig.~1, and \cref{tab:cases} keeps their published take-up
+tension, with the alternative from the counterweight in its note.
+% validation/song_case.py; tests/test_song.py

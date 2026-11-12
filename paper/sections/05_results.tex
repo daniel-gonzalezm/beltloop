@@ -1,0 +1,283 @@
+% =====================================================================
+% Section 5 -- Results and application.
+% Numbers: maps/paper_numbers.py; tests named in the comments of each part.
+% Moved out of the body: drive on the return strand and initial crawl
+% (supplementary material, S3), validity conditions in full with fig_validity
+% (Appendix D), application in full with fig_applications and the table of
+% applications (supplementary material, S2), full table of cases (S1), threshold of A1,
+% short conveyors and step onset of the resistances (S5).
+% Typed numbers from sources: lodewijks1996 Table 8.8 (60 s by one minute per km, 56.1 s by
+% his Eq. 8.46b); surtees1995runback (25 s estimated from breakaway); din22101 Sect. 7.3.1
+% (start-up factor at most 1.7).
+% =====================================================================
+\section{Results}\label{sec:results}
+
+\subsection{Natural frequencies and modal participation}\label{sec:frequencies}
+% Numbers: paper_numbers.py, sections "Frequencies and participation" and
+% "Song et al. (2012)". Tests: test_participation.py, test_intermediate.py, test_song.py.
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=\linewidth]{fig_modal}
+  \caption{Fundamental mode with the take-up as a free end ($\beta\to0$). (a--c) Head drive.
+  (a) Fundamental period $\tauper{1}=\tper{1}c_r/L$, from \NumModalTauMin\ to
+  \NumModalTauMax\ on the plotted grid ($0.002\le\xi\le0.998$, $1\le\gamma\le3$; the limits
+  are 4 at $\xi=1$, $\gamma=1$ and 13.43 at $\xi=0$, $\gamma=3$). (b) $\tauper{1}$ over four
+  transits of strand~B, $\tauB=1-\xi+\gamma$, between \NumModalFourTransitMin\ and~1.
+  (c) Fraction of the belt inertia excited in the fundamental, $\Gamma_1^2m_1/(1+\gamma^2)$,
+  from \NumModalParticipationMin\ to \NumModalParticipationMax; hatched, $\beta=0.1$ changes it
+  by more than \qty{5}{\percent}. (d) Drive on the return strand at $\ell_1=\sigma_d/L$ from the
+  head, take-up right after it: the period exceeds four transits by up to
+  \qty{\NumIntermediateOverMax}{\percent} for $\gamma=3$ (supplementary material, S3).
+  Markers: conveyors of \cref{tab:cases} at full material coupling, with bars down to the
+  weakest coupling of the material \citep{lodewijks2002}; take-ups within $\xi\le0.02$ of the
+  drive are spread over $\xi\le0.05$ to keep the markers apart; H is drawn at $\gamma=1$; St is S
+  with the take-up at the tail.}
+  \label{fig:modal}
+\end{figure}
+
+In the free-end limit the spectrum of the loop is the union of those of strands A and~B, so the
+modes are followed by strand: B1, B2,~\dots\ are born at the fixed--free frequencies of
+strand~B, and A1, A2,~\dots\ at those of strand~A. \Cref{fig:modal} maps the fundamental in the
+plane $(\xi,\gamma)$, the two parameters left when $\beta\to0$.
+
+\paragraph{The fundamental belongs to strand B} With a head drive and $\gamma\ge1$, strand~B
+holds the fundamental for every take-up position: in Eq.~\eqref{eq:strandB} both tangents grow
+from zero on $0<\Omega<\pi/(2\gamma)$, so the product crosses $\gamma$ once there, whereas
+strand~A starts at $\pi/(2\xi)\ge\pi/(2\gamma)$. At $\Omega=\pi/(2\tauB)$, where
+$\tauB=1-\xi+\gamma$ is the transit time of strand~B, the product equals $1\le\gamma$, so
+\begin{equation}\label{eq:bounds_head}
+  4\gamma\le\tauper{1}\le4\tauB ,
+\end{equation}
+with equality on both sides for a take-up at the tail, where strand~B is the carry strand
+alone, and on the right for $\gamma=1$. Over $1\le\gamma\le3$ the rule of four transits
+overestimates the period by up to \qty{\NumModalFourTransitOver}{\percent}
+(\cref{fig:modal}b), because the light return belt at the free end raises the frequency of
+strand~B. Moving the take-up changes the strand that holds the fundamental, and with it the
+period (\cref{fig:modal}a): from the head to the tail the period falls by a factor
+\NumHeadTailRatioGammaOneFive, \NumHeadTailRatioGammaTwo\ and \NumHeadTailRatioGammaThree\ for
+$\gamma=1.5$, 2 and 3, the range of loaded belts, and by \NumHeadTailRatioGammaOne\ for
+$\gamma=1$, an empty belt. The move to the tail that \citet{song2012} made as an equivalent
+transformation changes the fundamental period of their conveyor from
+\qty{\NumSongPeriodHeadLight}{\second} at the head drive of their Fig.~1 to
+\qty{\NumSongPeriodTailLight}{\second} (take-up as a free end; \cref{tab:cases} gives both with
+the mass). A drive on the return strand adds a run of return belt at the fixed end of strand~B,
+which acts as a soft spring and lengthens the period beyond four transits (\cref{fig:modal}d;
+supplementary material, S3).
+
+\paragraph{Modal participation} A uniform fixed--free string has $8/\pi^2$ of its mass in its
+fundamental; applied to strand~B, of mass $m_B=\mu_rL\,(1-\xi+\gamma^2)$,
+\begin{equation}\label{eq:F1}
+  \frac{\Gamma_1^2m_1}{1+\gamma^2}\simeq\frac{8}{\pi^2}\,\frac{1-\xi+\gamma^2}{1+\gamma^2},
+\end{equation}
+exact for $\gamma=1$ and at most \qty{\NumModalParticipationFormulaErr}{\percent} too high
+otherwise. The fraction falls as the take-up moves towards the tail (\cref{fig:modal}c), and
+A1 carries exactly $(8/\pi^2)\,\xi/(1+\gamma^2)$.
+% test_participation.py (tail, gamma = 1: Gamma = 0 on the Li-Pang family, Y = 0 on cos = 0)
+
+\subsection{When the take-up mass matters}\label{sec:betaregime}
+% The period shifts were confirmed against an independent root of Eq. (chareq_head).
+% Tests: test_figures.py, test_beta_min.py, test_tables.py.
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=\linewidth]{fig_beta}
+  \caption{Take-up mass ratio $\betafive$ at which a natural period becomes \qty{5}{\percent}
+  longer than with $\beta\to0$, head drive, Eq.~\eqref{eq:beta5}. (a) B1, the fundamental: from
+  \NumBetaFiveBOneMin\ to \NumBetaFiveBOneMax\ on the plotted grid ($0.005\le\xi\le0.995$),
+  down to 0.10 as $\xi\to1$ with $\gamma=1$, where the poles of A1 and B1 nearly coincide; the
+  conveyors of \qty{1}{\kilo\metre} or longer stay at least \NumLongMarginMin\ times below their
+  threshold (\NumLongMarginMinLow\ at the weakest coupling). (b) B2, median
+  \NumBetaFiveBTwoMedian; dark grey, B2 and A1 within \qty{5}{\percent} of each other; light
+  grey, the shift is not reached even for $\beta\to\infty$; dashed, where A1 overtakes B2.
+  Markers as in \cref{fig:modal}.}
+  \label{fig:beta}
+\end{figure}
+
+\paragraph{The threshold} Let $\Omega_p$ be a fixed--free frequency of one strand and
+$\Omega_t=\Omega_p/1.05$. Since~\eqref{eq:receptance} is linear in $1/\beta$, the take-up mass
+that lengthens the period of that mode by \qty{5}{\percent} is explicit,
+\begin{equation}\label{eq:beta5}
+  \betafive=\frac{4}{\Omega_t^2\,\bigl[H_A(\Omega_t)+H_B(\Omega_t)\bigr]},
+\end{equation}
+provided no strand frequency lies in $[\Omega_t,\Omega_p)$ (a frequency just above $\Omega_p$
+also lowers it, \cref{fig:beta}b); for an isolated pole, $\betafive\simeq\NumSinglePoleCoefficient\,\tilde m$
+by~\eqref{eq:onepole}. For the fundamental (\cref{fig:beta}a), $\betafive$ depends mainly on
+$\gamma$: the heavier the carry strand, the larger the mass that strand~B carries at its free
+end. For $\gamma\ge1.4$ and
+$\xi\le0.1$, $\betafive\ge\NumBetaFiveMinNearDrive$. The participation (\cref{fig:modal}c,
+hatched) and the mode A1 (S5) have lower thresholds.
+
+\paragraph{Where the conveyors lie} By Eq.~\eqref{eq:beta_tension}, the mass ratio follows from
+the take-up tension and factorises as
+\begin{equation}\label{eq:beta_factors}
+  \beta=\frac{4\lambda}{\nstr}\,\frac{F_U}{\Wret}\,\frac{\Tt}{F_U},
+\end{equation}
+with $F_U$ the running peripheral force. For given slope, load and resistance coefficients
+neither factor depends on the length, because the take-up tension is sized by requirements that
+grow with it, chiefly drive grip \citep[Eqs.~47--50]{din22101} and the weight of the return
+strand on a slope: the mass ratio does not decrease as the conveyor gets longer. For the
+conveyors of \cref{tab:cases} of \qty{1}{\kilo\metre} or longer, $\Tt/\Wret$ is
+\NumLongTtWrMin\ to \NumLongTtWrMax\ and $\beta/\betafive$ of the fundamental is
+\NumLongBetaRatioMin\ (G) to \NumLongBetaRatioMax: the take-up mass lengthens their fundamental
+period by at most \qty{\NumLongShiftMax}{\percent} (S with the take-up at the tail, and Pa), and
+by at most \qty{\NumLongShiftMaxLow}{\percent} over the coupling range of each material (Pa). With
+a counterweight hung directly on two strands, $\beta=2\Tt/\Wret$, so for a take-up near the drive
+and $\gamma\ge1.4$ the take-up mass changes the fundamental period by less than
+\qty{5}{\percent} as long as
+\begin{equation}\label{eq:rule}
+  \Tt\lesssim\frac{\Wret}{4}.
+\end{equation}
+This sufficient condition for the fundamental period makes a conveyor long in a dynamic sense,
+a notion without a strict definition even for the route length \citep{suchorab2025longdistance};
+otherwise the test is $\beta\ll\betafive$ with Eq.~\eqref{eq:beta5}. In short conveyors sag and holdback set the take-up tension and $\beta$
+grows as $1/L$; among the published conveyors only one of \qty{\NumWRCLength}{\metre} lies
+clearly beyond its threshold (S5). None of the field records of Section~\ref{sec:validation}
+can therefore test the take-up mass.
+% numbers: Long*, Shift*, BetaRatio*, WR* macros (paper_numbers.py);
+% WRB/WRC from maps/beta_min.regime(); tests: test_beta_min.py, test_tables.py, test_figures.py
+
+\subsection{Start-up: the universal curve of a fixed--free strand}\label{sec:startup}
+% Wave law: love1906, Art. 284. Eq. (dalembert): tests/test_metrics.py::
+% test_universal_curve_is_a_finite_dalembert_sum. The initial crawl is in the supplementary material (S3).
+% Numbers: paper_numbers.py, section "Universal start-up curve". Tests: test_metrics.py,
+% test_intermediate.py::test_startup_collapse_intermediate, test_figures.py.
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=\linewidth]{fig_startup}
+  \caption{Universal start-up curve of a fixed--free strand ($\beta\to0$, undamped);
+  $\tauper{s}$, fundamental period of the strand; $\tau_a$, start time. (a) Peak tension at the
+  fixed end over $m_sa_m$, sine, triangular and parabolic profiles; dotted, the wave law
+  $T=Z_sV$, exact for $\tau_a\le\tauper{s}/2$; grey band, the rule $\tau_a=2$--$3\,\tauper{1}$;
+  vertical lines, published start times over the fundamental period of each conveyor of
+  \cref{tab:cases}: Lo \NumPracticeLo, LL \NumPracticeLL\ (from switch-on; \NumPracticeLLAccel\
+  without the \qty{10}{\second} of motor switching), G \NumPracticeG, Su \NumPracticeSu, S
+  \NumPracticeS\ (take-up at the head of their Fig.~1; \NumPracticeSTail\ at the tail, where
+  they simulated it), Si \NumPracticeSi. Damping lowers the maximum of the sine curve to
+  \NumStartDampTwo\ and \NumStartDampTen\ for $\zeta_1=0.02$ and $0.1$. (b) The same peak per
+  unit mean acceleration $V_\infty/t_a$: at equal start time and final speed the triangular
+  profile, with the largest peak acceleration ($2V_\infty/t_a$ against $\pi V_\infty/(2t_a)$ for
+  the sine), is the worst, by \qty{\NumStartTriangularExcess}{\percent} over the sine at five
+  periods. (c) Largest departure of the full loop from (a) over $\xi=0.005$--$0.95$ and
+  $1\le\gamma\le3$ in steps of 0.25, sine profile, drawn for $\gamma=1$, 1.5, 2 and 3: drive
+  entry against $\tau_a/\tauper{1}$, drive exit against $\tau_a/\tauper{A1}$. The entry stays
+  within \qty{\NumCollapseEntryEight}{\percent} for $\tau_a\ge0.8\,\tauper{1}$ and
+  \qty{\NumCollapseEntryOne}{\percent} for $\tau_a\ge\tauper{1}$, the exit within
+  \qty{\NumCollapseExitEight}{\percent} for $\tau_a\ge0.8\,\tauper{A1}$, and the entry within
+  \qty{\NumCollapseUniformMax}{\percent} at any start time for $\gamma=1$; faster starts with
+  $\gamma\ne1$ depart by up to \qty{\NumCollapseFastMax}{\percent}, because the impedance jump at
+  the tail sets the entry tension before the wave returns. (d) Peak take-up travel over its
+  quasi-static value (the travel estimate of Eq.~\eqref{eq:startup_formulas} holds within
+  \qty{6}{\percent} for $\gamma\ge2$ and $\tau_a\ge\tauper{1}$), and peak tension due to
+  resistances that build up with the belt speed, \NumStartResOne\ times the running value at one
+  period.}
+  \label{fig:startup}
+\end{figure}
+
+With the take-up as a free end, the drive-entry tension depends only on strand~B and the
+drive-exit tension only on strand~A, each a fixed--free string driven at its fixed end. For a
+uniform strand the peak tension at the fixed end over the inertial force $m_sa_m$ depends on
+$\tau_a/\tauper{s}$ alone: this amplification $D(\tau_a/\tauper{s})$ is the universal curve of
+\cref{fig:startup}a. For a slow start the strand moves as a rigid body and $D\to1$; for a fast
+one, until the wave returns from the free end after half a period, the tension follows the drive
+velocity, $T=Z_sV(t)$ with $Z_s=\mu_sc_s$ the impedance of the strand
+\citep[Art.~284]{love1906}. Since a wave changes sign on reflection at the free end and keeps
+it at the driven end, the fixed-end tension and the free-end displacement are finite sums,
+\begin{equation}\label{eq:dalembert}
+\begin{gathered}
+  T(0,t)=Z_s\Bigl[V(t)+2\sum_{k\ge1}(-1)^kV\bigl(t-\tfrac{k}{2}\tper{s}\bigr)\Bigr],\\
+  u(\ell_s,t)=2\sum_{k\ge0}(-1)^kU\bigl(t-\tfrac{2k+1}{4}\tper{s}\bigr),
+\end{gathered}
+\end{equation}
+with $V=U=0$ for negative arguments. The universal curve $D$ is the extreme of the first over
+$m_sa_m$, and the travel curve $D_y$ (\cref{fig:startup}d) that of the second over the
+quasi-static elongation $a_m\ell_s^2/(2c_s^2)$. The sine curve peaks at \NumStartPeakMax\ for
+$\tau_a/\tauper{s}=\NumStartPeakAt$ and decays as $\tauper{s}/\tau_a$, because the sine
+acceleration starts and ends with a jump in jerk.
+% tests: test_metrics.py (wave law, exact for tau_a <= T_s/2; peak 1.590 at 0.87; D(1), D(2), D(5))
+
+\paragraph{Collapse of the loop} Applied to the two strands, the curve gives in closed form
+the extreme dynamic tensions at the two faces of the drive and the take-up travel,
+\begin{equation}\label{eq:startup_formulas}
+\begin{gathered}
+  \frac{\Delta T_\mathrm{entry}}{m_Ba_m}\simeq D\!\left(\frac{t_a}{\tper{1}}\right),\qquad
+  \frac{\Delta T_\mathrm{exit}}{m_Aa_m}\simeq -D\!\left(\frac{t_a}{\tper{A1}}\right),\\
+  \frac{y_\mathrm{max}}{a_mL^2/c_r^2}\simeq\frac12\left[D_y\!\left(\frac{t_a}{\tper{1}}\right)I_B-I_A\right],
+\end{gathered}
+\end{equation}
+where $m_A=\mu_r\xi L$, $\tper{A1}=4\xi L/c_r$, and $I_B=\int_\xi^2\int_\xi^x\hat\mu\,\dd x'\,\dd x$ and $I_A=\xi^2/2$ are the
+quasi-static elongations of the strands. Strand~B is not uniform when $\gamma\ne1$, but its
+fundamental dominates (Eq.~\eqref{eq:F1}), and the loop stays within
+\qty{\NumCollapseEntryEight}{\percent} of the curve at the entry for $t_a\ge0.8\,\tper{1}$
+(\cref{fig:startup}c).
+% tests: test_metrics.py::test_travel_from_the_strands (rel 0.06)
+
+\paragraph{Design rule} Since the amplification depends on $t_a/\tper{1}$ only, the start time
+needed for a given amplification is proportional to the fundamental period. A start of two to
+three periods keeps the inertial amplification at \NumStartDThree--\NumStartDTwo\ and that of
+resistances that build up with the belt speed at most \NumStartResTwo; we take
+$t_a\gtrsim2$--$3\,\tper{1}$ as the rule, a choice of acceptable amplification rather than a
+strength criterion: for the conveyor of
+\citet{lodewijks1996} it gives \NumLoRuleMin--\qty{\NumLoRuleMax}{\second} at full coupling of the material (from
+\qty{\NumLoRuleMinLow}{\second} at the weakest), against
+\qty{60}{\second} by the rule of one minute per kilometre and \qty{56.1}{\second} by his strength
+criterion, both smooth in his simulations \citep[Table~8.8]{lodewijks1996}, whereas grip
+requires a longer start (Section~\ref{sec:application}). Published start times span the whole
+curve (\cref{fig:startup}a).
+% numbers: Practice* (paper_figures.PRACTICE, exact t_1 of each case)
+
+\subsection{Validity: slack, take-up and drive grip}\label{sec:validity}
+% Full derivation, figure and accuracy checks in Appendix D. Tests: test_validity.py.
+
+With the strand curves, the admissibility conditions of Section~\ref{sec:modal} become explicit
+lower bounds on the running tension $T_2$ at the drive exit (\cref{app:validity}, for
+resistances $r=\rho\,\mu\,a_m$). \emph{Slack}: the exit tension drops during the start by the
+dynamic tension of strand~A, small for a take-up near the drive, and strand~B rebounds after the
+start, unless $t_a=(j+\tfrac12)\,\tper{1}$ or running resistances $\rho\ge1$ hold it; the carriage
+follows the belt with a wide margin. \emph{Drive grip}: adding the peaks of the two strands,
+\begin{equation}\label{eq:grip}
+  T_2\ge\frac{m_Ba_m\,C_\mathrm{max}(t_a/\tper{1})+\egrip\,m_Aa_m\,C_\mathrm{max}(t_a/\tper{A1})}
+  {\egrip-1}-\rho\,m_Aa_m ,
+\end{equation}
+where $C_\mathrm{max}$ is the universal curve with resistances ($C_\mathrm{max}=D$ for $\rho=0$).
+For slow starts~\eqref{eq:grip} reduces to the running condition $T_2\ge F_U/(\egrip-1)$ of
+DIN~22101, whose start-up factor, at most 1.7 for large conveyors, is fixed in advance
+\citep[\S7.3.1]{din22101}; here it follows from the start time, through $t_a/\tper{1}$ and $\rho$. With a single drive pulley
+($\egrip\approx3$) grip governs over slack for every take-up position; with a tandem drive
+($\egrip\approx16$) slack, rebound and grip are comparable.
+
+\subsection{Application to three field conveyors}\label{sec:application}
+% Full account, figure and table in the supplementary material (S2).
+% Numbers: paper_numbers.py, section "Application to field conveyors".
+% Tests: test_applications.py, test_tables.py.
+
+Three conveyors of \cref{tab:cases} were started in physical units with the full model, DIN~22101
+resistances fitted to the running force and building up with the belt speed, and the take-up
+moved along the return strand with the case's counterweight (supplementary material, S2). The
+starts are hypothetical speed-controlled sine starts on real layouts: the base case of Lodewijks is a linear ramp with an offset, of the same duration; Surtees' conveyor has a fluid
+coupling, and for the incline of Suchorab-Matuszewska et al., whose start is not published,
+$3\tper{1}=\qty{\NumSMReferenceStart}{\second}$ is assumed.
+
+The conveyor of \citet{lodewijks1996} has a single drive pulley ($\egrip=\NumLoGripFactor$)
+and a take-up tension of \qty{\NumLoTt}{\kilo\newton}, sized for a running force of
+\qty{35.6}{\kilo\newton} \citep[Eq.~8.6]{lodewijks1996} with the start-up factor of a fluid
+coupling. A rigid belt with the same loads already needs
+\qty{\NumLoTtReqRigid}{\kilo\newton} to stay in grip during a sine start of \qty{30}{\second},
+the duration of his starts, so these would have slipped, which his simulations, without slip at
+the drive, could not show; on a rigid belt the installed tension holds grip only in sine starts of
+\qty{\NumLoShortestRigid}{\second} or longer. This depends neither on the fundamental period, uncertain
+(Section~\ref{sec:lodewijks}), nor on the linear belt, strained on this fabric belt (A3, A4). The
+dynamic increment does: with $\tper{1}=\qty{\NumLoPeriod}{\second}$
+the start lasts \NumPracticeLo\ periods (\NumLoPracticeLow\ at the weakest coupling), falls in the
+overshoot of the universal curve and needs \qty{\NumLoTtReq}{\kilo\newton}
+(+\qty{\NumLoDynamicIncrement}{\percent}). With one drive pulley the grip, not the dynamic
+amplification, fixes the shortest admissible start, \qty{\NumLoShortest}{\second}
+(\NumLoShortestOverPeriod\ periods).
+
+On the \qty{3}{\kilo\metre} incline with a tandem drive of \citet{suchorab2025longdistance}, the take-up near the high end
+must hold the weight of the return strand down the slope, and moving it to the tail changes the
+peak entry tension by less than one per cent. On the \qty{805}{\metre} conveyor of
+\citet{surtees1995runback}, with the drive on the return strand, a take-up on the tight side of
+the drive would need \NumSuTightFactor\ times the tension required at its real position. In all
+three the take-up position acts mainly through the statics, the resistance of the return run
+between drive and take-up and the weight of the return strand on a slope; its dynamic effect, a fundamental period that changes by \NumLoPeriodChange\ to
+\qty{\NumSMPeriodChange}{\percent} between the real position and the tail (Lo and SM), enters through the
+start time.

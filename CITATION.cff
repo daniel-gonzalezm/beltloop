@@ -1,0 +1,18 @@
+# Read by GitHub ("Cite this repository") and by Zenodo when a release is archived.
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "beltloop: longitudinal dynamics of belt-conveyor loops with a gravity take-up"
+type: software
+authors:
+  - family-names: "González-Monsalve"
+    given-names: "Daniel"
+    orcid: "https://orcid.org/0000-0002-3892-4722"
+    affiliation: "Universidad de Concepción"
+license: MIT
+repository-code: "https://github.com/daniel-gonzalezm/beltloop"
+version: "1.0.0"
+keywords:
+  - belt conveyor
+  - longitudinal vibration
+  - gravity take-up
+  - wave propagation
