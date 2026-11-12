@@ -4,13 +4,14 @@
 # to it, so the system can compile it without the repository layout.
 #
 # Run from paper/ after a full build of main.pdf and supplementary.pdf (see the
-# header of supplementary.tex):
+# header of supplementary.tex) and of highlights.pdf:
 #   bash make_submission.sh
 # Output: submission/ (git-ignored): manuscript.tex, the six figures (PDF),
 # references.bib (for reference only; manuscript.tex carries the bibliography),
-# a test compilation manuscript.pdf, which must match main.pdf, and the
+# a test compilation manuscript.pdf, which must match main.pdf, the
 # supplementary material as supplementary_material.pdf (the journal publishes it
-# as received).
+# as received), and the highlights as editable files, highlights.docx (needs
+# pandoc) and highlights.txt.
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -48,6 +49,44 @@ for f in fig_loop lumped_validation fig_modal fig_beta fig_startup fig_validity;
 done
 cp references.bib "$out/"
 cp supplementary.pdf "$out/supplementary_material.pdf"
+
+# Highlights as a separate editable file (the guide asks for "highlights" in the
+# file name; 3 to 5 bullets of at most 85 characters, spaces included). The text
+# is taken from the compiled highlights.pdf, so the macros are already expanded.
+[ -f highlights.pdf ] || { echo "highlights.pdf missing: pdflatex highlights" >&2; exit 1; }
+pdftotext -enc UTF-8 highlights.pdf "$out/highlights_raw.txt"
+python3 - "$out" <<'EOF'
+import pathlib, re, sys
+out = pathlib.Path(sys.argv[1])
+raw = (out / "highlights_raw.txt").read_text(encoding="utf-8")
+items, cur = [], None
+for line in raw.splitlines():
+    line = line.strip()
+    if not line or line == "Highlights":
+        continue
+    if line.startswith("•"):
+        if cur is not None:
+            items.append(cur)
+        cur = line[1:].strip()
+    elif cur is not None:
+        cur += " " + line
+if cur is not None:
+    items.append(cur)
+items = [re.sub(r"\s+", " ", s) for s in items]
+assert 3 <= len(items) <= 5, f"{len(items)} highlights"
+for s in items:
+    assert len(s) <= 85, f"{len(s)} characters: {s}"
+(out / "highlights_raw.txt").unlink()
+(out / "highlights.txt").write_text("".join(f"• {s}\n" for s in items), encoding="utf-8")
+(out / "highlights.md").write_text("".join(f"- {s}\n" for s in items), encoding="utf-8")
+print("highlights:", ", ".join(str(len(s)) for s in items), "characters")
+EOF
+if command -v pandoc >/dev/null; then
+  ( cd "$out" && pandoc highlights.md -o highlights.docx )
+else
+  echo "pandoc not found: only highlights.txt written" >&2
+fi
+rm -f "$out/highlights.md"
 
 # Every graphic named in the file must be present.
 grep -o '\\includegraphics\[[^]]*\]{[^}]*}' "$out/manuscript.tex" | sed 's/.*{//;s/}//' |
