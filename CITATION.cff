@@ -11,6 +11,8 @@ authors:
 license: MIT
 repository-code: "https://github.com/daniel-gonzalezm/beltloop"
 version: "1.1.0"
+doi: "10.5281/zenodo.24149912"
+date-released: "2026-11-12"
 keywords:
   - belt conveyor
   - longitudinal vibration
