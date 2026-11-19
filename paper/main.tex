@@ -85,7 +85,7 @@
 \InputIfFileExists{paper_numbers}{}{%
   \PackageWarningNoLine{main}{paper_numbers.tex not found: run maps/paper_numbers.py}}
 
-\journal{Applied Mathematical Modelling}
+\journal{Mechanism and Machine Theory}
 
 \begin{document}
 
@@ -105,32 +105,25 @@
           Universidad de Concepción, Edmundo Larenas 219, Concepción, Chile}
 
 \begin{abstract}
-% At most 250 words (AMM guide): 244 with the macros expanded and the units
-% counted apart. Numbers are macros, so the submission form takes the text from the
+% At most 180 words (MMT guide), counted with the macros expanded and the units
+% apart. Numbers are macros, so the submission form takes the text from the
 % compiled PDF.
-The gravity take-up of a long belt conveyor is placed conveyor by conveyor, partly on
-dynamic grounds. A light take-up is known to act as a free end, splitting the loop
-into two strands fixed at the drive and free at the take-up; this paper generalises and
-quantifies that mechanism with classical tools. The loop is a one-dimensional Kelvin--Voigt
-continuum with two wave speeds, a speed-controlled drive anywhere on the loop and a gravity
-take-up, a pulley with mass, anywhere on the return strand; transfer matrices give a
-closed-form characteristic equation. The take-up mass acts as a tip mass of a quarter of its
-value; since it follows from the take-up tension, it lengthens the fundamental period of
-published conveyors of \qty{1}{\kilo\metre} or longer by at most
-\qty{\NumLongShiftMax}{\percent}. Moving the take-up from head to tail shortens the fundamental
-period by a factor \NumHeadTailRatioGammaThree--\NumHeadTailRatioGammaOneFive\ on loaded belts
-(wave-speed ratio 1.5--3; \NumHeadTailRatioGammaOne\ when empty), so relocating it in a model is not an equivalent
-transformation. A universal start-up curve of each strand, a finite d'Alembert sum, gives the
-drive tensions, take-up travel, grip condition and a start-time rule of 2--3 fundamental periods.
-The solution is verified against a second implementation and partially checked against
-records of a \qty{5.1}{\kilo\metre} conveyor. On three published conveyors, with hypothetical
-speed-controlled starts, the take-up position acts mainly through the static tensions, and
-dynamically through the start time; the \qty{30}{\second} starts of a published
-\qty{1}{\kilo\metre} conveyor would have slipped on its single drive pulley.
+Where to place the gravity take-up of a long belt conveyor is decided conveyor by conveyor,
+partly on dynamic grounds. This paper solves in closed form a continuous
+Kelvin--Voigt loop with two wave speeds, a speed-controlled drive anywhere
+on it and a gravity take-up with mass anywhere on the return strand. A light take-up acts, as is known, as a free end that splits the loop into two strands
+fixed at the drive; its position sets their lengths. Moving it from head to tail shortens the
+fundamental period by a factor \NumHeadTailRatioGammaThree--\NumHeadTailRatioGammaOneFive\ on
+loaded belts (wave-speed ratio 1.5--3). The take-up mass, set by its tension, lengthens that period by at most
+\qty{\NumLongShiftMax}{\percent} on published conveyors of \qty{1}{\kilo\metre} or longer. A universal start-up curve of each strand gives the drive
+tensions, take-up travel, grip condition and a start-time rule of 2--3 fundamental periods. The
+solution is verified independently and partially checked against field
+records. On three published conveyors, with hypothetical speed-controlled starts, the take-up
+position acts mainly through the static tensions, and dynamically through the start time.
 \end{abstract}
 
 \begin{keyword}
-% Six keywords; the AMM guide allows 1 to 7.
+% Six keywords; the MMT guide allows 1 to 6.
 belt conveyor \sep longitudinal vibration \sep gravity take-up \sep
 transfer matrix \sep modal analysis \sep start-up
 \end{keyword}

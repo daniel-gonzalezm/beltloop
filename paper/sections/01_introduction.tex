@@ -15,15 +15,17 @@
 % =====================================================================
 \section{Introduction}\label{sec:intro}
 
-Overland belt conveyors carry ore and coal over several kilometres, and over such lengths the
-belt is an elastic system: a change of drive speed travels along it as a stress wave, more
+Overland belt conveyors are machines several kilometres long that carry ore and coal, and over
+such lengths the belt is an elastic system: a change of drive speed travels along it as a stress wave, more
 slowly on the loaded carry strand than on the return strand, so the belt far from the drive
 starts moving seconds after the belt at the drive \citep{harrison1983,nordell1984,lodewijks2002}.
 The transient tensions govern the belt rating, the take-up travel and the grip on the drive
 pulleys, and dynamic analysis is part of the design of long conveyors
 \citep{lodewijks2002,nordell1997zisco}. Most are tensioned by a gravity take-up: a counterweight
 hung from a carriage whose pulley is wrapped by the return belt, which holds the slack-side
-tension and stores the belt that the loop releases or takes up as its stretch changes.
+tension and stores the belt that the loop releases or takes up as its stretch changes. Its
+position along the loop is a design choice of the machine, made together with the drive
+arrangement.
 
 Where to place the take-up is decided partly on dynamic grounds, but one conveyor at a time. A
 take-up right after a head drive keeps the tension leaving the drive constant
@@ -35,7 +37,9 @@ take-up at the head and at the tail \citep{cdi2002}. Owners have moved take-ups 
 \citep{nordell1987}, and the location is said to be dictated by the terrain and ``by the belt
 dynamic behavior'' \citep{cornet2002}. The one study devoted to the question compared a head
 and a tail take-up through the static tensions, called the dynamics vital but left them out,
-and concluded that each conveyor needs evaluation in its own right \citep{harrison1989}.
+and concluded that each conveyor needs evaluation in its own right \citep{harrison1989}. The
+designer has no general answer to how the take-up position changes the dynamics of the
+machine, or to when the change matters.
 
 The two wave speeds of the loop are well established \citep{nordell1984,lodewijks2002,cdi1998}.
 Discrete and finite-element models include the kinematics of the take-up pulley, which stores
@@ -61,25 +65,27 @@ continuum, with the take-up at the tail. What has not been worked out is what th
 take-up and the drive can sit anywhere: how the take-up position sets the spectrum and the
 start-up tensions, and when the take-up mass stops being negligible.
 
-The tools needed are classical: transfer matrices, the interlacing of receptances, Rayleigh's
-quotient with a tip mass and d'Alembert's solution of a fixed--free string. What this paper
-adds is their use on the whole loop, with the take-up and drive positions as continuous
-parameters, which gives:
+This paper works it out in closed form, with the take-up and drive positions as continuous
+design parameters. The tools are classical: transfer matrices, the interlacing of
+receptances, Rayleigh's quotient with a tip mass and d'Alembert's solution of a fixed--free
+string; what is new is their use on the whole loop. The results are:
 \begin{enumerate}
   \item a closed-form characteristic equation for the loop with two wave speeds, a gravity
   take-up modelled as a pulley with mass anywhere on the return strand and the drive anywhere
   on the loop, whose split into two fixed--free strands holds for a light take-up at any
   position (Section~\ref{sec:solution});
+  \item bounds on the fundamental period as a function of the take-up position, which show that
+  moving the take-up to the tail changes the dynamics of the machine and is not an equivalent
+  transformation of the model (Section~\ref{sec:frequencies});
   \item the take-up mass as a tip mass of a quarter of its value, and the link
   $\beta=(4/\nstr)\lambda\Tt/\Wret$ between mass ratio and take-up tension, which bounds its
   effect on the fundamental period of real conveyors (Section~\ref{sec:betaregime});
-  \item bounds on the fundamental period as a function of the take-up position, which show that
-  moving the take-up to the tail is not an equivalent transformation
-  (Section~\ref{sec:frequencies});
-  \item a universal start-up curve of the fixed--free strand, a finite d'Alembert sum, for the
-  drive tensions, the take-up travel, the grip condition and a start-time rule
-  (Sections~\ref{sec:startup} and~\ref{sec:validity}).
+  \item the start-up design quantities, from a universal start-up curve of the fixed--free
+  strand, a finite d'Alembert sum: the drive tensions, the take-up travel, the grip condition and
+  a start-time rule of 2--3 fundamental periods (Sections~\ref{sec:startup}
+  and~\ref{sec:validity}).
 \end{enumerate}
 The results are verified against a second implementation, checked against partial field records
-(Section~\ref{sec:validation}) and applied to three published conveyors
+(Section~\ref{sec:validation}) and applied to three published conveyors, where the take-up
+position acts mainly through the static tensions and, dynamically, through the start time
 (Section~\ref{sec:application}).
