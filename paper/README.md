@@ -1,7 +1,7 @@
 # Manuscript
 
 LaTeX source of the paper based on `beltloop`. Elsevier `elsarticle` class, set up
-for Applied Mathematical Modelling: preprint layout, 12 pt, single column, line numbers,
+for Mechanism and Machine Theory: preprint layout, 12 pt, single column, line numbers,
 numbered references with full author lists (`elsarticle-num-names`). Needs the TeX Live
 packages `elsarticle` (texlive-publishers), `lmodern` and `rotating`.
 

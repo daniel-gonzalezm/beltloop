@@ -9,9 +9,9 @@ for a single loop; a carriage carried by n belt strands maps onto it exactly wit
 belt-side mass 4M/n^2), prescribed drive velocity and stiffness-proportional Kelvin-Voigt
 damping. The derivation is in Sections 2 and 3 of the paper.
 
-Code for the paper *Closed-form longitudinal modal analysis of belt conveyors with a gravity
-take-up at an arbitrary position* (D. González-Monsalve; manuscript in `paper/`, prepared for
-Applied Mathematical Modelling). Released under the MIT licence (`LICENSE`); cite it through
+Code for the paper *Effect of the gravity take-up position on the longitudinal dynamics of long
+belt conveyors* (D. González-Monsalve; manuscript in `paper/`, prepared for Mechanism and
+Machine Theory). Released under the MIT licence (`LICENSE`); cite it through
 `CITATION.cff` or the Zenodo record of the release.
 
 ## For reviewers of the paper
