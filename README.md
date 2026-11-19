@@ -1,6 +1,6 @@
 # beltloop
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24149912.svg)](https://doi.org/10.5281/zenodo.24149912)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24369598.svg)](https://doi.org/10.5281/zenodo.24369598)
 
 Longitudinal dynamics of a belt-conveyor loop with a gravity take-up at an arbitrary
 position and the drive anywhere on the loop. Continuous 1-D model with two wave speeds
