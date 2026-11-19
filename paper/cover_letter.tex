@@ -1,6 +1,6 @@
 % =====================================================================
-% cover_letter.tex -- cover letter for the submission to Applied Mathematical
-% Modelling. The date is fixed to the day of submission.
+% cover_letter.tex -- cover letter for the submission to Mechanism and Machine
+% Theory. The date is fixed to the day of submission (set when submitting).
 % Numbers are macros of paper_numbers.tex, as in the manuscript.
 % Build: pdflatex cover_letter
 % =====================================================================
@@ -17,47 +17,44 @@
 Department of Mechanical Engineering, Faculty of Engineering\\
 Universidad de Concepción, Edmundo Larenas 219, Concepción, Chile\\
 danielgonzalezm@udec.cl \quad ORCID 0000-0002-3892-4722}
-\date{12 November 2026}
+\date{\today}
 
 \begin{document}
-\begin{letter}{Editor-in-Chief\\Applied Mathematical Modelling}
+\begin{letter}{Editor\\Mechanism and Machine Theory}
 \opening{Dear Editor,}
 
-I am submitting the manuscript \emph{Closed-form longitudinal modal analysis of belt
-conveyors with a gravity take-up at an arbitrary position} for consideration as a research
-article in \emph{Applied Mathematical Modelling}.
+I am submitting the manuscript \emph{Effect of the gravity take-up position on the longitudinal
+dynamics of long belt conveyors} for consideration as an original research paper in
+\emph{Mechanism and Machine Theory}.
 
-Long overland belt conveyors in mining are tensioned by a gravity take-up, a counterweight
-hanging on a pulley wrapped by the return belt, and its position shapes the transient tensions
-of every start and stop. Practice chooses that position conveyor by conveyor, by simulation or
-experience. The manuscript gives a closed-form model for this engineering decision: the belt
-loop is modelled as a Kelvin--Voigt continuum with two wave speeds, a speed-controlled drive
-anywhere on the loop and the take-up anywhere on the return strand, represented as a pulley
-with mass, and transfer matrices give its characteristic equation in closed form. Its main
-results are:
+Long overland belt conveyors are tensioned by a gravity take-up, a counterweight hanging on a
+pulley wrapped by the return belt, and where the take-up sits along the loop shapes the
+transient tensions of every start and stop. Designers choose that position conveyor by conveyor,
+by simulation, by experience or through the static tensions. The manuscript answers the design
+question in closed form: the belt loop is a Kelvin--Voigt continuum with two wave speeds, a
+speed-controlled drive anywhere on it and the take-up, a pulley with mass, anywhere on the
+return strand. For the designer it gives:
 \begin{itemize}\setlength{\itemsep}{1pt}
-  \item the free end that a light take-up is known to form holds at any position; moving the
-        take-up from head to tail shortens the fundamental period by a factor
-        \NumHeadTailRatioGammaThree--\NumHeadTailRatioGammaOneFive\ on loaded belts, so it is not
-        the equivalent transformation it has been taken for;
-  \item the take-up mass enters as a closed-form tip-mass correction, and since it follows from
-        the take-up tension it lengthens the fundamental period of the published conveyors of
-        \qty{1}{\kilo\metre} or longer by at most \qty{\NumLongShiftMax}{\percent};
-  \item a universal start-up curve gives the drive tensions, the take-up travel, the drive grip
-        condition and a start-time rule; the published \qty{30}{\second} starts of a
-        \qty{1}{\kilo\metre} conveyor would have slipped on its single drive pulley.
+  \item which strand vibrates and its fundamental period as a function of the take-up position:
+        moving the take-up from head to tail shortens that period by a factor
+        \NumHeadTailRatioGammaThree--\NumHeadTailRatioGammaOneFive\ on loaded belts, so it is
+        not a neutral design change;
+  \item when the take-up mass matters: set by the take-up tension, it lengthens the fundamental
+        period of the published conveyors of \qty{1}{\kilo\metre} or longer by at most
+        \qty{\NumLongShiftMax}{\percent};
+  \item the start-up design quantities, from a universal start-up curve: the drive tensions, the
+        take-up travel, the drive grip and a start-time rule of 2--3 fundamental periods; the
+        published \qty{30}{\second} starts of a \qty{1}{\kilo\metre} conveyor would have slipped
+        on its single drive pulley.
 \end{itemize}
-The tools are classical; what is new is their use with the take-up and drive positions as
-continuous parameters. The solution is verified against a second
-implementation and checked against take-up records and wave-speed measurements of field
-conveyors; the physical validation is partial, and the manuscript states so. The code that
-produces every figure, table and number is openly available and archived on Zenodo.
-
-An earlier version was submitted to the \emph{Journal of Sound and Vibration} (JSV-D-26-03301)
-and declined without review as outside its scope, the editor suggesting a journal oriented to
-applications in mechanical or mining engineering; no technical objections were raised. The
-manuscript has since been shortened to the length of this journal and reframed around the
-engineering problem, with supporting details in appendices and in a supplementary file.
+The work falls within the dynamics of machinery and the transportation machinery named in the
+scope of the journal, and it connects with work published here on belt conveyor drives, belt
+friction before gross slip and axially accelerating media, which the manuscript cites. The tools
+are classical; what is new is their use on the whole loop with the take-up and drive positions
+as continuous design parameters. The solution is verified against a second implementation and
+checked against take-up records and wave-speed measurements of field conveyors; the physical
+validation is partial, and the manuscript states so. The code that produces every figure, table
+and number is openly available and archived on Zenodo.
 
 The manuscript is original, has not been published, and is not under consideration
 elsewhere. I am the sole author and have no competing interests to declare.
